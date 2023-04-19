@@ -9,8 +9,6 @@ body {
 
 #registration-form .image {
   float: left;
-  /* background-image: url("../assets/images/backgrounds/Wavy_Gen-01_Single-07.jpg"); */
-  height: 800px;
   width: 50%;
   background-size: cover;
   background-position: 50%;

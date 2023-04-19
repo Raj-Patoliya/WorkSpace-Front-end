@@ -1,9 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./register.css";
+import LoginBackground from "../assets/images/backgrounds/Wavy_Tech-11_Single-10.jpg";
 import { Button, Form, Modal } from "react-bootstrap";
-import ImageCard from "../assets/images/Profiles/Screenshot from 2023-04-14 11-17-36.png";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
 import axios from "axios";
 const Register = () => {
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      cpassword: "",
+    },
+    validationSchema: Yup.object({
+      fullName: Yup.string()
+        .min(2, "Must be at least 2 characters")
+        .max(50, "Must be 50 characters or less")
+        .required("Required"),
+      email: Yup.string().email("Invalid email address").required("Required"),
+      password: Yup.string()
+        .min(6, "Must be at least 6 characters")
+        .max(50, "Must be 50 characters or less")
+        .required("Required"),
+      cpassword: Yup.string()
+        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required("Required"),
+    }),
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      formData.append("fullName", values.fullName);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      formData.append("profile", profile);
+      console.log(formData);
+      const { data } = await axios.post(
+        "http://127.0.0.1:8000/user/create/",
+        formData,
+        {
+          headers: {
+            "Content-Type": `multipart/form-data`,
+          },
+        }
+      );
+      if (data.success) {
+        console.log("datta======", data.success);
+      }
+      if (data.error) {
+        console.log("datta======", data.error);
+      }
+    },
+  });
   const [show, setShow] = useState(false);
   const [profile, setProfile] = useState(
     "https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg"
@@ -12,24 +60,26 @@ const Register = () => {
   useEffect(() => {
     const getImages = async () => {
       const { data } = await axios.get("http://127.0.0.1:8000/user/avtar/");
-      console.log(data);
       const images = data.map((data) => {
         return data.image;
       });
-      console.log(images);
       setImageArray(images);
     };
     getImages();
   }, []);
+
   const handleClose = () => setShow(false);
   const handleShow = async () => setShow(true);
 
   return (
     <div className="container" id="registration-form">
-      <div className="image"></div>
+      <div
+        className="image"
+        style={{ backgroundImage: `url(${LoginBackground})` }}
+      ></div>
       <div className="frm">
         <h1 className="text-center"> Register Here</h1>
-        <Form>
+        <Form onSubmit={formik.handleSubmit}>
           <div>
             <div className="d-flex justify-content-center mb-4">
               <img
@@ -45,74 +95,114 @@ const Register = () => {
           </div>
           <div className="row">
             <div className="col-12">
-              <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Group className="mb-3">
                 <Form.Label>Full Name:</Form.Label>
-                <Form.Control type="text" placeholder="Enter Name" />
+                <Form.Control
+                  type="text"
+                  name="fullName"
+                  placeholder="Enter Name"
+                  value={formik.values.fullName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.fullName && formik.errors.fullName}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.fullName}
+                </Form.Control.Feedback>
               </Form.Group>
             </div>
-          </div>
-          <div className="row">
             <div className="col-12">
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Email: </Form.Label>
-                <Form.Control type="password" placeholder="Password" />
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Email:</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  placeholder="Enter Email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.email && formik.errors.email}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.email}
+                </Form.Control.Feedback>
               </Form.Group>
             </div>
           </div>
           <div className="row">
             <div className="col-6">
               <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Create Password</Form.Label>
-                <Form.Control type="password" placeholder="Create Password" />
+                <Form.Label>Password : </Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  placeholder="Create password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.password && formik.errors.password}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.password}
+                </Form.Control.Feedback>
               </Form.Group>
             </div>
             <div className="col-6">
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Confirm Password</Form.Label>
-                <Form.Control type="password" placeholder="Confirm Password" />
+                <Form.Control
+                  type="password"
+                  name="cpassword"
+                  placeholder="Confirm Password"
+                  value={formik.values.cpassword}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    formik.touched.cpassword && formik.errors.cpassword
+                  }
+                />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.cpassword}
+                </Form.Control.Feedback>
               </Form.Group>
             </div>
           </div>
-          <Form.Group
-            className="mb-3 text-center"
-            controlId="formBasicPassword"
-          >
-            <Button variant="primary" className="w-50">
-              Submit
-            </Button>
-          </Form.Group>
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Select Avtar</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div class="container">
-                <div class="row">
-                  {imageArray.map((data) => (
-                    <div class="col" onClick={() => {}}>
-                      <img
-                        src={data}
-                        title="Double Tab to select"
-                        style={{ width: "100px" }}
-                        alt="Cardcap"
-                        onDoubleClick={() => {
-                          setProfile(data);
-                          handleClose();
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <Button variant="primary" type="submit">
+            Register
+          </Button>
         </Form>
       </div>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Avtar</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div class="container">
+            <div class="row">
+              {imageArray.map((data) => (
+                <div key={data.id} class="col" onClick={() => {}}>
+                  <img
+                    key={data.id}
+                    src={data}
+                    title="Double Tab to select"
+                    style={{ width: "100px" }}
+                    alt="Cardcap"
+                    onDoubleClick={() => {
+                      setProfile(data);
+                      handleClose();
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
