@@ -6,6 +6,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Layout from "../layout/layout";
 const Login = () => {
   const formik = useFormik({
     initialValues: {
@@ -43,58 +44,65 @@ const Login = () => {
     },
   });
   return (
-    <div className="container" id="registration-form">
-      <div
-        className="image"
-        style={{ backgroundImage: `url(${LoginBackground})`, height: "26rem" }}
-      ></div>
-      <div className="frm">
-        <h1 className="text-center"> Sign Up Here</h1>
-        <Form onSubmit={formik.handleSubmit}>
-          <div className="row">
-            <div className="col-12">
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email:</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  placeholder="Enter Email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={formik.touched.email && formik.errors.email}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {formik.errors.email}
-                </Form.Control.Feedback>
-              </Form.Group>
+    <Layout>
+      <div className="container" id="registration-form">
+        <div
+          className="image"
+          style={{
+            backgroundImage: `url(${LoginBackground})`,
+            height: "26rem",
+          }}
+        ></div>
+        <div className="frm">
+          <h1 className="text-center"> Sign Up Here</h1>
+          <Form onSubmit={formik.handleSubmit}>
+            <div className="row">
+              <div className="col-12">
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label>Email:</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    isInvalid={formik.touched.email && formik.errors.email}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {formik.errors.email}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-12">
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password : </Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  placeholder="Create password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={formik.touched.password && formik.errors.password}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {formik.errors.password}
-                </Form.Control.Feedback>
-              </Form.Group>
+            <div className="row">
+              <div className="col-12">
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <Form.Label>Password : </Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    placeholder="Create password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    isInvalid={
+                      formik.touched.password && formik.errors.password
+                    }
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {formik.errors.password}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </div>
             </div>
-          </div>
-          <Button variant="primary" type="submit">
-            Register
-          </Button>
-        </Form>
+            <Button variant="primary" type="submit">
+              Register
+            </Button>
+          </Form>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
