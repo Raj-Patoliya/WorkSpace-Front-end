@@ -7,7 +7,9 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Layout from "../layout/layout";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -36,7 +38,7 @@ const Login = () => {
       if (data.access) {
         localStorage.setItem("access", data.access);
         localStorage.setItem("refresh", data.refresh);
-        alert("Login Successfully Done");
+        navigate("/");
       }
       if (data.error) {
         console.log("datta======", data.error);

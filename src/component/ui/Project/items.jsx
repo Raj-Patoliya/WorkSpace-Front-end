@@ -1,17 +1,17 @@
 import { Button, CardActions, CardContent, Typography } from "@mui/material";
 import React from "react";
 
-const Items = () => {
+const Items = (props) => {
   return (
     <>
       <CardContent>
         <Typography variant="h5" component="div">
-          Workspace
+          {props.title}
         </Typography>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          7 Team Member
+          {props.team} Team Member
         </Typography>
-        <Typography variant="body2">Workspace Project is Awsome</Typography>
+        <Typography variant="body2">{props.description}</Typography>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           My Open Issues
         </Typography>
