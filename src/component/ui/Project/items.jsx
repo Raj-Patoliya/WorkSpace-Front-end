@@ -5,7 +5,11 @@ const Items = (props) => {
   return (
     <>
       <CardContent>
-        <Typography variant="h5" component="div">
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ fontSize: "1rem", fontWeight: "600" }}
+        >
           {props.title}
         </Typography>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>

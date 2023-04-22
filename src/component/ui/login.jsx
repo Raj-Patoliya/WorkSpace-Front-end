@@ -1,15 +1,17 @@
 import React from "react";
 import "./login.css";
 import LoginBackground from "../assets/images/backgrounds/Wavy_Tech-28_Single-10.jpg";
-import { useEffect, useRef, useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
-import axios from "axios";
+import { Button, Form } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Layout from "../layout/layout";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/slice/authSlice";
+import Header from "../layout/header";
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -23,30 +25,16 @@ const Login = () => {
         .required("Required"),
     }),
     onSubmit: async (values) => {
-      const { data } = await axios.post(
-        "http://127.0.0.1:8000/user/login/token/",
-        {
-          email: values.email,
-          password: values.password,
-        },
-        {
-          headers: {
-            "Content-Type": `application/json`,
-          },
-        }
-      );
-      if (data.access) {
-        localStorage.setItem("access", data.access);
-        localStorage.setItem("refresh", data.refresh);
-        navigate("/");
-      }
-      if (data.error) {
-        console.log("datta======", data.error);
-      }
+      const formData = new FormData();
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      dispatch(login(formData));
+      navigate("/");
     },
   });
   return (
-    <Layout>
+    <>
+      <Header />
       <div className="container" id="registration-form">
         <div
           className="image"
@@ -104,7 +92,7 @@ const Login = () => {
           </Form>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

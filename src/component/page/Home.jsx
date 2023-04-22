@@ -25,7 +25,7 @@ const Home = () => {
   return (
     <Layout>
       <CssBaseline />
-      <Container sx={{ margin: 0 }}>
+      <Container sx={{ margin: "0 auto" }}>
         <Box sx={{ bgcolor: "transparent" }}>
           <Typography variant="h4" color={"inherit"}>
             <br />
