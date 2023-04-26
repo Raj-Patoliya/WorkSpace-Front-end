@@ -4,6 +4,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import authSlice from "./slice/authSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
+import projectSlice from "./slice/projectSlice";
 
 const persistConfig = {
   key: "root",
@@ -14,6 +15,7 @@ const persistConfig = {
 const appReducer = combineReducers({
   state: (state = {}) => state,
   user: authSlice,
+  project: projectSlice,
 });
 // const customizedMiddleware = getDefaultMiddleware({
 //   serializableCheck: false,

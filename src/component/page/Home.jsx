@@ -34,7 +34,7 @@ const Home = () => {
           <br />
           <Typography color={"inherit"}>Recent Projects</Typography>
           <ProjectCard />
-          <Typography component="div" marginTop={3}>
+          <Typography component="a" to={"/project"} marginTop={3}>
             View All Projects(Navigation Link)
           </Typography>
           <Box sx={{ width: "100%", marginTop: 5 }}>

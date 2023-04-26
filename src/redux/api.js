@@ -6,7 +6,7 @@ const API = axios.create({
   baseURL: localhost,
 });
 
-const authAxios = (token) =>
+const AuthAxios = (token) =>
   axios.create({
     baseURL: localhost,
     headers: {
@@ -21,3 +21,5 @@ const authHeader = (config) =>
   });
 
 export const LoginAPI = (formData) => API.post("/user/login/token/", formData);
+export const ProjectListAPI = (token) =>
+  AuthAxios(token).get("/project/all-list/");
