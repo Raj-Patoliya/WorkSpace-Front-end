@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { project } from "../../redux/slice/projectSlice";
 import Layout from "../layout/layout";
-import { Box } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 
 import MUIDataTable from "mui-datatables";
 
 const ProjectList = () => {
-  const columns = ["Name", "Company", "City", "State"];
+  const columns = ["Title", "Key", "profile", "Lead", "Start Date"];
   const projects = useSelector((state) => state.project.allProjectList);
   const dispatch = useDispatch();
   const { access } = useSelector((state) => state.user.user);
@@ -15,14 +15,24 @@ const ProjectList = () => {
     dispatch(project(access));
   }, [dispatch, access]);
   console.log(projects);
+  const projectList = [];
+  projects.forEach((element) => {
+    const temp = [];
 
-  const data = [
-    ["Joe James", "Test Corp", "Yonkers", "NY"],
-    ["John Walsh", "Test Corp", "Hartford", "CT"],
-    ["Bob Herm", "Test Corp", "Tampa", "FL"],
-    ["James Houston", "Test Corp", "Dallas", "TX"],
-  ];
-
+    temp.push(element.title);
+    temp.push(element.key);
+    temp.push(
+      <Typography>
+        {element.owner[0].fullName}
+        <Avatar src={element.owner[0].profile} alt={element.owner[0].profile} />
+      </Typography>
+    );
+    temp.push();
+    temp.push(element.start_date);
+    temp.push(element.id);
+    projectList.push(temp);
+  });
+  console.log(projectList);
   const options = {
     filterType: "checkbox",
   };
@@ -30,9 +40,9 @@ const ProjectList = () => {
     <Layout>
       <MUIDataTable
         title={"Employee List"}
-        data={data}
+        data={projectList}
         columns={columns}
-        options={options}
+        // options={options}
       />
     </Layout>
   );

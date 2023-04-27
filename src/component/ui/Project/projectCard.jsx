@@ -8,9 +8,16 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 export default function ProjectCard() {
   const [projects, setprojects] = useState([]);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (isLoggedIn === false) {
+  //     navigate("/login");
+  //   }
+  // }, [isLoggedIn, navigate]);
   const access = useSelector((state) => state.user.user.access);
   useEffect(() => {
     if (isLoggedIn) {
@@ -21,6 +28,7 @@ export default function ProjectCard() {
           { headers: { Authorization: `Bearer ${access}` } }
         );
         console.log(data.data);
+        console.log(123);
         setprojects(data.data.projects);
       };
       getUserInformation();

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as api from "../api";
 const initialState = {
-  user: null,
+  user: [],
   error: "",
   message: "",
   loading: false,
@@ -19,9 +19,16 @@ export const login = createAsyncThunk(
     }
   }
 );
+
 const authSlice = createSlice({
   initialState,
   name: "authSlice",
+  reducers: {
+    logout: (state, action) => {
+      localStorage.clear();
+      return initialState;
+    },
+  },
   extraReducers: {
     [login.pending]: (state, action) => {
       state.loading = true;
@@ -40,4 +47,5 @@ const authSlice = createSlice({
     },
   },
 });
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

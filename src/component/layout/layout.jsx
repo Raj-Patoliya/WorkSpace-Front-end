@@ -11,6 +11,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SplitscreenRoundedIcon from "@mui/icons-material/SplitscreenRounded";
@@ -25,6 +26,9 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/slice/authSlice";
+import { replace } from "formik";
 
 const drawerWidth = 240;
 
@@ -93,6 +97,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 const Layout = (props) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -203,7 +208,7 @@ const Layout = (props) => {
                   px: 2.5,
                 }}
                 onClick={() => {
-                  navigate("/create-project");
+                  navigate("/project-list");
                 }}
               >
                 <ListItemIcon
@@ -298,6 +303,34 @@ const Layout = (props) => {
                 </ListItemIcon>
                 <ListItemText
                   primary={"Profile"}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem disablePadding sx={{ display: "block" }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+                onClick={() => {
+                  dispatch(logout());
+                  navigate("/login", { replace: true });
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Logout"}
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
