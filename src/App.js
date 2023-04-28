@@ -5,8 +5,9 @@ import Login from "./component/ui/login";
 import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProjectList from "./component/page/project-list";
+import { DialogDemo } from "./component/ui/Project/create-project-modal";
 function App() {
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const FirstPage = () => {
     return isLoggedIn ? <Home /> : <Login />;
   };
@@ -17,7 +18,7 @@ function App() {
         <Route path="/login" element={<FirstPage />}></Route>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/project-list" element={<ProjectList />}></Route>
-        {/* <Route path="*" element={<ProjectList />}></Route> */}
+        <Route path="/modal" element={<DialogDemo />}></Route>
       </Routes>
     </BrowserRouter>
   );

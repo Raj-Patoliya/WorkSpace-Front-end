@@ -10,11 +10,11 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["user"],
+  whitelist: ["auth"],
 };
 const appReducer = combineReducers({
   state: (state = {}) => state,
-  user: authSlice,
+  auth: authSlice,
   project: projectSlice,
 });
 // const customizedMiddleware = getDefaultMiddleware({

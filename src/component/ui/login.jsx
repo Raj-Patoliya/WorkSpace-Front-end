@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { Toast } from "primereact/toast";
 import "./login.css";
 import LoginBackground from "../assets/images/backgrounds/Wavy_Tech-28_Single-10.jpg";
 import { Button, Form } from "react-bootstrap";
@@ -6,12 +7,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Layout from "../layout/layout";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/slice/authSlice";
 import Header from "../layout/header";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const error = useSelector((state) => state.auth.error);
+  const toast = useRef(null);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -32,8 +36,22 @@ const Login = () => {
       navigate("/");
     },
   });
+  useEffect(() => {
+    const showError = () => {
+      toast.current.show({
+        severity: "error",
+        summary: "Invalid Credential",
+        detail: error,
+        life: 3000,
+      });
+    };
+    if (error) {
+      showError();
+    }
+  }, [error]);
   return (
     <>
+      <Toast ref={toast} />
       <Header />
       <div className="container" id="registration-form">
         <div
@@ -87,7 +105,7 @@ const Login = () => {
               </div>
             </div>
             <Button variant="primary" type="submit">
-              Register
+              Login
             </Button>
           </Form>
         </div>

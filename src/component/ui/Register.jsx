@@ -7,6 +7,7 @@ import * as Yup from "yup";
 
 import axios from "axios";
 import Layout from "../layout/layout";
+import Header from "../layout/header";
 const Register = () => {
   const formik = useFormik({
     initialValues: {
@@ -38,19 +39,13 @@ const Register = () => {
       console.log(formData);
       const { data } = await axios.post(
         "http://127.0.0.1:8000/user/create/",
-        formData,
+        formData,   
         {
           headers: {
             "Content-Type": `multipart/form-data`,
           },
         }
       );
-      if (data.success) {
-        console.log("datta======", data.success);
-      }
-      if (data.error) {
-        console.log("datta======", data.error);
-      }
     },
   });
   const [show, setShow] = useState(false);
@@ -73,7 +68,8 @@ const Register = () => {
   const handleShow = async () => setShow(true);
 
   return (
-    <Layout>
+    <>
+      <Header />
       <div className="container" id="registration-form">
         <div
           className="image"
@@ -176,6 +172,7 @@ const Register = () => {
             <Button variant="primary" type="submit">
               Register
             </Button>
+            page
           </Form>
         </div>
         <Modal show={show} onHide={handleClose}>
@@ -190,10 +187,10 @@ const Register = () => {
                     <img
                       key={data.id}
                       src={data}
-                      title="Double Tab to select"
+                      title="Tap to select"
                       style={{ width: "100px" }}
                       alt="Cardcap"
-                      onDoubleClick={() => {
+                      onClick={() => {
                         setProfile(data);
                         handleClose();
                       }}
@@ -210,7 +207,7 @@ const Register = () => {
           </Modal.Footer>
         </Modal>
       </div>
-    </Layout>
+    </>
   );
 };
 

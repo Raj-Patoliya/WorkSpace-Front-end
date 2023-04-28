@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { project } from "../../redux/slice/projectSlice";
+import { getProjects } from "../../redux/slice/projectSlice";
 import Layout from "../layout/layout";
 import { Avatar, Box, Typography } from "@mui/material";
 
@@ -10,15 +10,14 @@ const ProjectList = () => {
   const columns = ["Title", "Key", "profile", "Lead", "Start Date"];
   const projects = useSelector((state) => state.project.allProjectList);
   const dispatch = useDispatch();
-  const { access } = useSelector((state) => state.user.user);
+  const { access } = useSelector((state) => state.auth.token);
   useEffect(() => {
-    dispatch(project(access));
+    dispatch(getProjects(access));
   }, [dispatch, access]);
   console.log(projects);
   const projectList = [];
   projects.forEach((element) => {
     const temp = [];
-
     temp.push(element.title);
     temp.push(element.key);
     temp.push(

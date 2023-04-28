@@ -4,6 +4,9 @@ const localhost = "http://127.0.0.1:8000";
 
 const API = axios.create({
   baseURL: localhost,
+  headers: {
+    "Content-Type": `multipart/form-data`,
+  },
 });
 
 const AuthAxios = (token) =>
@@ -21,5 +24,10 @@ const authHeader = (config) =>
   });
 
 export const LoginAPI = (formData) => API.post("/user/login/token/", formData);
+
+// Project APIs
 export const ProjectListAPI = (token) =>
   AuthAxios(token).get("/project/all-list/");
+
+export const CreateProjectAPI = (token, data) =>
+  AuthAxios(token).post("/project/create/", data);

@@ -29,9 +29,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slice/authSlice";
 import { replace } from "formik";
+import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
+import { Dialog } from "primereact/dialog";
+import { Button } from "primereact/button";
+import { useState } from "react";
+import { DialogDemo } from "../ui/Project/create-project-modal";
 
 const drawerWidth = 240;
-
+const settings = ["Profile", "Dashboard", "Logout"];
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -97,6 +102,8 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 const Layout = (props) => {
+  const [displayBasic, setDisplayBasic] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -109,7 +116,25 @@ const Layout = (props) => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+  const profile = useSelector((state) => state.auth.token);
+  console.log(profile);
   return (
     <React.Fragment>
       {/* <Header />
@@ -142,6 +167,58 @@ const Layout = (props) => {
             <Typography variant="h6" noWrap component="div">
               WorkSpace
             </Typography>
+            <Box sx={{ flexGrow: 0, marginLeft: "80vw" }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src={profile} />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem
+                  key={settings[0]}
+                  onClick={() => {
+                    setAnchorElNav(null);
+                  }}
+                >
+                  <Typography textAlign="center">{settings[0]}</Typography>
+                </MenuItem>
+                <MenuItem
+                  key={settings[1]}
+                  onClick={() => {
+                    setAnchorElNav(null);
+                  }}
+                >
+                  <Typography textAlign="center">{settings[1]}</Typography>
+                </MenuItem>
+                <MenuItem
+                  key={settings[2]}
+                  onClick={() => {
+                    setAnchorElNav(null);
+                  }}
+                >
+                  <Typography textAlign="center">{settings[2]}</Typography>
+                </MenuItem>
+
+                {/* {settings.map((setting) => (
+       
+              ))} */}
+              </Menu>
+            </Box>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -163,16 +240,6 @@ const Layout = (props) => {
           </DrawerHeader>
           <Divider />
           <List>
-            {/* {[
-              "Dashboard",
-              "Projects",
-              "Create Project",
-              "Issues",
-              "Your work",
-              "Profile",
-            ].map((text, index) => (
-             
-            ))} */}
             <ListItem disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
@@ -208,7 +275,7 @@ const Layout = (props) => {
                   px: 2.5,
                 }}
                 onClick={() => {
-                  navigate("/project-list");
+                  setDisplayBasic((prevState) => !prevState);
                 }}
               >
                 <ListItemIcon
@@ -343,6 +410,12 @@ const Layout = (props) => {
           {props.children}
         </Box>
       </Box>
+      {displayBasic && (
+        <DialogDemo
+          displayBasic={displayBasic}
+          setDisplayBasic={setDisplayBasic}
+        />
+      )}
     </React.Fragment>
   );
 };

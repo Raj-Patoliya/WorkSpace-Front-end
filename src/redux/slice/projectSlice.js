@@ -5,7 +5,7 @@ const initialState = {
   allProjectList: [],
   loading: false,
 };
-export const project = createAsyncThunk("project-list", async (access) => {
+export const getProjects = createAsyncThunk("project-list", async (access) => {
   try {
     const { data } = await axios.get(
       "http://127.0.0.1:8000/project/all-list/",
@@ -22,14 +22,14 @@ const projectSlice = createSlice({
   initialState,
   name: "projectSlice",
   extraReducers: {
-    [project.pending]: (state, action) => {
+    [getProjects.pending]: (state, action) => {
       state.loading = true;
     },
-    [project.fulfilled]: (state, action) => {
+    [getProjects.fulfilled]: (state, action) => {
       state.loading = false;
       state.allProjectList = action.payload.data.projects;
     },
-    [project.rejected]: (state, action) => {
+    [getProjects.rejected]: (state, action) => {
       state.loading = false;
       //   for (var i in action.payload) {
       //      toast.error(action.payload[i]);
