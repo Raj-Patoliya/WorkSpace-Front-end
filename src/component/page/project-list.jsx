@@ -7,7 +7,7 @@ import { Avatar, Box, Typography } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 
 const ProjectList = () => {
-  const columns = ["Title", "Key", "profile", "Lead", "Start Date"];
+  const columns = ["Title", "Key", "Lead", "Start Date"];
   const projects = useSelector((state) => state.project.allProjectList);
   const dispatch = useDispatch();
   const { access } = useSelector((state) => state.auth.token);
@@ -27,8 +27,10 @@ const ProjectList = () => {
       </Typography>
     );
     temp.push();
-    temp.push(element.start_date);
-    temp.push(element.id);
+    const date = new Date(element.start_date);
+    temp.push(
+      date.getDate() + " - " + date.getMonth() + " - " + date.getFullYear()
+    );
     projectList.push(temp);
   });
   console.log(projectList);

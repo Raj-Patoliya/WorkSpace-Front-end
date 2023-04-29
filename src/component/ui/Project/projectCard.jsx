@@ -43,6 +43,7 @@ export default function ProjectCard() {
   useEffect(() => {
     setprojects(projectsList);
   }, [projectsList]);
+  console.log(projectsList);
   return (
     <Box>
       <Grid container spacing={1} sx={{ margin: "0 auto" }}>
@@ -50,7 +51,7 @@ export default function ProjectCard() {
           if (index < 5) {
             return (
               <Grid item xs={2} md={2}>
-                <Card variant="outlined" sx={{ minHeight: "18rem" }}>
+                <Card variant="outlined" sx={{ minHeight: "13rem" }}>
                   {
                     <Items
                       title={data.title}

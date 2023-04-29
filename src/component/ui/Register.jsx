@@ -39,7 +39,7 @@ const Register = () => {
       console.log(formData);
       const { data } = await axios.post(
         "http://127.0.0.1:8000/user/create/",
-        formData,   
+        formData,
         {
           headers: {
             "Content-Type": `multipart/form-data`,
@@ -172,7 +172,6 @@ const Register = () => {
             <Button variant="primary" type="submit">
               Register
             </Button>
-            page
           </Form>
         </div>
         <Modal show={show} onHide={handleClose}>

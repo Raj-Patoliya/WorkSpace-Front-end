@@ -23,9 +23,9 @@ const Items = (props) => {
           Done Issues
         </Typography>
       </CardContent>
-      <CardActions>
+      {/* <CardActions>
         <Button size="small">Learn More</Button>
-      </CardActions>
+      </CardActions> */}
     </>
   );
 };
