@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "./header";
 
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -23,17 +22,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slice/authSlice";
-import { replace } from "formik";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
 import { useState } from "react";
 import { DialogDemo } from "../ui/Project/create-project-modal";
+import CreateIssueModal from "../ui/Issues/create-issue-modal";
 
 const drawerWidth = 240;
 const settings = ["Profile", "Dashboard", "Logout"];
@@ -103,7 +98,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 const Layout = (props) => {
   const [displayBasic, setDisplayBasic] = useState(false);
-
+  const [displayCreateIssueModal, setDisplayCreateIssueModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -276,6 +271,7 @@ const Layout = (props) => {
                 }}
                 onClick={() => {
                   setDisplayBasic((prevState) => !prevState);
+                  setDisplayCreateIssueModal(false);
                 }}
               >
                 <ListItemIcon
@@ -302,7 +298,8 @@ const Layout = (props) => {
                   px: 2.5,
                 }}
                 onClick={() => {
-                  navigate("/issues");
+                  setDisplayCreateIssueModal(true);
+                  setDisplayBasic(false);
                 }}
               >
                 <ListItemIcon
@@ -315,7 +312,7 @@ const Layout = (props) => {
                   <SplitscreenRoundedIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={"Issues"}
+                  primary={"Create Issues"}
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
@@ -414,6 +411,12 @@ const Layout = (props) => {
         <DialogDemo
           displayBasic={displayBasic}
           setDisplayBasic={setDisplayBasic}
+        />
+      )}
+      {displayCreateIssueModal && (
+        <CreateIssueModal
+          displayCreateIssueModal={displayCreateIssueModal}
+          setDisplayCreateIssueModal={setDisplayCreateIssueModal}
         />
       )}
     </React.Fragment>

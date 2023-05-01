@@ -13,30 +13,8 @@ import { getProjects } from "../../../redux/slice/projectSlice";
 export default function ProjectCard() {
   const projectsList = useSelector((state) => state.project.allProjectList);
   const [projects, setprojects] = useState([projectsList]);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const navigate = useNavigate();
-  // useEffect(() => {
-  //   if (isLoggedIn === false) {
-  //     navigate("/login");
-  //   }
-  // }, [isLoggedIn, navigate]);
-  const access = useSelector((state) => state.auth.token.access);
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     const getUserInformation = async () => {
-  //       console.log(access);
-  //       const { data } = await axios.get(
-  //         "http://127.0.0.1:8000/project/all-list/",
-  //         { headers: { Authorization: `Bearer ${access}` } }
-  //       );
-  //       setprojects(data.data.projects);
-  //     };
-  //     getUserInformation();
-  //   }
-  // }, [isLoggedIn, access]);
-
   const dispatch = useDispatch();
-  // const { access } = useSelector((state) => state.auth.token);
+  const { access } = useSelector((state) => state.auth.token);
   useEffect(() => {
     dispatch(getProjects(access));
   }, [dispatch, access]);

@@ -62,7 +62,7 @@ const Login = () => {
           }}
         ></div>
         <div className="frm">
-          <h1 className="text-center"> Sign Up Here</h1>
+          <h1 className="text-center"> Sign In Here</h1>
           <Form onSubmit={formik.handleSubmit}>
             <div className="row">
               <div className="col-12">

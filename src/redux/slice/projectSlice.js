@@ -1,18 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
-import axios from "axios";
+import { ProjectListAPI } from "../api";
+
 const initialState = {
   allProjectList: [],
   loading: false,
 };
 export const getProjects = createAsyncThunk("project-list", async (access) => {
   try {
-    const { data } = await axios.get(
-      "http://127.0.0.1:8000/project/all-list/",
-      {
-        headers: { Authorization: `Bearer ${access}` },
-      }
-    );
+    const { data } = await ProjectListAPI(access);
     return data;
   } catch (error) {
     return null;

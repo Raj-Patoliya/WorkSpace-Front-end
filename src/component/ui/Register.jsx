@@ -76,7 +76,7 @@ const Register = () => {
           style={{ backgroundImage: `url(${LoginBackground})` }}
         ></div>
         <div className="frm">
-          <h1 className="text-center"> Register Here</h1>
+          <h1 className="text-center"> Sign Up Here</h1>
           <Form onSubmit={formik.handleSubmit}>
             <div>
               <div className="d-flex justify-content-center mb-4">

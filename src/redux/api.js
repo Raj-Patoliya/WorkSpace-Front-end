@@ -31,3 +31,15 @@ export const ProjectListAPI = (token) =>
 
 export const CreateProjectAPI = (token, data) =>
   AuthAxios(token).post("/project/create/", data);
+
+// Issue APIs
+export const getStatusList = (token) =>
+  AuthAxios(token).get("/issues/issue-status");
+
+export const getPriorityList = (token) =>
+  AuthAxios(token).get("/issues/issue-priority");
+
+export const getTypeList = (token) =>
+  AuthAxios(token).get("/issues/issue-type");
+
+export const getUserList = (token) => AuthAxios(token).get("/user/list");
