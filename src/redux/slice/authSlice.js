@@ -44,10 +44,8 @@ const authSlice = createSlice({
     },
     [login.rejected]: (state, action) => {
       state.loading = false;
-      //   for (var i in action.payload) {
-      //      toast.error(action.payload[i]);
-      //   }
-      state.error = "Login Failed Invalid id Password";
+      state.isLoggedIn = false;
+      state.error = action.payload.detail;
     },
   },
 });

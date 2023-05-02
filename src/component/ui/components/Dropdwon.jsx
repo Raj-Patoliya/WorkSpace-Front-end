@@ -2,21 +2,8 @@ import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 
 export default function DropdownTemplate({ data, placeholder, optionLabel }) {
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const countries = [
-    { name: "Australia", code: "AU" },
-    { name: "Brazil", code: "BR" },
-    { name: "China", code: "CN" },
-    { name: "Egypt", code: "EG" },
-    { name: "France", code: "FR" },
-    { name: "Germany", code: "DE" },
-    { name: "India", code: "IN" },
-    { name: "Japan", code: "JP" },
-    { name: "Spain", code: "ES" },
-    { name: "United States", code: "US" },
-  ];
-
-  const selectedCountryTemplate = (option, props) => {
+  const [selecteduser, setSelecteduser] = useState(null);
+  const selecteduserTemplate = (option, props) => {
     if (option) {
       return (
         <div className="flex align-items-center">
@@ -34,7 +21,7 @@ export default function DropdownTemplate({ data, placeholder, optionLabel }) {
     return <span>{props.placeholder}</span>;
   };
 
-  const countryOptionTemplate = (option) => {
+  const userOptionTemplate = (option) => {
     return (
       <div className="flex align-items-center">
         <img
@@ -50,13 +37,13 @@ export default function DropdownTemplate({ data, placeholder, optionLabel }) {
 
   return (
     <Dropdown
-      value={selectedCountry}
-      onChange={(e) => setSelectedCountry(e.value)}
+      value={selecteduser}
+      onChange={(e) => setSelecteduser(e.value)}
       options={data}
       optionLabel={optionLabel}
       placeholder={placeholder}
-      valueTemplate={selectedCountryTemplate}
-      itemTemplate={countryOptionTemplate}
+      valueTemplate={selecteduserTemplate}
+      itemTemplate={userOptionTemplate}
       className="w-7"
     />
   );

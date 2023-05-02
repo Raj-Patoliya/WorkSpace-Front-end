@@ -3,7 +3,7 @@ import { AutoComplete } from "primereact/autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../../../redux/slice/projectSlice";
 
-export default function VirtualScrollerDemo({ data }) {
+export default function VirtualScrollerDemo({ data, onSelected, name }) {
   const [items, setitems] = useState([]);
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -11,7 +11,7 @@ export default function VirtualScrollerDemo({ data }) {
   useEffect(() => {
     const item = data.map((data) => ({
       label: `${data.key} - ${data.title}`,
-      value: data,
+      value: data.title,
     }));
     console.log({ item: item });
     setitems(item);
@@ -40,7 +40,10 @@ export default function VirtualScrollerDemo({ data }) {
       className="w-7"
       field="label"
       dropdown
-      onChange={(e) => setSelectedItem(e.value)}
+      onChange={(e) => {
+        setSelectedItem(e.value);
+        onSelected(name, e.value);
+      }}
     />
   );
 }

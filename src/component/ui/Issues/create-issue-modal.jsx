@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Toast } from "primereact/toast";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -35,6 +36,27 @@ export default function CreateIssueModal({
   const [type, setType] = useState(typeList);
   const [users, setUser] = useState(userList);
 
+  const [initialValues, setInitialValues] = useState({
+    projectValue: "",
+    issueTypeValue: "",
+    statusValue: "",
+    summaryValue: "",
+    assigneeValue: "",
+    reporterValue: "",
+    attachmentsValue: [],
+  });
+  // const [projectValue, setProjectValue] = useState("");
+  // const [issueTypeValue, setissueTypeVlaue] = useState("");
+  // const [statusValue, setstatusValue] = useState("");
+  // const [summaryValue, setsummaryValue] = useState("");
+  // const [assigneeValue, setassigneeValue] = useState("");
+  // const [reporterValue, setreporterValue] = useState("");
+  // const [attachmentsValue, setattachmentsValue] = useState([]);
+  const handlSelect = (name, value) => {
+    setInitialValues((prevState) => {
+      return { ...prevState, [name]: value };
+    });
+  };
   useEffect(() => {
     setprojects(projectsList);
   }, [projectsList]);
@@ -45,20 +67,12 @@ export default function CreateIssueModal({
     dispatch(getType(access));
     dispatch(getUsers(access));
   }, [dispatch, access]);
-
   useEffect(() => {
     setstatus(statusList);
     setpriority(priorityList);
     setType(typeList);
     setUser(userList);
   }, [statusList, typeList, priorityList, userList]);
-  useEffect(() => {
-    console.log(status);
-    console.log(priority);
-    console.log(type);
-    console.log(users);
-  }, [status, type, priority, users]);
-
   const footerContent = (
     <div>
       <Button
@@ -70,18 +84,22 @@ export default function CreateIssueModal({
       <Button
         label="Create"
         icon="pi pi-check"
-        onClick={() => setDisplayCreateIssueModal(false)}
+        onClick={() => {
+          console.log(initialValues);
+          // setDisplayCreateIssueModal(false);
+        }}
         autoFocus
       />
     </div>
   );
-
+  const toast = useRef(null);
   return (
     <div className="card flex justify-content-center mx-10">
+      <Toast ref={toast}></Toast>
       <Dialog
         header="Create Issue"
         visible={displayCreateIssueModal}
-        style={{ width: "50vw", height: "88vh", top: "2rem" }}
+        style={{ width: "45vw", height: "80vh", top: "2rem" }}
         onHide={() => setDisplayCreateIssueModal(false)}
         footer={footerContent}
       >
@@ -90,7 +108,11 @@ export default function CreateIssueModal({
             <label htmlFor="integer" className="font-bold block mb-2">
               Project <span className="text-red-700">*</span>
             </label>
-            <VirtualScrollerDemo data={projects} />
+            <VirtualScrollerDemo
+              data={projects}
+              onSelected={handlSelect}
+              name="projectValue"
+            />
           </div>
         </div>
         <div className="flex flex-wrap gap-3 mb-4">
@@ -103,6 +125,8 @@ export default function CreateIssueModal({
               data={type}
               optionLabel="Type"
               placeholder="Issue Type"
+              onSelected={handlSelect}
+              name="issueTypeValue"
             />
           </div>
         </div>
@@ -116,6 +140,8 @@ export default function CreateIssueModal({
               data={status}
               optionLabel="Status"
               placeholder="Issue Status"
+              onSelected={handlSelect}
+              name="statusValue"
             />
             <p className="mt-2 text-xs">
               This is the issue's initial status upon creation
@@ -127,7 +153,18 @@ export default function CreateIssueModal({
             <label htmlFor="integer" className="font-bold block mb-2">
               Summary <span className="text-red-700">*</span>
             </label>
-            <InputText id="integer" className="w-full" />
+            <InputText
+              id="integer"
+              className="w-full"
+              onChange={(e) =>
+                setInitialValues((prevState) => {
+                  return {
+                    ...prevState,
+                    summaryValue: e.value,
+                  };
+                })
+              }
+            />
           </div>
         </div>
         <div className="flex flex-wrap gap-3 mb-4">
@@ -138,7 +175,14 @@ export default function CreateIssueModal({
             <div className="card">
               <Editor
                 value={description}
-                onTextChange={(e) => setDescription(e.htmlValue)}
+                onTextChange={(e) =>
+                  setInitialValues((prevState) => {
+                    return {
+                      ...prevState,
+                      summaryValue: e.htmlValue,
+                    };
+                  })
+                }
                 style={{ height: "320px" }}
               />
             </div>
@@ -150,7 +194,11 @@ export default function CreateIssueModal({
               Assignee <span className="text-red-700">*</span>
             </label>
             {/* <InputText id="integer" keyfilter="int" className="w-7" /> */}
-            <UserList className="w-7" />
+            <UserList
+              className="w-7"
+              userList={users}
+              placeholder={"Select Assignee"}
+            />
           </div>
         </div>
         <div className="flex flex-wrap gap-3 mb-4">
@@ -158,7 +206,11 @@ export default function CreateIssueModal({
             <label htmlFor="integer" className="font-bold block mb-2">
               Reporter <span className="text-red-700">*</span>
             </label>
-            <InputText id="integer" keyfilter="int" className="w-7" />
+            <UserList
+              className="w-7"
+              userList={users}
+              placeholder={"Select Reporter"}
+            />
           </div>
         </div>
         <div className="flex flex-wrap gap-3 mb-4">
@@ -168,10 +220,15 @@ export default function CreateIssueModal({
             </label>
             <FileUpload
               name="demo[]"
-              url={"/api/upload"}
               multiple
               accept="image/*"
               maxFileSize={1000000}
+              uploadHandler={(e) => {
+                setInitialValues((prevState) => {
+                  return { ...prevState, attachmentsValue: e.files };
+                });
+              }}
+              customUpload
               emptyTemplate={
                 <p className="m-0">Drag and drop files to here to upload.</p>
               }
