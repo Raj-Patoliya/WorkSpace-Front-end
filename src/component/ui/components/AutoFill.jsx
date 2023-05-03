@@ -12,6 +12,7 @@ export default function VirtualScrollerDemo({ data, onSelected, name }) {
     const item = data.map((data) => ({
       label: `${data.key} - ${data.title}`,
       value: data.title,
+      id: data.id,
     }));
     console.log({ item: item });
     setitems(item);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Avatar } from "primereact/avatar";
 
-export default function UserList({ userList, placeholder }) {
+export default function UserList({ userList, placeholder, onSelected, name }) {
   const [selecteduser, setSelecteduser] = useState([]);
   const selectedUserTemplate = (option, props) => {
     if (option) {
@@ -39,7 +39,10 @@ export default function UserList({ userList, placeholder }) {
   return (
     <Dropdown
       value={selecteduser}
-      onChange={(e) => setSelecteduser(e.value)}
+      onChange={(e) => {
+        setSelecteduser(e.value);
+        onSelected(name, e.value.email);
+      }}
       options={userList}
       optionLabel="name"
       placeholder={placeholder}

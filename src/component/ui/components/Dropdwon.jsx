@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 
-export default function DropdownTemplate({ data, placeholder, optionLabel }) {
+export default function DropdownTemplate({
+  data,
+  placeholder,
+  optionLabel,
+  onSelected,
+  name,
+}) {
   const [selecteduser, setSelecteduser] = useState(null);
   const selecteduserTemplate = (option, props) => {
     if (option) {
@@ -38,7 +44,10 @@ export default function DropdownTemplate({ data, placeholder, optionLabel }) {
   return (
     <Dropdown
       value={selecteduser}
-      onChange={(e) => setSelecteduser(e.value)}
+      onChange={(e) => {
+        setSelecteduser(e.value);
+        onSelected(name, e.value.id);
+      }}
       options={data}
       optionLabel={optionLabel}
       placeholder={placeholder}

@@ -43,3 +43,6 @@ export const getTypeList = (token) =>
   AuthAxios(token).get("/issues/issue-type");
 
 export const getUserList = (token) => AuthAxios(token).get("/user/list");
+
+export const CreateIssueAPI = (token, formData) =>
+  AuthAxios(token).post("/issues/issues", formData);

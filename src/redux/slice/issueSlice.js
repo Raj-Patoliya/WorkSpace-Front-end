@@ -51,7 +51,6 @@ export const getUsers = createAsyncThunk("issue/userList", async (access) => {
     return error;
   }
 });
-
 const issueSlice = createSlice({
   initialState,
   name: "issueSlice",
