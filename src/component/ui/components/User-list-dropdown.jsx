@@ -41,7 +41,7 @@ export default function UserList({ userList, placeholder, onSelected, name }) {
       value={selecteduser}
       onChange={(e) => {
         setSelecteduser(e.value);
-        onSelected(name, e.value.email);
+        onSelected(name, e.value.id);
       }}
       options={userList}
       optionLabel="name"

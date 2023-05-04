@@ -55,7 +55,9 @@ export default function CreateIssueModal({
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   const handleFileInputChange = (event) => {
+    console.log("----event.target.files----", event.target.files);
     setSelectedFiles([...selectedFiles, ...event.target.files]);
+
   };
 
   const handleButtonClick = () => {
@@ -134,7 +136,10 @@ export default function CreateIssueModal({
     formData.append("summary", initialValues.summaryValue);
     formData.append("assignee", initialValues.assigneeValue);
     formData.append("reporter", initialValues.reporterValue);
-    formData.append("attachments", selectedFiles);
+    selectedFiles.map((file, index) => {
+      formData.append(`attachments_${index}`, file);
+    });
+    // formData.append("attachments", selectedFiles);
     // console.log(formData);
     const { data } = await CreateIssueAPI(access, formData);
     console.log(data);
