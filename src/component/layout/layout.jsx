@@ -129,7 +129,6 @@ const Layout = (props) => {
     setAnchorElUser(null);
   };
   const profile = useSelector((state) => state.auth.token);
-  console.log(profile);
   return (
     <React.Fragment>
       {/* <Header />
@@ -236,168 +235,180 @@ const Layout = (props) => {
           <Divider />
           <List>
             <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  navigate("/");
-                }}
-              >
-                <ListItemIcon
+              <Tooltip title="dashboard">
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                  onClick={() => {
+                    navigate("/");
                   }}
                 >
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Dashboard"}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Dashboard"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
 
             <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  setDisplayBasic((prevState) => !prevState);
-                  setDisplayCreateIssueModal(false);
-                }}
-              >
-                <ListItemIcon
+              <Tooltip title="Create Project">
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                  onClick={() => {
+                    setDisplayBasic((prevState) => !prevState);
+                    setDisplayCreateIssueModal(false);
                   }}
                 >
-                  <AccountTreeRoundedIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Create Project"}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AccountTreeRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Create Project"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
 
             <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  setDisplayCreateIssueModal(true);
-                  setDisplayBasic(false);
-                }}
-              >
-                <ListItemIcon
+              <Tooltip title="Create Issues">
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                  onClick={() => {
+                    setDisplayCreateIssueModal(true);
+                    setDisplayBasic(false);
                   }}
                 >
-                  <SplitscreenRoundedIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Create Issues"}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <SplitscreenRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Create Issues"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
 
             <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  navigate("/work");
-                }}
-              >
-                <ListItemIcon
+              <Tooltip title="Your Work">
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                  onClick={() => {
+                    navigate("/projects");
                   }}
                 >
-                  <AddTaskRoundedIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Your work"}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AddTaskRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Your work"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
 
             <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  navigate("/profile");
-                }}
-              >
-                <ListItemIcon
+              <Tooltip title="Profile">
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                  onClick={() => {
+                    navigate("/profile");
                   }}
                 >
-                  <AccountCircleIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Profile"}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Profile"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
 
             <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  dispatch(logout());
-                  navigate("/login", { replace: true });
-                }}
-              >
-                <ListItemIcon
+              <Tooltip title="Sign out">
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                  onClick={() => {
+                    dispatch(logout());
+                    navigate("/login", { replace: true });
                   }}
                 >
-                  <LogoutIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Logout"}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Logout"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
           </List>
           <Divider />

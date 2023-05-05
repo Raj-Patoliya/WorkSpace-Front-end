@@ -57,7 +57,6 @@ export default function CreateIssueModal({
   const handleFileInputChange = (event) => {
     console.log("----event.target.files----", event.target.files);
     setSelectedFiles([...selectedFiles, ...event.target.files]);
-
   };
 
   const handleButtonClick = () => {

@@ -15,12 +15,15 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<FirstPage />}></Route>
-        <Route path="/login" element={<FirstPage />}></Route>
-        <Route path="/register" element={<Register />}></Route>
-        <Route path="/project-list" element={<ProjectList />}></Route>
-        <Route path="/work" element={<Work />}></Route>
-        <Route path="/modal" element={<DialogDemo />}></Route>
+        <Route path="/" element={<FirstPage />} />
+        <Route path="/login" element={<FirstPage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="projects">
+          <Route index element={<ProjectList />} />
+          <Route path="work/:keys" element={<Work />} />
+          <Route path="*" element={<ProjectList />} />
+        </Route>
+        <Route path="*" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );

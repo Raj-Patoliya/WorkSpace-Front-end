@@ -33,6 +33,9 @@ export const ProjectListAPI = (token) =>
 export const CreateProjectAPI = (token, data) =>
   AuthAxios(token).post("/project/create/", data);
 
+export const getIssueByProjectKeyAPI = (token, keys) =>
+  AuthAxios(token).get(`/project/work/${keys}`);
+
 // Issue APIs
 export const getStatusList = (token) =>
   AuthAxios(token).get("/issues/issue-status");
@@ -47,3 +50,6 @@ export const getUserList = (token) => AuthAxios(token).get("/user/list");
 
 export const CreateIssueAPI = (token, formData) =>
   AuthAxios(token).post("/issues/issues", formData);
+
+export const updateIssueAPI = (token, id, formData) =>
+  AuthAxios(token).patch(`issues/issue-update/${id}`, formData);
