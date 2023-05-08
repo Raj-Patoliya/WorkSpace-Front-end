@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ProjectListAPI } from "../api";
+import { ProjectListAPI, getProjectByKeyAPI } from "../api";
 
 const initialState = {
   allProjectList: [],
@@ -8,11 +8,13 @@ const initialState = {
 export const getProjects = createAsyncThunk("project-list", async (access) => {
   try {
     const { data } = await ProjectListAPI(access);
+    console.log(data);
     return data;
   } catch (error) {
     return null;
   }
 });
+
 const projectSlice = createSlice({
   initialState,
   name: "projectSlice",

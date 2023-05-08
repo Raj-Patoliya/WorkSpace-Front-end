@@ -31,7 +31,10 @@ export const ProjectListAPI = (token) =>
   AuthAxios(token).get("/project/all-list/");
 
 export const CreateProjectAPI = (token, data) =>
-  AuthAxios(token).post("/project/create/", data);
+  AuthAxios(token).post("/project/CRUD/", data);
+
+export const getProjectByKeyAPI = (token, keys) =>
+  AuthAxios(token).get(`/project/CRUD/${keys}`);
 
 export const getIssueByProjectKeyAPI = (token, keys) =>
   AuthAxios(token).get(`/project/work/${keys}`);

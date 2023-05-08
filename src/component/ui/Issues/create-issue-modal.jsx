@@ -14,14 +14,15 @@ import VirtualScrollerDemo from "../components/AutoFill";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createIssue,
+  getIssueType,
   getPriority,
   getStatus,
-  getType,
   getUsers,
 } from "../../../redux/slice/issueSlice";
 import DropdownTemplate from "../components/Dropdwon";
 import UserList from "../components/User-list-dropdown";
 import { CreateIssueAPI } from "../../../redux/api";
+import { getProjects } from "../../../redux/slice/projectSlice";
 
 export default function CreateIssueModal({
   displayCreateIssueModal,
@@ -34,6 +35,9 @@ export default function CreateIssueModal({
   const priorityList = useSelector((state) => state.issue.priority);
   const userList = useSelector((state) => state.issue.userList);
   const { access } = useSelector((state) => state.auth.token);
+  useEffect(() => {
+    dispatch(getProjects(access));
+  }, [dispatch, access]);
 
   const [projects, setprojects] = useState(projectsList);
   const [status, setstatus] = useState(statusList);
@@ -106,13 +110,14 @@ export default function CreateIssueModal({
     });
   };
   useEffect(() => {
+    console.log(projectsList);
     setprojects(projectsList);
   }, [projectsList]);
 
   useEffect(() => {
     dispatch(getStatus(access));
     dispatch(getPriority(access));
-    dispatch(getType(access));
+    dispatch(getIssueType(access));
     dispatch(getUsers(access));
   }, [dispatch, access]);
   useEffect(() => {

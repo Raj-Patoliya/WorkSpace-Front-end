@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   getIssueByProjectKeyAPI,
   getPriorityList,
+  getProjectByKeyAPI,
   getStatusList,
   getTypeList,
   getUserList,
@@ -14,13 +15,13 @@ const initialState = {
   issues: [],
   team: [],
   userList: [],
+  currentProject: [],
   error: "",
   loading: false,
 };
 export const getStatus = createAsyncThunk("issue/status", async (access) => {
   try {
     const { data } = await getStatusList(access);
-    console.log(data);
     return data;
   } catch (error) {
     return error;
@@ -39,7 +40,7 @@ export const getPriority = createAsyncThunk(
   }
 );
 
-export const getType = createAsyncThunk("issue/type", async (access) => {
+export const getIssueType = createAsyncThunk("issue/type", async (access) => {
   try {
     const { data } = await getTypeList(access);
     return data;
@@ -61,13 +62,24 @@ export const getIssuesByProjectKey = createAsyncThunk(
   async ({ access, keys }) => {
     try {
       const { data } = await getIssueByProjectKeyAPI(access, keys);
-      console.log(data);
       return data;
     } catch (error) {
       return error;
     }
   }
 );
+export const getCurrentProjects = createAsyncThunk(
+  "current-project",
+  async ({ access, keys }) => {
+    try {
+      const { data } = await getProjectByKeyAPI(access, keys);
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+);
+
 const issueSlice = createSlice({
   initialState,
   name: "issueSlice",
@@ -82,7 +94,7 @@ const issueSlice = createSlice({
       state.loading = false;
       state.error = "";
     },
-    [getType.fulfilled]: (state, action) => {
+    [getIssueType.fulfilled]: (state, action) => {
       state.type = action.payload;
       state.loading = false;
       state.error = "";
@@ -98,11 +110,19 @@ const issueSlice = createSlice({
     [getIssuesByProjectKey.fulfilled]: (state, actiion) => {
       state.loading = false;
       state.error = "";
-      state.issues = actiion.payload.data.issue;
-      state.team = actiion.payload.data.team;
+      console.log(actiion.payload);
+      state.issues = actiion.payload.data;
     },
     [getIssuesByProjectKey.rejected]: (state, actiion) => {
       state.error = actiion.payload;
+    },
+    [getCurrentProjects.fulfilled]: (state, actiion) => {
+      state.loading = false;
+      state.error = "";
+      console.log(actiion.payload);
+      state.currentProject = actiion.payload.data;
+      state.team = actiion.payload.team;
+      state.currentProject = actiion.payload;
     },
   },
 });
