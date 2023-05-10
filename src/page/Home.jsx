@@ -1,6 +1,6 @@
 import React from "react";
-import Layout from "../layout/layout";
-import ProjectCard from "../ui/Project/projectCard";
+import Layout from "../component/layout/layout";
+import ProjectCard from "../component/ui/Project/projectCard";
 // import ImageIcon from "@mui/icons-material/Image";
 // import WorkIcon from "@mui/icons-material/Work";
 // import BeachAccessIcon from "@mui/icons-material/BeachAccess";
@@ -12,8 +12,8 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import AssignedToYou from "../ui/Issues/Assigned";
-import CreatedByYou from "../ui/Issues/Created";
+import AssignedToYou from "../component/ui/Issues/Assigned";
+import CreatedByYou from "../component/ui/Issues/Created";
 
 const Home = () => {
   const [value, setValue] = React.useState("one");

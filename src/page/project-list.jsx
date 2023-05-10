@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProjects } from "../../redux/slice/projectSlice";
-import Layout from "../layout/layout";
+import Layout from "../component/layout/layout";
 import { Avatar } from "@mui/material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useNavigate } from "react-router-dom";
+import { getProjects } from "../redux/slice/projectSlice";
 
 const tableHeader = () => {
   return (

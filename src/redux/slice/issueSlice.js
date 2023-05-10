@@ -6,6 +6,7 @@ import {
   getStatusList,
   getTypeList,
   getUserList,
+  updateIssueAPI,
 } from "../api";
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
   userList: [],
   currentProject: [],
   error: "",
+  msg: "",
   loading: false,
 };
 export const getStatus = createAsyncThunk("issue/status", async (access) => {
@@ -79,7 +81,17 @@ export const getCurrentProjects = createAsyncThunk(
     }
   }
 );
-
+export const updateIssue = createAsyncThunk(
+  "update/issues",
+  async ({ token, id, formData }) => {
+    try {
+      const { data } = await updateIssueAPI(token, id, formData);
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+);
 const issueSlice = createSlice({
   initialState,
   name: "issueSlice",
@@ -110,19 +122,29 @@ const issueSlice = createSlice({
     [getIssuesByProjectKey.fulfilled]: (state, actiion) => {
       state.loading = false;
       state.error = "";
-      console.log(actiion.payload);
+      // console.log(actiion.payload);
       state.issues = actiion.payload.data;
     },
     [getIssuesByProjectKey.rejected]: (state, actiion) => {
       state.error = actiion.payload;
     },
+    [updateIssue.pending]: (state) => {
+      state.loading = true;
+    },
     [getCurrentProjects.fulfilled]: (state, actiion) => {
       state.loading = false;
       state.error = "";
-      console.log(actiion.payload);
+      // console.log(actiion.payload);
       state.currentProject = actiion.payload.data;
       state.team = actiion.payload.team;
       state.currentProject = actiion.payload;
+    },
+    [updateIssue.pending]: (state) => {
+      state.loading = true;
+    },
+    [updateIssue.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.msg = action.payload.data;
     },
   },
 });

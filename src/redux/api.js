@@ -39,6 +39,12 @@ export const getProjectByKeyAPI = (token, keys) =>
 export const getIssueByProjectKeyAPI = (token, keys) =>
   AuthAxios(token).get(`/project/work/${keys}`);
 
+export const getTeamByProjectKeyAPI = (token, keys) =>
+  AuthAxios(token).get(`/project/team/${keys}`);
+
+export const AddTeamMemberAPI = (token, data) =>
+  AuthAxios(token).post("/project/team/", data);
+
 // Issue APIs
 export const getStatusList = (token) =>
   AuthAxios(token).get("/issues/issue-status");

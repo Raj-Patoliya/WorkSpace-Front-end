@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { AutoComplete } from "primereact/autocomplete";
-import { useDispatch, useSelector } from "react-redux";
-import { getProjects } from "../../../redux/slice/projectSlice";
 
 export default function VirtualScrollerDemo({ data, onSelected, name }) {
   const [items, setitems] = useState([]);
@@ -11,7 +9,7 @@ export default function VirtualScrollerDemo({ data, onSelected, name }) {
   useEffect(() => {
     const item = data.map((data) => ({
       label: `${data.key} - ${data.title}`,
-      value: data.title,
+      value: data.key,
       id: data.id,
     }));
     console.log({ item: item });
@@ -23,7 +21,7 @@ export default function VirtualScrollerDemo({ data, onSelected, name }) {
 
     for (let i = 0; i < items.length; i++) {
       let item = items[i];
-      if (item.label.toLowerCase().indexOf(query.toLowerCase()) === 0) {
+      if (item.label.toLowerCase().includes(query.toLowerCase())) {
         _filteredItems.push(item);
       }
     }

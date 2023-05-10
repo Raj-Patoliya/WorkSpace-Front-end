@@ -1,12 +1,13 @@
 import "bootstrap/dist/css/bootstrap.css";
-import Home from "./component/page/Home";
+
 import Register from "./component/ui/Register";
 import Login from "./component/ui/login";
 import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
-import ProjectList from "./component/page/project-list";
 import { DialogDemo } from "./component/ui/Project/create-project-modal";
-import Work from "./component/page/Work";
+import Home from "./page/Home";
+import Work from "./page/Work";
+import ProjectList from "./page/project-list";
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const FirstPage = () => {

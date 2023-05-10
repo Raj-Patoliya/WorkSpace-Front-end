@@ -1,0 +1,11 @@
+.avatar-active {
+  border: 2px solid rgb(54, 103, 119);
+  padding: 1px;
+  border-radius: 150px;
+}
+
+.avatar-inactive {
+  border: 2px solid white;
+  padding: 1px;
+  border-radius: 150px;
+}

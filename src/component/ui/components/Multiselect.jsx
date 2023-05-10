@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { MultiSelect } from "primereact/multiselect";
 
-export default function MultiSelectDropdown({ data }) {
+export default function MultiSelectDropdown({ data, typeSortHandler }) {
   const [selectedItems, setSelectedItems] = useState(null);
   const itemTemplate = (option) => {
     return (
-      <div className="flex align-items-center h-1rem text-xs">
+      <div className="flex align-items-center text-xs">
         <img
           alt={option.name}
           src={option.icon}
@@ -17,26 +17,20 @@ export default function MultiSelectDropdown({ data }) {
     );
   };
 
-  const panelFooterTemplate = () => {
-    const length = selectedItems ? selectedItems.length : 0;
-
-    return (
-      <div className="py-2 px-3">
-        <b>{length}</b> item{length > 1 ? "s" : ""} selected.
-      </div>
-    );
-  };
-
   return (
     <div className="flex justify-content-center">
       <MultiSelect
         value={selectedItems}
         options={data}
-        onChange={(e) => setSelectedItems(e.value)}
+        onChange={(e) => {
+          setSelectedItems(e.value);
+          typeSortHandler(e.value);
+        }}
         optionLabel="name"
         placeholder="Type"
         itemTemplate={itemTemplate}
-        panelFooterTemplate={panelFooterTemplate}
+        showHeader={false}
+        // panelFooterTemplate={panelFooterTemplate}
         className="h-2.1rem text-xs m-1"
         size={"small"}
         display="chip"

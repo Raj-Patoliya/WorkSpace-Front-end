@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Toast } from "primereact/toast";
+import React, { useEffect, useState } from "react";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -13,7 +12,6 @@ import { Image } from "primereact/image";
 import VirtualScrollerDemo from "../components/AutoFill";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createIssue,
   getIssueType,
   getPriority,
   getStatus,
@@ -21,30 +19,28 @@ import {
 } from "../../../redux/slice/issueSlice";
 import DropdownTemplate from "../components/Dropdwon";
 import UserList from "../components/User-list-dropdown";
-import { CreateIssueAPI } from "../../../redux/api";
 import { getProjects } from "../../../redux/slice/projectSlice";
+import { Navigate, useNavigate } from "react-router-dom";
+import { CreateIssueAPI } from "../../../redux/api";
 
 export default function CreateIssueModal({
   displayCreateIssueModal,
   setDisplayCreateIssueModal,
 }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const projectsList = useSelector((state) => state.project.allProjectList);
   const typeList = useSelector((state) => state.issue.type);
   const statusList = useSelector((state) => state.issue.status);
   const priorityList = useSelector((state) => state.issue.priority);
   const userList = useSelector((state) => state.issue.userList);
   const { access } = useSelector((state) => state.auth.token);
-  useEffect(() => {
-    dispatch(getProjects(access));
-  }, [dispatch, access]);
-
   const [projects, setprojects] = useState(projectsList);
   const [status, setstatus] = useState(statusList);
   const [priority, setpriority] = useState(priorityList);
   const [type, setType] = useState(typeList);
   const [users, setUser] = useState(userList);
-
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [initialValues, setInitialValues] = useState({
     projectValue: "",
     issueTypeValue: "",
@@ -56,7 +52,38 @@ export default function CreateIssueModal({
     reporterValue: "",
     attachmentsValue: [],
   });
-  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  useEffect(() => {
+    dispatch(getProjects(access));
+  }, [dispatch, access]);
+
+  useEffect(() => {
+    console.log(projectsList);
+    setprojects(projectsList);
+  }, [projectsList]);
+
+  useEffect(() => {
+    dispatch(getStatus(access));
+    dispatch(getPriority(access));
+    dispatch(getIssueType(access));
+    dispatch(getUsers(access));
+  }, [dispatch, access]);
+  useEffect(() => {
+    setstatus(statusList);
+    setpriority(priorityList);
+    setType(typeList);
+    setUser(userList);
+  }, [statusList, typeList, priorityList, userList]);
+  // useEffect(() => {
+  //   console.log(initialValues);
+  // }, [initialValues]);
+
+  const handlSelect = (name, value) => {
+    console.log(name, value);
+    setInitialValues((prevState) => {
+      return { ...prevState, [name]: value };
+    });
+  };
 
   const handleFileInputChange = (event) => {
     console.log("----event.target.files----", event.target.files);
@@ -103,32 +130,7 @@ export default function CreateIssueModal({
       </div>
     );
   };
-  const handlSelect = (name, value) => {
-    console.log(name, value);
-    setInitialValues((prevState) => {
-      return { ...prevState, [name]: value };
-    });
-  };
-  useEffect(() => {
-    console.log(projectsList);
-    setprojects(projectsList);
-  }, [projectsList]);
 
-  useEffect(() => {
-    dispatch(getStatus(access));
-    dispatch(getPriority(access));
-    dispatch(getIssueType(access));
-    dispatch(getUsers(access));
-  }, [dispatch, access]);
-  useEffect(() => {
-    setstatus(statusList);
-    setpriority(priorityList);
-    setType(typeList);
-    setUser(userList);
-  }, [statusList, typeList, priorityList, userList]);
-  // useEffect(() => {
-  //   console.log(initialValues);
-  // }, [initialValues]);
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -143,12 +145,12 @@ export default function CreateIssueModal({
     selectedFiles.map((file, index) => {
       formData.append(`attachments_${index}`, file);
     });
-    // formData.append("attachments", selectedFiles);
-    // console.log(formData);
+    formData.append("attachments", selectedFiles);
+    console.log(formData);
     const { data } = await CreateIssueAPI(access, formData);
-    console.log(data);
-    console.log(access);
-    // setDisplayCreateIssueModal(false);
+    setDisplayCreateIssueModal(false);
+    navigate(`/projects/work/${initialValues.projectValue.value}`);
+    // console.log(access);
   };
   const footerContent = (
     <div>
@@ -291,6 +293,7 @@ export default function CreateIssueModal({
               {/* <InputText id="integer" keyfilter="int" className="w-7" /> */}
               <UserList
                 className="w-7"
+                width={"w-7"}
                 userList={users}
                 placeholder={"Select Assignee"}
                 onSelected={handlSelect}
@@ -306,6 +309,7 @@ export default function CreateIssueModal({
               <UserList
                 className="w-7"
                 userList={users}
+                width={"w-7"}
                 placeholder={"Select Reporter"}
                 onSelected={handlSelect}
                 name="reporterValue"

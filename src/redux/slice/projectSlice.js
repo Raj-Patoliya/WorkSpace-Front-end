@@ -1,8 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ProjectListAPI, getProjectByKeyAPI } from "../api";
+import {
+  AddTeamMemberAPI,
+  ProjectListAPI,
+  getProjectByKeyAPI,
+  getTeamByProjectKeyAPI,
+} from "../api";
 
 const initialState = {
   allProjectList: [],
+  team: [],
   loading: false,
 };
 export const getProjects = createAsyncThunk("project-list", async (access) => {
@@ -14,6 +20,33 @@ export const getProjects = createAsyncThunk("project-list", async (access) => {
     return null;
   }
 });
+
+export const getProjectTeam = createAsyncThunk(
+  "project-team-key",
+  async ({ access, keys }) => {
+    try {
+      const { data } = await getTeamByProjectKeyAPI(access, keys);
+      console.log(data);
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+);
+
+export const addProjectTeamMember = createAsyncThunk(
+  "project-team-member",
+  async ({ access, formData }) => {
+    try {
+      console.log(access);
+      const { data } = await AddTeamMemberAPI(access, formData);
+      console.log(data);
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+);
 
 const projectSlice = createSlice({
   initialState,
@@ -32,6 +65,13 @@ const projectSlice = createSlice({
       //      toast.error(action.payload[i]);
       //   }
       state.error = "Login Failed Invalid id Password";
+    },
+
+    [getProjectTeam.fulfilled]: (state, action) => {
+      state.team = action.payload.data;
+    },
+    [addProjectTeamMember.fulfilled]: (state, action) => {
+      state.loading = false;
     },
   },
 });
