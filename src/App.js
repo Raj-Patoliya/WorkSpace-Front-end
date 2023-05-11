@@ -5,9 +5,9 @@ import Login from "./component/ui/login";
 import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { DialogDemo } from "./component/ui/Project/create-project-modal";
-import Home from "./page/Home";
-import Work from "./page/Work";
-import ProjectList from "./page/project-list";
+import Home from "./component/page/Home";
+import Work from "./component/page/Work";
+import ProjectList from "./component/page/project-list";
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const FirstPage = () => {
