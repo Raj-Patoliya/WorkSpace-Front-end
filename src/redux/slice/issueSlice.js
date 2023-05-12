@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  getIssueByIdAPI,
   getIssueByProjectKeyAPI,
   getPriorityList,
   getProjectByKeyAPI,
@@ -8,6 +9,7 @@ import {
   getUserList,
   updateIssueAPI,
 } from "../api";
+import { act } from "react-dom/test-utils";
 
 const initialState = {
   status: [],
@@ -20,6 +22,7 @@ const initialState = {
   error: "",
   msg: "",
   loading: false,
+  singleIssue: {},
 };
 export const getStatus = createAsyncThunk("issue/status", async (access) => {
   try {
@@ -92,6 +95,16 @@ export const updateIssue = createAsyncThunk(
     }
   }
 );
+
+export const getIssueById = createAsyncThunk(
+  "issue-by-id",
+  async ({ access, issueId }) => {
+    console.log(access);
+    const { data } = await getIssueByIdAPI(access, issueId);
+    return data;
+  }
+);
+
 const issueSlice = createSlice({
   initialState,
   name: "issueSlice",
@@ -134,7 +147,6 @@ const issueSlice = createSlice({
     [getCurrentProjects.fulfilled]: (state, actiion) => {
       state.loading = false;
       state.error = "";
-      // console.log(actiion.payload);
       state.currentProject = actiion.payload.data;
       state.team = actiion.payload.team;
       state.currentProject = actiion.payload;
@@ -145,6 +157,16 @@ const issueSlice = createSlice({
     [updateIssue.fulfilled]: (state, action) => {
       state.loading = false;
       state.msg = action.payload.data;
+    },
+    [getIssueById.pending]: (state) => {
+      state.loading = true;
+    },
+    [getIssueById.fulfilled]: (state, actiion) => {
+      state.loading = false;
+      state.singleIssue = actiion.payload;
+    },
+    [getIssueById.rejected]: (state, actiion) => {
+      state.error = actiion.payload;
     },
   },
 });

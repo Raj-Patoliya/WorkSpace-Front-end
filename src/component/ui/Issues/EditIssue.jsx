@@ -13,43 +13,39 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import DropdownTemplate from "../components/Dropdwon";
-const EditIssue = ({ show, seteditIssueModal }) => {
+import { useEffect } from "react";
+import { getIssueById } from "../../../redux/slice/issueSlice";
+const EditIssue = ({ show, seteditIssueModal, issueId }) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
   const { access } = useSelector((state) => state.auth.token);
+  const issueReq = useSelector((state) => state.issue.singleIssue);
   const [editSummary, seteditSummary] = useState(false);
   const [editDiscription, seteditDiscription] = useState(false);
   const [displayBasic2, setDisplayBasic2] = useState(show);
+  const [issue, setIssue] = useState({});
+
+  const [summary, setSummary] = useState(issue.issue_summary);
+
+  useEffect(() => {
+    dispatch(getIssueById({ access, issueId }));
+  }, [dispatch, access, issueId]);
+
+  useEffect(() => {
+    setIssue(issueReq);
+  }, [issueReq]);
+  useEffect(() => {
+    setSummary(issue.summary);
+  }, [issue]);
   const onHide = (name) => {
-    setDisplayBasic2(false);
+    seteditIssueModal(false);
   };
 
-  const renderFooter = (name) => {
-    return (
-      <div>
-        <Button
-          label="No"
-          icon="pi pi-times"
-          onClick={() => {
-            onHide(name);
-            seteditIssueModal(false);
-          }}
-          className="p-button-text"
-        />
-        <Button
-          label="Yes"
-          icon="pi pi-check"
-          onClick={() => onHide(name)}
-          autoFocus
-        />
-      </div>
-    );
-  };
   const header = () => {
     return (
       <>
         <div className="text-sm text-secondary">
-          <p>IssueTypeIcon + Project Key + Issues Id </p>
+          <p>{/* IssueTypeIcon + {issue.project[0].key} - {issue.id} */}</p>
         </div>
       </>
     );
@@ -61,42 +57,43 @@ const EditIssue = ({ show, seteditIssueModal }) => {
         visible={displayBasic2}
         closeOnEscape={true}
         style={{ width: "80vw", marginTop: "3rem", height: "85vh" }}
-        footer={renderFooter()}
         onHide={() => onHide()}
+        draggable={false}
       >
         <div className="row">
           <div className="col-8">
             <div>
               <div class="flex align-items-center justify-content-center card-container flex-column">
                 <div
-                  class="overflow-auto surface-overlay p-3 "
-                  style={{ maxHeight: "23rem" }}
+                  class="overflow-auto surface-overlay p-3"
+                  style={{ maxHeight: "85vh" }}
                 >
-                  <p className="pl-2 mb-0 text-color-primary font-bold">
+                  <p className="pl-2 mb-0 text-xs text-color-primary font-bold">
                     Summary
                   </p>
                   {!editSummary && (
                     <div
-                      className="h-2rem px-2  text-2xl issues-summary"
+                      className="h-2rem px-2  text-base issues-summary"
                       onDoubleClick={() => seteditSummary(true)}
                     >
-                      <p>
-                        Issue Summary <b>onDouble Click there will be Editor</b>
-                      </p>
+                      <p>{issue.issue_summary}</p>
                     </div>
                   )}
                   {editSummary && (
                     <div>
                       <InputTextarea
-                        value="Issue Summary <b>onDouble Click there will be Editor</b>"
+                        value={summary}
                         rows={1}
                         cols={60}
                         style={{ maxHeight: "20rem" }}
+                        onChange={(e) => {
+                          setSummary(e.value);
+                        }}
                         onBlur={() => seteditSummary(false)}
                       />
                     </div>
                   )}
-                  <p className="pl-2 mt-4  mb-0 text-color-primary font-bold">
+                  <p className="pl-2 mt-2  mb-0 text-xs text-color-primary font-bold">
                     Description
                   </p>
                   {!editDiscription && (
@@ -105,7 +102,7 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                       onDoubleClick={() => seteditDiscription(true)}
                     >
                       <div
-                        className="pl-2 mt-3 mb-0"
+                        className="pl-2 mb-0"
                         dangerouslySetInnerHTML={{
                           __html:
                             '<h1>Hey This my first issues</h1><p><img src="data:image/png;base64,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" ></p>',
@@ -114,7 +111,7 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                     </div>
                   )}
                   {editDiscription && (
-                    <div className="mt-3">
+                    <div className="text-xs">
                       <Editor
                         value='<h1>Hey This my first issues</h1><p><img src="data:image/png;base64,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" ></p>'
                         onBlur={() => seteditDiscription(false)}
@@ -137,7 +134,7 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                       </div>
                     </div>
                   )}
-                  <p className="pl-2 mt-4  mb-0 text-color-primary font-bold">
+                  <p className="pl-2 mt-4  mb-0 text-xs text-color-primary font-bold">
                     Attachments (2)
                     <MoreHorizIcon
                       style={{
@@ -145,7 +142,7 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                       }}
                     />
                   </p>
-                  <div className="row mt-3">
+                  <div className="row mt-3 pl-2">
                     <div key={"file.name"} class="col-sm">
                       <Image
                         src={
@@ -242,9 +239,9 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                       <p>{"file.name"}</p>
                     </div>
                   </div>
-                  <div className="row">
+                  <div className="row pl-2 ">
                     <div className="col">
-                      <p className="pl-2 mt-4  mb-0 text-color-primary font-bold">
+                      <p className="mt-2 -mb-2 text-xs text-color-primary font-bold">
                         Comments
                       </p>
                     </div>
@@ -252,6 +249,13 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                   <div className="row">
                     <div className="col">
                       <Editor />
+                      <br />
+                      <Button
+                        label="Post"
+                        size="small"
+                        className="h-10px w-3rem p-0 -mt-4 ml-2 mb-2  text-xs"
+                        onClick={() => seteditDiscription(false)}
+                      />
                     </div>
                   </div>
                   <div className="comments pb-2">
@@ -266,10 +270,12 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                               onClick={() => {}}
                             />
                           </div>
-                          <div className="col -ml-3">Huzefa Multanpurwala</div>
+                          <div className="col -ml-3 text-xs ">
+                            Huzefa Multanpurwala
+                          </div>
                         </div>
                       </div>
-                      <div className="col-md-auto">Comment Time</div>
+                      <div className="col-md-auto text-xs">Comment Time</div>
                     </div>
                     <div className="row pl-3 mt-0">
                       <div
@@ -285,7 +291,7 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                         label="Edit"
                         size="small"
                         text
-                        className="h-1rem w-4rem p-0"
+                        className="h-1rem w-2rem p-0 text-xs "
                         onClick={() => seteditDiscription(false)}
                       />
                       <Button
@@ -293,7 +299,7 @@ const EditIssue = ({ show, seteditIssueModal }) => {
                         label="Delete"
                         size="small"
                         text
-                        className="h-1rem w-4rem p-0"
+                        className="h-1rem w-3rem p-0 text-xs "
                         onClick={() => seteditDiscription(false)}
                       />
                     </div>

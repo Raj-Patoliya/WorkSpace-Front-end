@@ -62,3 +62,6 @@ export const CreateIssueAPI = (token, formData) =>
 
 export const updateIssueAPI = (token, id, formData) =>
   AuthAxios(token).patch(`issues/issue-update/${id}`, formData);
+
+export const getIssueByIdAPI = (token, id) =>
+  AuthAxios(token).get(`issues/issue-update/${id}`);

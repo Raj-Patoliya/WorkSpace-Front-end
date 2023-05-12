@@ -30,6 +30,8 @@ import AddTeamMemberModal from "../ui/components/AddTeamMemberModal";
 import { getProjectTeam } from "../../redux/slice/projectSlice";
 import CreateIssueModal from "../ui/Issues/create-issue-modal";
 import EditIssue from "../ui/Issues/EditIssue";
+import DragableComponent from "../ui/Issues/DropableComponent";
+import TeamMemberList from "../ui/Issues/TeamMemberList";
 const Work = (props) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
@@ -60,6 +62,7 @@ const Work = (props) => {
   const [typeFilterIssues, setTypeFilterIssues] = useState([]);
   const [userFilter, setuserFilter] = useState([]);
   const [filterIssues, setFilterIssues] = useState([]);
+  const [issueId, setissueId] = useState(null);
 
   // Fetching issues from Dispatcher
   useEffect(() => {
@@ -252,8 +255,9 @@ const Work = (props) => {
   };
   return (
     <Layout>
-      {editIssueModal && (
+      {editIssueModal && issueId && (
         <EditIssue
+          issueId={issueId}
           show={editIssueModal}
           seteditIssueModal={seteditIssueModal}
         />
@@ -281,32 +285,12 @@ const Work = (props) => {
               />
             </div>
             <div className="col d-flex">
-              <AvatarGroup max={10} spacing="medium">
-                {teams.map((data, index) => (
-                  <Tooltip key={data.user[0].id} title={data.user[0].fullName}>
-                    <img
-                      key={data.user[0].id}
-                      alt={data.user[0].profile}
-                      src={data.user[0].profile}
-                      onClick={() => profileFilter(index, data.user[0].id)}
-                      style={{ height: "45px", width: "45px" }}
-                      className={
-                        activeStates[index]
-                          ? "avatar-active"
-                          : "avatar-inactive"
-                      }
-                    />
-                  </Tooltip>
-                ))}
-                <Tooltip title={"Add New Member"}>
-                  <Avatar
-                    src="https://cdn.create.vista.com/api/media/small/237384104/stock-vector-add-user-vector-icon-sign"
-                    shape="circle"
-                    size="large"
-                    onClick={() => setAddTeamMember((prevState) => !prevState)}
-                  />
-                </Tooltip>
-              </AvatarGroup>
+              <TeamMemberList
+                teams={teams}
+                profileFilter={profileFilter}
+                setAddTeamMember={setAddTeamMember}
+                activeStates={activeStates}
+              />
               {addTeamMember && (
                 <AddTeamMemberModal
                   users={userList}
@@ -345,82 +329,20 @@ const Work = (props) => {
                 <Card
                   subTitle={todo.length === 0 ? "Todo" : "Todo " + todo.length}
                   ref={provided.innerRef}
-                  className="col-3 bg-light m-1 text-xs"
+                  className="col-3 bg-light m-1 p-0 text-xs"
                   {...provided.droppableProps}
                   showHeader={false}
                 >
                   {todo.map((data, index) => (
-                    <Draggable
+                    <DragableComponent
+                      setissueId={setissueId}
+                      data={data}
+                      provided={provided}
+                      seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
                       key={data.issue_summary}
-                    >
-                      {(provided) => (
-                        <Card
-                          className="mb-2"
-                          role="region"
-                          ref={provided.innerRef}
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                          onClick={() => {
-                            seteditIssueModal(true);
-                          }}
-                        >
-                          <div
-                            className="d-flex"
-                            style={{
-                              marginTop: "-2rem",
-                              paddingBottom: "0rem",
-                            }}
-                          >
-                            <p className="text-xs">{data.issue_summary}</p>
-                            <MoreHorizIcon
-                              style={{
-                                marginLeft: "3.5rem",
-                              }}
-                              aria-controls={
-                                open ? "demo-positioned-menu" : undefined
-                              }
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={editMenu}
-                            />
-                          </div>
-                          <div
-                            className="row h-1rem"
-                            style={{ alignItems: "center" }}
-                          >
-                            <div className="col d-flex">
-                              <Tooltip title={data.issue_type.name}>
-                                <Avatar
-                                  src={data.issue_type.icon}
-                                  style={{ height: "15px", width: "15px" }}
-                                  shape="circle"
-                                />
-                              </Tooltip>
-                              <span className="text-xs">
-                                {data.priority.name}
-                              </span>
-                            </div>
-                            <div
-                              className="col d-flex"
-                              style={{
-                                position: "relative",
-                                marginRight: "-9rem",
-                              }}
-                            >
-                              <Tooltip title={data.assignee.fullName}>
-                                <Avatar
-                                  src={data.assignee.profile}
-                                  style={{ height: "25px", width: "25px" }}
-                                  shape="circle"
-                                />
-                              </Tooltip>
-                            </div>
-                          </div>
-                        </Card>
-                      )}
-                    </Draggable>
+                    />
                   ))}
                   {provided.placeholder}
                 </Card>
@@ -439,92 +361,14 @@ const Work = (props) => {
                   {...provided.droppableProps}
                 >
                   {inprogress.map((data, index) => (
-                    <Draggable
+                    <DragableComponent
+                      data={data}
+                      provided={provided}
+                      seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
                       key={data.issue_summary}
-                    >
-                      {(provided) => (
-                        <Card
-                          className="mb-2 p-0"
-                          role="region"
-                          ref={provided.innerRef}
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                        >
-                          <div
-                            className="d-flex"
-                            style={{
-                              marginTop: "-2rem",
-                              paddingBottom: "0rem",
-                            }}
-                          >
-                            <p className="text-xs">{data.issue_summary}</p>
-                            <MoreHorizIcon
-                              style={{
-                                marginLeft: "3.5rem",
-                              }}
-                              aria-controls={
-                                open ? "demo-positioned-menu" : undefined
-                              }
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={editMenu}
-                            />
-                            <Menu
-                              id="demo-positioned-menu"
-                              aria-labelledby="demo-positioned-button"
-                              anchorEl={anchorEl}
-                              open={open}
-                              onClose={handleClose}
-                              anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "left",
-                              }}
-                              transformOrigin={{
-                                vertical: "top",
-                                horizontal: "left",
-                              }}
-                            >
-                              <MenuItem onClick={handleClose}>Edit</MenuItem>
-                              <MenuItem onClick={handleClose}>Delete</MenuItem>
-                            </Menu>
-                          </div>
-                          <div
-                            className="row h-1rem"
-                            style={{ alignItems: "center" }}
-                          >
-                            <div className="col d-flex">
-                              <Tooltip title={data.issue_type.name}>
-                                <Avatar
-                                  src={data.issue_type.icon}
-                                  style={{ height: "15px", width: "15px" }}
-                                  shape="circle"
-                                />
-                              </Tooltip>
-                              <span className="text-xs">
-                                {data.priority.name}
-                              </span>
-                            </div>
-                            <div
-                              className="col d-flex"
-                              style={{
-                                position: "relative",
-                                marginRight: "-9rem",
-                              }}
-                            >
-                              <Tooltip title={data.assignee.fullName}>
-                                <Avatar
-                                  src={data.assignee.profile}
-                                  style={{ height: "25px", width: "25px" }}
-                                  shape="circle"
-                                />
-                              </Tooltip>
-                            </div>
-                          </div>
-                        </Card>
-                      )}
-                    </Draggable>
+                    />
                   ))}
                   {provided.placeholder}
                 </Card>
@@ -543,92 +387,14 @@ const Work = (props) => {
                   {...provided.droppableProps}
                 >
                   {done.map((data, index) => (
-                    <Draggable
+                    <DragableComponent
+                      data={data}
+                      provided={provided}
+                      seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
                       key={data.issue_summary}
-                    >
-                      {(provided) => (
-                        <Card
-                          className="mb-2"
-                          role="region"
-                          ref={provided.innerRef}
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                        >
-                          <div
-                            className="d-flex"
-                            style={{
-                              marginTop: "-2rem",
-                              paddingBottom: "0rem",
-                            }}
-                          >
-                            <p className="text-xs">{data.issue_summary}</p>
-                            <MoreHorizIcon
-                              style={{
-                                marginLeft: "3.5rem",
-                              }}
-                              aria-controls={
-                                open ? "demo-positioned-menu" : undefined
-                              }
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={editMenu}
-                            />
-                            <Menu
-                              id="demo-positioned-menu"
-                              aria-labelledby="demo-positioned-button"
-                              anchorEl={anchorEl}
-                              open={open}
-                              onClose={handleClose}
-                              anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "left",
-                              }}
-                              transformOrigin={{
-                                vertical: "top",
-                                horizontal: "left",
-                              }}
-                            >
-                              <MenuItem onClick={handleClose}>Edit</MenuItem>
-                              <MenuItem onClick={handleClose}>Delete</MenuItem>
-                            </Menu>
-                          </div>
-                          <div
-                            className="row h-1rem"
-                            style={{ alignItems: "center" }}
-                          >
-                            <div className="col d-flex">
-                              <Tooltip title={data.issue_type.name}>
-                                <Avatar
-                                  src={data.issue_type.icon}
-                                  style={{ height: "15px", width: "15px" }}
-                                  shape="circle"
-                                />
-                              </Tooltip>
-                              <span className="text-xs">
-                                {data.priority.name}
-                              </span>
-                            </div>
-                            <div
-                              className="col d-flex"
-                              style={{
-                                position: "relative",
-                                marginRight: "-9rem",
-                              }}
-                            >
-                              <Tooltip title={data.assignee.fullName}>
-                                <Avatar
-                                  src={data.assignee.profile}
-                                  style={{ height: "25px", width: "25px" }}
-                                  shape="circle"
-                                />
-                              </Tooltip>
-                            </div>
-                          </div>
-                        </Card>
-                      )}
-                    </Draggable>
+                    />
                   ))}
                   {provided.placeholder}
                 </Card>
