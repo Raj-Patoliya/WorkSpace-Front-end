@@ -43,7 +43,7 @@ const Work = (props) => {
   const issue_type = useSelector((state) => state.issue.type);
   const currentProject = useSelector((state) => state.issue.currentProject);
   const userList = useSelector((state) => state.issue.userList);
-  const [editIssueModal, seteditIssueModal] = useState(false);
+  const [editIssueModal, seteditIssueModal] = useState(null);
   const [teamCreated, setteamCreated] = useState(false);
   const [issueTypeList, setIssueTypeList] = useState([]);
   const [addTeamMember, setAddTeamMember] = useState(false);
@@ -255,8 +255,9 @@ const Work = (props) => {
   };
   return (
     <Layout>
-      {editIssueModal && issueId && (
+      {editIssueModal && (
         <EditIssue
+          data={editIssueModal}
           issueId={issueId}
           show={editIssueModal}
           seteditIssueModal={seteditIssueModal}

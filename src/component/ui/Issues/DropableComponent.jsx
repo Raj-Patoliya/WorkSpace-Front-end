@@ -1,21 +1,20 @@
+import { useSelector, useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { getIssueByIdAPI } from "../../../redux/api";
+import { getIssueById } from "../../../redux/slice/issueSlice";
 import { Card } from "primereact/card";
-import Avatar from "@mui/material/Avatar";
-import AvatarGroup from "@mui/material/AvatarGroup";
 import { Divider } from "primereact/divider";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Tooltip } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import "../../page/Work.css";
-import { getIssueByIdAPI } from "../../../redux/api";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { getIssueById } from "../../../redux/slice/issueSlice";
 const DragableComponent = ({
   data,
   open,
@@ -25,8 +24,10 @@ const DragableComponent = ({
   setissueId,
   index,
 }) => {
+  const { access } = useSelector((state) => state.auth.token);
   const editIssueHandler = async (id) => {
-    setissueId(id);
+    const { data } = await getIssueByIdAPI(access, id);
+    seteditIssueModal(data);
   };
   return (
     <>
@@ -43,7 +44,6 @@ const DragableComponent = ({
             {...provided.dragHandleProps}
             {...provided.draggableProps}
             onClick={() => {
-              seteditIssueModal(true);
               editIssueHandler(data.id);
             }}
           >
