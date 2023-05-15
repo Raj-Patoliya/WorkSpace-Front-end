@@ -19,16 +19,37 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import DropdownTemplate from "../components/Dropdwon";
 import { useEffect } from "react";
-import { getIssueById } from "../../../redux/slice/issueSlice";
+import { formatDistanceToNow } from "date-fns";
+
+import { Divider } from "primereact/divider";
+
+import {
+  getIssueById,
+  getIssueType,
+  getPriority,
+  getStatus,
+} from "../../../redux/slice/issueSlice";
 import { Menu, MenuItem } from "@mui/material";
 import JSZip from "jszip";
 import FileSaver from "file-saver";
-import { updateIssueAPI } from "../../../redux/api";
-const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
+import {
+  createCommentAPI,
+  deleteCommentAPI,
+  updateCommentAPI,
+  updateIssueAPI,
+} from "../../../redux/api";
+import IssueTeamList from "../components/userTeamList";
+const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
+  const toast = useRef(null);
   const { access } = useSelector((state) => state.auth.token);
+  const currentUser = useSelector((state) => state.auth.currentUser);
   const issueReq = useSelector((state) => state.issue.singleIssue);
+  const typeList = useSelector((state) => state.issue.type);
+  const statusList = useSelector((state) => state.issue.status);
+  const priorityList = useSelector((state) => state.issue.priority);
+
   const [editSummary, seteditSummary] = useState(false);
   const [editDiscription, seteditDiscription] = useState(false);
   const [displayBasic2, setDisplayBasic2] = useState(show);
@@ -45,6 +66,25 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
   const [attachments, setattachments] = useState([]);
   const [comments, setcomments] = useState([]);
   const [tempDescription, setTempDescription] = useState("");
+  const [newComment, setnewComment] = useState("");
+  const [editComment, setEditComment] = useState(null);
+  const [editedComment, setEditedComment] = useState(null);
+  const [editAssignee, setEditAssignee] = useState(null);
+  const [editReporter, setEditReporter] = useState(null);
+  const [ago, setAgo] = useState("");
+  const [updateDate, setUpdateDate] = useState("");
+
+  useEffect(() => {
+    dispatch(getStatus(access));
+    dispatch(getPriority(access));
+    dispatch(getIssueType(access));
+  }, [dispatch, access]);
+
+  useEffect(() => {
+    setStatus(statusList);
+    setpriority(priorityList);
+    setissue_type(typeList);
+  }, [statusList, typeList, priorityList]);
   useEffect(() => {
     setIssue(data);
     setProject(data.project);
@@ -57,6 +97,16 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
     setreporter(data.reporter);
     setattachments(data.attachment);
     setcomments(data.comment);
+    setUpdateDate(data.updated_date);
+  }, [data]);
+
+  useEffect(() => {
+    console.log(data.updated_date);
+    const dt = new Date(data.updated_date);
+    const ago = formatDistanceToNow(dt, {
+      addSuffix: true,
+    });
+    setAgo(ago);
   }, [data]);
   useEffect(() => {
     const url = attachments.map(
@@ -89,21 +139,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
     });
   }
 
-  const toast = useRef(null);
-  const updateHandler = async (field, value) => {
-    const formData = new FormData();
-    formData.append("field", field);
-    formData.append("value", value);
-    const { data } = await updateIssueAPI(access, issue.id, formData);
-    if (data) {
-      toast.current.show({
-        severity: "success",
-        summary: "Updated",
-        detail: `${field} update successfully`,
-      });
-    }
-  };
-
   const renderPreview = (file) => {
     if (!file) {
       return null;
@@ -123,6 +158,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
     } else {
       imageIcons = url;
     }
+
     return (
       <div key={file.name} class="col-sm">
         <Image
@@ -140,6 +176,67 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
     );
   };
 
+  const commentHandler = async (commentMessage) => {
+    const formData = new FormData();
+    formData.append("comment_text", commentMessage);
+    formData.append("user_id", currentUser.id);
+    formData.append("issue_id", issue.id);
+    const { data } = await createCommentAPI(access, formData);
+    setcomments((prevState) => [data.lastcomment, ...prevState]);
+    setnewComment(null);
+  };
+
+  const updateCommentHandler = async (comment, id) => {
+    setEditComment(null);
+    const formData = new FormData();
+    formData.append("comment_text", comment);
+    const { data } = await updateCommentAPI(access, id, formData);
+    const commentArray = comments.map((data) => {
+      if (data.id === id) {
+        const updated = { ...data, comment_text: comment };
+        return { ...updated };
+      } else {
+        return data;
+      }
+    });
+    setcomments(commentArray);
+  };
+  const deleteCommentHandler = async (id) => {
+    console.log(id);
+    const { data } = await deleteCommentAPI(access, id);
+    if (data.success) {
+      toast.current.show({
+        severity: "info",
+        summary: "Deleted",
+        detail: `Comment deleted SuccessFully`,
+      });
+      const commentArray = comments.filter((data) => data.id !== id);
+      setcomments(commentArray);
+    } else {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: `Something Went Wrong`,
+      });
+    }
+  };
+
+  const updateHandler = async (field, value) => {
+    const formData = new FormData();
+    formData.append("field", field);
+    formData.append("value", value);
+    console.log(formData);
+    const { data } = await updateIssueAPI(access, issue.id, formData);
+  };
+
+  const updateDropDownHandler = async (name, id) => {
+    const formData = new FormData();
+    formData.append("field", name);
+    formData.append("value", Number(id));
+    console.log(formData);
+    // const { data } = await updateIssueAPI(access, issue.id, formData);
+    console.log(data);
+  };
   const header = () => {
     return (
       <>
@@ -218,6 +315,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
                   {editDiscription && (
                     <div className="text-xs">
                       <Editor
+                        className="h-6rem"
                         value={description}
                         onTextChange={(e) => {
                           setTempDescription(e.htmlValue);
@@ -246,7 +344,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
                     </div>
                   )}
                   <p className="pl-2 mt-4  mb-0 text-xs text-color-primary font-bold">
-                    Attachments (2)
+                    Attachments ({attachments.length})
                     <MoreHorizIcon
                       style={{
                         float: "right",
@@ -273,6 +371,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
                   <div className="row mt-3 pl-2">
                     {attachments.map(renderPreview)}
                   </div>
+
                   <div className="row pl-2 ">
                     <div className="col">
                       <p className="mt-2 -mb-2 text-xs text-color-primary font-bold">
@@ -282,32 +381,26 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
                   </div>
                   <div className="row">
                     <div className="col">
-                      <Editor />
+                      <Editor
+                        value={newComment}
+                        onTextChange={(e) => setnewComment(e.htmlValue)}
+                      />
                       <br />
                       <Button
                         label="Post"
                         size="small"
                         className="h-10px w-3rem p-0 -mt-4 ml-2 mb-2  text-xs"
-                        onClick={() =>
-                          setcomments((prevState) => [
-                            ...prevState,
-                            {
-                              id: 2,
-                              commentator: [
-                                {
-                                  id: 4,
-                                  profile:
-                                    "https://res.cloudinary.com/dilgnd55s/image/upload/v1/media/avtar/Screenshot_from_2023-04-14_11-22-27_up8maq",
-                                  fullName: "Garima Bhutra",
-                                },
-                              ],
-                              comment_text: "Hello Issues",
-                              created_date: "2023-05-13T05:17:17.570047Z",
-                              issue_id: 34,
-                              user_id: 4,
-                            },
-                          ])
-                        }
+                        onClick={() => {
+                          if (!newComment) {
+                            toast.current.show({
+                              severity: "error",
+                              summary: "Error",
+                              detail: `Please Enter Comment Message`,
+                            });
+                          } else {
+                            commentHandler(newComment);
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -331,34 +424,81 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
                             </div>
                           </div>
                           <div className="col-md-auto text-xs">
-                            {data.created_date}
+                            {formatDistanceToNow(new Date(data.created_date), {
+                              addSuffix: true,
+                            })}
                           </div>
                         </div>
                         <div className="row pl-3 mt-0">
-                          <div
-                            classNameclassName="col-md-auto "
-                            dangerouslySetInnerHTML={{
-                              __html: data.comment_text,
-                            }}
-                          ></div>
-                        </div>
-                        <div>
-                          <Button
-                            severity="secondary"
-                            label="Edit"
-                            size="small"
-                            text
-                            className="h-1rem w-2rem p-0 text-xs "
-                            onClick={() => seteditDiscription(false)}
-                          />
-                          <Button
-                            severity="danger"
-                            label="Delete"
-                            size="small"
-                            text
-                            className="h-1rem w-3rem p-0 text-xs "
-                            onClick={() => seteditDiscription(false)}
-                          />
+                          {editComment === data.id && (
+                            <div className="row pl-3 mt-0">
+                              <div classNameclassName="col-md-auto ">
+                                <Editor
+                                  value={data.comment_text}
+                                  onTextChange={(e) =>
+                                    setEditedComment(e.htmlValue)
+                                  }
+                                />
+                                <div className="mt-1 mb-1">
+                                  <Button
+                                    severity="danger"
+                                    label="Discard"
+                                    size="small"
+                                    text
+                                    className="h-24px w-4rem p-0 text-xs"
+                                    onClick={() => setEditComment(null)}
+                                  />
+                                  <Button
+                                    label="Update"
+                                    size="small"
+                                    text
+                                    severity="warning"
+                                    className="h-24px w-4rem p-0 ml-2  text-xs"
+                                    // onClick={() => setEditComment(null)}
+                                    onClick={() => {
+                                      //
+                                      updateCommentHandler(
+                                        editedComment,
+                                        data.id
+                                      );
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {editComment !== data.id && (
+                            <div className="row pl-3 mt-0">
+                              <div
+                                classNameclassName="col-md-auto "
+                                dangerouslySetInnerHTML={{
+                                  __html: data.comment_text,
+                                }}
+                              ></div>
+                              {currentUser.id === data.commentator[0].id && (
+                                <div>
+                                  <Button
+                                    severity="secondary"
+                                    label="Edit"
+                                    size="small"
+                                    text
+                                    className="h-1rem w-2rem p-0 text-xs "
+                                    onClick={() => setEditComment(data.id)}
+                                  />
+                                  <Button
+                                    severity="danger"
+                                    label="Delete"
+                                    size="small"
+                                    text
+                                    className="h-1rem w-3rem p-0 text-xs "
+                                    onClick={() => {
+                                      deleteCommentHandler(data.id);
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -368,75 +508,92 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data }) => {
             </div>
           </div>
           <div className="col overflow-hidden">
-            <div className="">
-              <DropdownTemplate
-                // data={status}
-                optionLabel="Status"
-                placeholder="Issue Status"
-                // onSelected={handlSelect}
-                name="statusValue"
-              />
-
+            <div className="row card">
+              <span className="mt-2 text-xs">Status</span>
+              <div className="col-md-auto">
+                <DropdownTemplate
+                  className="col-md-auto"
+                  data={statusList}
+                  optionLabel="Status"
+                  placeholder="Issue Status"
+                  defaultValue={issue.status}
+                  onSelected={updateHandler}
+                  name="status"
+                />
+              </div>
+              <span className="mt-2 text-xs">Priority</span>
+              <div className="col-md-auto mb-0">
+                <DropdownTemplate
+                  className="col-md-auto"
+                  data={priorityList}
+                  optionLabel="Priority"
+                  placeholder="Issue Priority"
+                  defaultValue={issue.priority}
+                  onSelected={updateHandler}
+                  name="priority"
+                />
+              </div>
+              <Divider />
               <Panel header="Details" toggleable>
-                <div className="row align-items-center">
-                  <div className="col-3 text-sm">Assignee</div>
+                <div className="row align-items-center ">
+                  <div className="col-4 text-xs -mb-3">Assignee</div>
                   <div className="col text-primary">
                     <div className="row align-items-center">
                       <div className="col-md-auto">
-                        <Avatar
+                        {/* <Avatar
                           image="https://secure.gravatar.com/avatar/a4ed0c44beb6fc40891e61f3394921ba?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRP-4.png"
                           shape="circle"
                           size="small"
                           onClick={() => {}}
+                        /> */}
+                        <IssueTeamList
+                          teams={teams}
+                          issueId={issue.id}
+                          defaultValue={data.assignee}
+                          name="assignee"
+                          onSelected={updateHandler}
                         />
                       </div>
-                      <div className="col-md-auto">
+                      {/* <div className="col-md-auto">
                         <span>Raj Patoliya</span>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
                 <div className="row align-items-center">
-                  <div className="col-3 text-sm">Reporter</div>
+                  <div className="col-4 text-xs -mb-3">Reporter</div>
                   <div className="col text-primary">
                     <div className="row align-items-center">
                       <div className="col-md-auto">
-                        <Avatar
+                        {/* <Avatar
                           image="https://secure.gravatar.com/avatar/a4ed0c44beb6fc40891e61f3394921ba?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRP-4.png"
                           shape="circle"
                           size="small"
                           onClick={() => {}}
+                        /> */}
+                        <IssueTeamList
+                          teams={teams}
+                          issueId={issue.id}
+                          name="reporter"
+                          onSelected={updateHandler}
+                          defaultValue={data.reporter}
                         />
                       </div>
-                      <div className="col-md-auto">
+                      {/* <div className="col-md-auto">
                         <span>Raj Patoliya</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row align-items-center">
-                  <div className="col-3 text-sm">Creator</div>
-                  <div className="col text-primary">
-                    <div className="row align-items-center">
-                      <div className="col-md-auto">
-                        <Avatar
-                          image="https://secure.gravatar.com/avatar/a4ed0c44beb6fc40891e61f3394921ba?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRP-4.png"
-                          shape="circle"
-                          size="small"
-                          onClick={() => {}}
-                        />
-                      </div>
-                      <div className="col-md-auto">
-                        <span>Raj Patoliya</span>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
               </Panel>
               <div>
                 <p className="text-xs mt-2 ml-1 text-secondary">
-                  Created May 5, 2023 at 12:26 PM <br />
-                  Updated May 11, 2023 at 7:09 PM
+                  Created{" "}
+                  {formatDistanceToNow(new Date(data.created_date), {
+                    addSuffix: true,
+                  })}
+                  <br />
+                  Updated {ago}
                 </p>
               </div>
             </div>

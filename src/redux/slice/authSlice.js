@@ -6,6 +6,7 @@ const initialState = {
   message: "",
   loading: false,
   isLoggedIn: false,
+  currentUser: [],
 };
 
 export const login = createAsyncThunk(
@@ -21,13 +22,26 @@ export const login = createAsyncThunk(
   }
 );
 
+export const getCurrentUser = createAsyncThunk(
+  "getCurrentUser",
+  async ({ access }) => {
+    console.log(access);
+    try {
+      const { data } = await api.getCurrentUserAPI(access);
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+);
+
 const authSlice = createSlice({
   initialState,
   name: "authSlice",
   reducers: {
     logout: (state, action) => {
       localStorage.clear();
-      state.error = "";
+      state = initialState;
       return initialState;
     },
   },
@@ -46,6 +60,10 @@ const authSlice = createSlice({
       state.loading = false;
       state.isLoggedIn = false;
       state.error = action.payload.detail;
+    },
+    [getCurrentUser.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.currentUser = action.payload.currentUser;
     },
   },
 });

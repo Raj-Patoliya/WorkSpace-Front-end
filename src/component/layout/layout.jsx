@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -24,7 +24,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/slice/authSlice";
+import { getCurrentUser, logout } from "../../redux/slice/authSlice";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { DialogDemo } from "../ui/Project/create-project-modal";
@@ -103,7 +103,11 @@ const Layout = (props) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const { access } = useSelector((state) => state.auth.token);
+  useEffect(() => {
+    dispatch(getCurrentUser({ access }));
+  }, [dispatch, access]);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -128,7 +132,6 @@ const Layout = (props) => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const profile = useSelector((state) => state.auth.token);
   return (
     <React.Fragment>
       {/* <Header />
@@ -164,7 +167,7 @@ const Layout = (props) => {
             <Box sx={{ flexGrow: 0, marginLeft: "80vw" }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src={profile} />
+                  <Avatar alt="Remy Sharp" src={currentUser.profile} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -195,6 +198,7 @@ const Layout = (props) => {
                   key={settings[1]}
                   onClick={() => {
                     setAnchorElNav(null);
+                    navigate("/");
                   }}
                 >
                   <Typography textAlign="center">{settings[1]}</Typography>
@@ -203,6 +207,8 @@ const Layout = (props) => {
                   key={settings[2]}
                   onClick={() => {
                     setAnchorElNav(null);
+                    dispatch(logout());
+                    navigate("/login", { replace: true });
                   }}
                 >
                   <Typography textAlign="center">{settings[2]}</Typography>
@@ -413,9 +419,7 @@ const Layout = (props) => {
           </List>
           <Divider />
         </Drawer>
-        <Box
-          component="main"
-          sx={{ flexGrow: 1, p: 3 }}        >
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
           {props.children}
         </Box>

@@ -80,7 +80,9 @@ const Work = (props) => {
       setteamCreated(false);
     }
   }, [dispatch, project, access, keys, teamCreated]);
-
+  useEffect(() => {
+    dispatch(getIssuesByProjectKey({ access, keys }));
+  }, [dispatch, editIssueModal, access, keys]);
   // setting up fetched issues form Redux
   useEffect(() => {
     setUserFilterIssues(issue);
@@ -258,6 +260,7 @@ const Work = (props) => {
       {editIssueModal && (
         <EditIssue
           data={editIssueModal}
+          teams={teams}
           issueId={issueId}
           show={editIssueModal}
           seteditIssueModal={seteditIssueModal}

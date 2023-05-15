@@ -7,8 +7,9 @@ export default function DropdownTemplate({
   optionLabel,
   onSelected,
   name,
+  defaultValue,
 }) {
-  const [selecteduser, setSelecteduser] = useState(null);
+  const [selecteduser, setSelecteduser] = useState(defaultValue);
   const selecteduserTemplate = (option, props) => {
     if (option) {
       return (
@@ -16,7 +17,7 @@ export default function DropdownTemplate({
           <img
             alt={option.name}
             src={option.icon}
-            className={`mr-2 flag}`}
+            className={`mr-2 flax `}
             style={{ width: "18px" }}
           />
           <div>{option.name}</div>
@@ -33,7 +34,7 @@ export default function DropdownTemplate({
         <img
           alt={option.name}
           src={option.icon}
-          className={`mr-2 flag}`}
+          className={`text-xs mr-2 flax`}
           style={{ width: "18px" }}
         />
         <div>{option.name}</div>
@@ -45,15 +46,16 @@ export default function DropdownTemplate({
     <Dropdown
       value={selecteduser}
       onChange={(e) => {
+        console.log(e.value);
         setSelecteduser(e.value);
         onSelected(name, e.value.id);
       }}
       options={data}
       optionLabel={optionLabel}
-      placeholder={placeholder}
       valueTemplate={selecteduserTemplate}
       itemTemplate={userOptionTemplate}
-      className="w-7"
+      placeholder={placeholder}
+      className="text-xs"
     />
   );
 }

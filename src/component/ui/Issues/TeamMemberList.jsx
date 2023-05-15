@@ -10,12 +10,12 @@ const TeamMemberList = ({
   return (
     <AvatarGroup max={10} spacing="medium">
       {teams.map((data, index) => (
-        <Tooltip key={data.user[0].id} title={data.user[0].fullName}>
+        <Tooltip key={data.user.id} title={data.user.fullName}>
           <img
-            key={data.user[0].id}
-            alt={data.user[0].profile}
-            src={data.user[0].profile}
-            onClick={() => profileFilter(index, data.user[0].id)}
+            key={data.user.id}
+            alt={data.user.profile}
+            src={data.user.profile}
+            onClick={() => profileFilter(index, data.user.id)}
             style={{ height: "45px", width: "45px" }}
             className={
               activeStates[index] ? "avatar-active" : "avatar-inactive"

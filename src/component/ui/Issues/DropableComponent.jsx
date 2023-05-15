@@ -81,7 +81,16 @@ const DragableComponent = ({
                     shape="circle"
                   />
                 </Tooltip>
-                <span className="text-xs">{data.priority.name}</span>
+                <span className="text-xs text-center">
+                  <Tooltip title={`Priority: ${data.priority.name}`}>
+                    <Avatar
+                      src={data.priority.icon}
+                      style={{ height: "15px", width: "15px" }}
+                      shape="circle"
+                    />
+                  </Tooltip>
+                  {/* {data.priority.name} */}
+                </span>
                 <Tooltip title={data.assignee.fullName}>
                   <Avatar
                     src={data.assignee.profile}

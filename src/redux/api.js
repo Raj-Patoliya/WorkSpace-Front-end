@@ -26,6 +26,9 @@ const authHeader = (config) =>
 
 export const LoginAPI = (formData) => API.post("/user/login/token/", formData);
 
+export const getCurrentUserAPI = (token) =>
+  AuthAxios(token).get("user/current-user");
+
 // Project APIs
 export const ProjectListAPI = (token) =>
   AuthAxios(token).get("/project/all-list/");
@@ -65,3 +68,10 @@ export const updateIssueAPI = (token, id, formData) =>
 
 export const getIssueByIdAPI = (token, id) =>
   AuthAxios(token).get(`issues/issue-update/${id}`);
+
+export const createCommentAPI = (token, formData) =>
+  AuthAxios(token).post("issues/issue-comment-create", formData);
+export const deleteCommentAPI = (token, id) =>
+  AuthAxios(token).delete(`issues/issue-comment-delete/${id}`);
+export const updateCommentAPI = (token, id, formData) =>
+  AuthAxios(token).patch(`issues/issue-comment-update/${id}`, formData);

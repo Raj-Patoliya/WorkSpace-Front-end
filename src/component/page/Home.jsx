@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../layout/layout";
 import ProjectCard from "../ui/Project/projectCard";
 // import ImageIcon from "@mui/icons-material/Image";
@@ -14,6 +14,9 @@ import {
 } from "@mui/material";
 import AssignedToYou from "../ui/Issues/Assigned";
 import CreatedByYou from "../ui/Issues/Created";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getCurrentUser } from "../../redux/slice/authSlice";
 
 const Home = () => {
   const [value, setValue] = React.useState("one");

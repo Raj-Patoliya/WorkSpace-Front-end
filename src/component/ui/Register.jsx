@@ -58,14 +58,16 @@ const Register = () => {
       const { data } = await axios.get("http://127.0.0.1:8000/user/avtar/");
       const images = data.map((data) => {
         return data.image;
-      });
+      }); 
       setImageArray(images);
     };
     getImages();
   }, []);
-
+  useEffect(() => {
+    console.log(imageArray);
+  }, [imageArray]);
   const handleClose = () => setShow(false);
-  const handleShow = async () => setShow(true);
+  const handleShow = () => setShow(true);
 
   return (
     <>

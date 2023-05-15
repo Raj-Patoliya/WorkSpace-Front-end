@@ -14,7 +14,6 @@ const initialState = {
 export const getProjects = createAsyncThunk("project-list", async (access) => {
   try {
     const { data } = await ProjectListAPI(access);
-    console.log(data);
     return data;
   } catch (error) {
     return null;
@@ -26,7 +25,6 @@ export const getProjectTeam = createAsyncThunk(
   async ({ access, keys }) => {
     try {
       const { data } = await getTeamByProjectKeyAPI(access, keys);
-      console.log(data);
       return data;
     } catch (error) {
       return null;
