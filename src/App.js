@@ -8,6 +8,7 @@ import { DialogDemo } from "./component/ui/Project/create-project-modal";
 import Home from "./component/page/Home";
 import Work from "./component/page/Work";
 import ProjectList from "./component/page/project-list";
+import Profile from "./component/page/Profile";
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const FirstPage = () => {
@@ -19,11 +20,16 @@ function App() {
         <Route path="/" element={<FirstPage />} />
         <Route path="/login" element={<FirstPage />} />
         <Route path="/register" element={<Register />} />
-        <Route path="projects">
-          <Route index element={<ProjectList />} />
-          <Route path="work/:keys" element={<Work />} />
-          <Route path="*" element={<ProjectList />} />
-        </Route>
+        {isLoggedIn && (
+          <>
+            <Route path="profile" element={<Profile />} />
+            <Route path="projects">
+              <Route index element={<ProjectList />} />
+              <Route path="work/:keys" element={<Work />} />
+              <Route path="*" element={<ProjectList />} />
+            </Route>
+          </>
+        )}
         <Route path="*" element={<Login />} />
       </Routes>
     </BrowserRouter>

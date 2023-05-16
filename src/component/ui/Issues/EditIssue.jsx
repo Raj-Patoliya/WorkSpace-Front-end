@@ -91,6 +91,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     setStatus(data.status);
     setpriority(data.priority);
     setissue_type(data.issue_type);
+    console.log(data.issue_type);
     setSummary(data.issue_summary);
     setDescription(data.issue_description);
     setassignee(data.assignee);
@@ -242,7 +243,11 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
       <>
         <div className="text-sm text-secondary">
           <p className="">
-            <img src={issue_type.icon} width="15px" alt="hdhd" />{" "}
+            <img
+              src={data.issue_type.icon}
+              width="15px"
+              alt={data.issue_type.name}
+            />{" "}
             {project[0].key} -{issue.id}
           </p>
         </div>

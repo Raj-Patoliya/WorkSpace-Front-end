@@ -147,7 +147,11 @@ const Layout = (props) => {
       </main> */}
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="fixed" open={open}>
+        <AppBar
+          style={{ backgroundColor: "#6366f1" }}
+          position="fixed"
+          open={open}
+        >
           <Toolbar>
             <IconButton
               color="inherit"
@@ -213,10 +217,6 @@ const Layout = (props) => {
                 >
                   <Typography textAlign="center">{settings[2]}</Typography>
                 </MenuItem>
-
-                {/* {settings.map((setting) => (
-       
-              ))} */}
               </Menu>
             </Box>
           </Toolbar>

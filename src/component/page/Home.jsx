@@ -31,7 +31,6 @@ const Home = () => {
       <Container sx={{ margin: "0 auto" }}>
         <Box sx={{ bgcolor: "transparent" }}>
           <Typography variant="h4" color={"inherit"}>
-            <br />
             Your work
           </Typography>
           <br />

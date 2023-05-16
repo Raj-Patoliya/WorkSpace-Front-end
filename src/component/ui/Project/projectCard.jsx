@@ -34,6 +34,9 @@ export default function ProjectCard() {
                     <Items
                       title={data.title}
                       key={data.key}
+                      issue={
+                        data.hasOwnProperty("issue") ? data.issue.length : 0
+                      }
                       description={data.description}
                       team={data.hasOwnProperty("team") ? data.team.length : 1}
                     />

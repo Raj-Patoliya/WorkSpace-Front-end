@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./register.css";
 import LoginBackground from "../assets/images/backgrounds/Wavy_Tech-11_Single-10.jpg";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
+import { Button } from "primereact/button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -58,7 +59,7 @@ const Register = () => {
       const { data } = await axios.get("http://127.0.0.1:8000/user/avtar/");
       const images = data.map((data) => {
         return data.image;
-      }); 
+      });
       setImageArray(images);
     };
     getImages();
