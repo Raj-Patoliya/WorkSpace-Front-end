@@ -29,6 +29,9 @@ export const LoginAPI = (formData) => API.post("/user/login/token/", formData);
 export const getCurrentUserAPI = (token) =>
   AuthAxios(token).get("user/current-user");
 
+export const changePasswordAPI = (token, formData) =>
+  AuthAxios(token).post("user/change-password", formData);
+
 // Project APIs
 export const ProjectListAPI = (token) =>
   AuthAxios(token).get("/project/all-list/");

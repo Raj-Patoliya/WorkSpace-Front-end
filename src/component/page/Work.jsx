@@ -85,6 +85,7 @@ const Work = (props) => {
   }, [dispatch, editIssueModal, access, keys]);
   // setting up fetched issues form Redux
   useEffect(() => {
+    console.log(issue);
     setUserFilterIssues(issue);
     setTypeFilterIssues(issue);
     setFilterIssues(issue);

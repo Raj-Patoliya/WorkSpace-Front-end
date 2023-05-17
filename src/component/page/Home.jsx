@@ -4,6 +4,9 @@ import ProjectCard from "../ui/Project/projectCard";
 // import ImageIcon from "@mui/icons-material/Image";
 // import WorkIcon from "@mui/icons-material/Work";
 // import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+
+import { TabView, TabPanel } from "primereact/tabview";
+
 import {
   Box,
   Container,
@@ -28,15 +31,9 @@ const Home = () => {
     (async () => {
       const { data } = await UserIssueBasicDetailsAPI(access);
       setAssined(data.assignedIssue);
-      setAssined(data.reportedIssue);
+      setReported(data.reportedIssue);
     })();
   }, [access]);
-  useEffect(() => {
-    console.log(assined);
-  }, [assined]);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   return (
     <Layout>
@@ -66,21 +63,16 @@ const Home = () => {
               View All Projects
             </Typography>
           </Box>
-          <Box sx={{ width: "100%", marginTop: 5 }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              textColor="secondary"
-              indicatorColor="secondary"
-              aria-label="secondary tabs example"
-            >
-              <Tab value="one" label="Issues Assign to you" />
-              <Tab value="two" label="Issues Created By You" />
-            </Tabs>
-            <CssBaseline />
-          </Box>
-          {value === "one" && <AssignedToYou data={assined} />}
-          {value === "two" && <CreatedByYou data={reported} />}
+          <div className="card">
+            <TabView>
+              <TabPanel header="Assigned to me">
+                <AssignedToYou data={assined} />
+              </TabPanel>
+              <TabPanel header="Me as Reporter">
+                <CreatedByYou data={reported} />
+              </TabPanel>
+            </TabView>
+          </div>
         </Box>
       </Container>
     </Layout>

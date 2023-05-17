@@ -2,12 +2,14 @@ import { List } from "@mui/material";
 import React from "react";
 import IssueItem from "./IssueItem";
 
-const CreatedByYou = () => {
+const CreatedByYou = ({ data }) => {
+  console.log(data);
+
   return (
     <>
-      <List sx={{ width: "100vw", bgcolor: "background.paper" }}>
-        <IssueItem />
-      </List>
+      {data.map((data) => (
+        <IssueItem data={data} />
+      ))}
     </>
   );
 };
