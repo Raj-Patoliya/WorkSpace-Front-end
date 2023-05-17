@@ -34,25 +34,6 @@ const Items = (props) => {
           </div>
         </div>
       </div>
-      {/* <CardContent>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ fontSize: "1rem", fontWeight: "600" }}
-        >
-          {props.title}
-        </Typography>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {props.team} Team Member
-        </Typography>
-        <Typography variant="body2">{props.description}</Typography>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          My Open Issues
-        </Typography>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Done Issues
-        </Typography>
-      </CardContent> */}
     </>
   );
 };

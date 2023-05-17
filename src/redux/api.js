@@ -75,3 +75,6 @@ export const deleteCommentAPI = (token, id) =>
   AuthAxios(token).delete(`issues/issue-comment-delete/${id}`);
 export const updateCommentAPI = (token, id, formData) =>
   AuthAxios(token).patch(`issues/issue-comment-update/${id}`, formData);
+
+export const UserIssueBasicDetailsAPI = (token) =>
+  AuthAxios(token).get("/user/user-issue");

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../layout/layout";
 import ProjectCard from "../ui/Project/projectCard";
 // import ImageIcon from "@mui/icons-material/Image";
@@ -17,10 +17,23 @@ import CreatedByYou from "../ui/Issues/Created";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../../redux/slice/authSlice";
+import { UserIssueBasicDetailsAPI } from "../../redux/api";
 
 const Home = () => {
   const [value, setValue] = React.useState("one");
-
+  const { access } = useSelector((state) => state.auth.token);
+  const [assined, setAssined] = useState([]);
+  const [reported, setReported] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await UserIssueBasicDetailsAPI(access);
+      setAssined(data.assignedIssue);
+      setAssined(data.reportedIssue);
+    })();
+  }, [access]);
+  useEffect(() => {
+    console.log(assined);
+  }, [assined]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -36,9 +49,23 @@ const Home = () => {
           <br />
           <Typography color={"inherit"}>Recent Projects</Typography>
           <ProjectCard />
-          <Typography component="a" to={"/project"} marginTop={3}>
-            View All Projects(Navigation Link)
-          </Typography>
+
+          <Box
+            sx={{
+              width: "100%",
+              marginTop: 1,
+              marginBottom: -3,
+              marginLeft: 1,
+            }}
+          >
+            <Typography
+              component="a"
+              href={"/projects"}
+              sx={{ textDecoration: "none", fontSize: "15px" }}
+            >
+              View All Projects
+            </Typography>
+          </Box>
           <Box sx={{ width: "100%", marginTop: 5 }}>
             <Tabs
               value={value}
@@ -52,8 +79,8 @@ const Home = () => {
             </Tabs>
             <CssBaseline />
           </Box>
-          {value === "one" && <AssignedToYou />}
-          {value === "two" && <CreatedByYou />}
+          {value === "one" && <AssignedToYou data={assined} />}
+          {value === "two" && <CreatedByYou data={reported} />}
         </Box>
       </Container>
     </Layout>
