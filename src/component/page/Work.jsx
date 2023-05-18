@@ -319,7 +319,7 @@ const Work = (props) => {
                   className="w-3 h-1rem text-xs m-2"
                   onClick={handleClear}
                 />
-              )}{" "}
+              )}
             </div>
           </div>
         </div>
