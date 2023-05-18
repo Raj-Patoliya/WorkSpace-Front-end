@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../layout/layout";
 import { Avatar } from "primereact/avatar";
 import { Card } from "primereact/card";
@@ -9,9 +9,11 @@ import "./profile.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
-import { changePasswordAPI } from "../../redux/api";
+import { UserIssueBasicDetailsAPI, changePasswordAPI } from "../../redux/api";
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
+import { useDispatch } from "react-redux";
+import IssueItem from "../ui/Issues/IssueItem";
 
 const validationSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Current password is required."),
@@ -25,7 +27,16 @@ const validationSchema = Yup.object().shape({
 
 const Profile = ({ name, email }) => {
   const toast = useRef(null);
+  const [user, setuser] = useState({ allIssue: [] });
+  const dispatch = useDispatch();
   const { access } = useSelector((state) => state.auth.token);
+  useEffect(() => {
+    (async () => {
+      const { data } = await UserIssueBasicDetailsAPI(access);
+      setuser(data);
+      console.log(data);
+    })();
+  }, [access]);
   const formik = useFormik({
     initialValues: {
       currentPassword: "",
@@ -61,18 +72,19 @@ const Profile = ({ name, email }) => {
       <Toast ref={toast} />
       <div className="h-10rem -ml-4 -mt-4 bg-blue-200 pt-3">
         <Avatar
+          image={user.profile}
           shape="circle"
           style={{ width: "250px", height: "250px", marginLeft: "2rem " }}
         />
       </div>
       <div style={{ marginTop: "7rem", marginLeft: "2rem" }}>
-        <h1>Raj Patoliya</h1>
+        <h1>{user.fullName}</h1>
       </div>
       <div className="d-flex justify-content-center mt-3">
         <Card title="Information" style={{ width: "45rem" }} header="">
           <p className="m-0">
             <span>
-              <i className="pi pi-envelope"></i> Email
+              <i className="pi pi-envelope"></i> {user.email}
             </span>
           </p>
           <Divider align="left">
@@ -139,7 +151,9 @@ const Profile = ({ name, email }) => {
       </div>
       <div className="d-flex justify-content-center mt-3">
         <Card title="Worked on" className="w-50 mr-3">
-          <Card className="mt-3"></Card>
+          {user.allIssue.map((data) => (
+            <IssueItem data={data} />
+          ))}
         </Card>
         <Card title="Place you work" className="w-50">
           <Card className="mt-3"></Card>

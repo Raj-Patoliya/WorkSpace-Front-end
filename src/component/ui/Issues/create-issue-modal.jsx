@@ -355,7 +355,7 @@ export default function CreateIssueModal({
                 onClick={handleButtonClick}
                 class="w-full h-6rem border-dotted border-blue-200 m-2 surface-overlay font-bold flex align-items-center justify-content-center"
               >
-                <p className="m-0">Drag and drop files to here to upload.</p>
+                <p className="m-0">Tap here to upload files.</p>
               </div>
               <div class="row">
                 <input

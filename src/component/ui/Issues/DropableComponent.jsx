@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getIssueByIdAPI } from "../../../redux/api";
 import { getIssueById } from "../../../redux/slice/issueSlice";
 import { Card } from "primereact/card";
@@ -22,13 +22,18 @@ const DragableComponent = ({
   seteditIssueModal,
   provided,
   setissueId,
+  issueKey,
   index,
 }) => {
   const { access } = useSelector((state) => state.auth.token);
-  const editIssueHandler = async (id) => {
-    const { data } = await getIssueByIdAPI(access, id);
-    seteditIssueModal(data);
-  };
+  const editIssueHandler = useCallback(
+    async (id) => {
+      const { data } = await getIssueByIdAPI(access, id);
+      seteditIssueModal(data);
+    },
+    [seteditIssueModal, access]
+  );
+
   return (
     <>
       <Draggable
@@ -74,30 +79,36 @@ const DragableComponent = ({
                   justifyContent: "space-between",
                 }}
               >
-                <Tooltip title={data.issue_type.name}>
-                  <Avatar
-                    src={data.issue_type.icon}
-                    style={{ height: "15px", width: "15px" }}
-                    shape="circle"
-                  />
-                </Tooltip>
-                <span className="text-xs text-center">
-                  <Tooltip title={`Priority: ${data.priority.name}`}>
+                <div className="d-flex">
+                  <Tooltip title={data.issue_type.name}>
                     <Avatar
-                      src={data.priority.icon}
+                      src={data.issue_type.icon}
                       style={{ height: "15px", width: "15px" }}
                       shape="circle"
                     />
                   </Tooltip>
-                  {/* {data.priority.name} */}
-                </span>
-                <Tooltip title={data.assignee.fullName}>
-                  <Avatar
-                    src={data.assignee.profile}
-                    style={{ height: "25px", width: "25px" }}
-                    shape="circle"
-                  />
-                </Tooltip>
+                  <span className="px-2 text-xs font-bold text-600">
+                    {issueKey}-{data.id}
+                  </span>
+                </div>
+                <div className="d-flex">
+                  <Tooltip title={data.priority.name}>
+                    <Avatar
+                      src={data.priority.icon}
+                      style={{ height: "15px", width: "15px" }}
+                      shape="circle"
+                      className=" align-self-center mr-2"
+                    />
+                  </Tooltip>
+                  <Tooltip title={data.assignee.fullName}>
+                    <Avatar
+                      src={data.assignee.profile}
+                      style={{ height: "25px", width: "25px" }}
+                      shape="circle"
+                      className=" align-self-center "
+                    />
+                  </Tooltip>
+                </div>
               </div>
             </div>
           </Card>

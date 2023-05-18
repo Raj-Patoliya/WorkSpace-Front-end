@@ -346,6 +346,7 @@ const Work = (props) => {
                       seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
+                      issueKey={keys}
                       key={data.issue_summary}
                     />
                   ))}
@@ -372,6 +373,7 @@ const Work = (props) => {
                       seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
+                      issueKey={keys}
                       key={data.issue_summary}
                     />
                   ))}
@@ -398,6 +400,7 @@ const Work = (props) => {
                       seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
+                      issueKey={keys}
                       key={data.issue_summary}
                     />
                   ))}

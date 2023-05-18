@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
-
+import "./dropdown.css";
 export default function DropdownTemplate({
   data,
   placeholder,
