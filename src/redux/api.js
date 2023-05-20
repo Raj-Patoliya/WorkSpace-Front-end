@@ -36,6 +36,12 @@ export const changePasswordAPI = (token, formData) =>
 export const ProjectListAPI = (token) =>
   AuthAxios(token).get("/project/all-list/");
 
+export const SearchInProjectListAPI = (token, formData) =>
+  AuthAxios(token).post("/project/custom-project-list/", formData);
+
+export const ProjectListAPIPagination = (token, url) =>
+  AuthAxios(token).get(url);
+
 export const CreateProjectAPI = (token, data) =>
   AuthAxios(token).post("/project/CRUD/", data);
 

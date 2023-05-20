@@ -14,7 +14,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import "../../page/Work.css";
+import "../../screens/Work.css";
 const DragableComponent = ({
   data,
   open,

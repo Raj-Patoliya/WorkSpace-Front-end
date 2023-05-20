@@ -12,38 +12,6 @@ export default function IssueTeamList({
   defaultValue,
 }) {
   const data = teams.map((data) => data.user);
-  //   const [user, setuser] = useState([]);
-  //   const [selecteduser, setselecteduser] = useState(null);
-  //   const [filteredUser, setFilteredUser] = useState(null);
-  //   useEffect(() => {
-  //     const item = userList.map((userList) => ({
-  //       label: `${userList.fullName}`,
-  //       email: `${userList.email}`,
-  //       value: userList.id,
-  //       profile: userList.profile,
-  //       id: userList.id,
-  //     }));
-  //     console.log({ item: item });
-  //     setuser(item);
-  //   }, [userList]);
-  //   const searchItems = (event) => {
-  //     let query = event.query;
-  //     let _filteredUser = [];
-
-  //     console.log(query);
-  //     for (let i = 0; i < user.length; i++) {
-  //       let item = user[i];
-  //       if (
-  //         item.label.toLowerCase().includes(query.toLowerCase()) ||
-  //         item.email.toLowerCase().includes(query.toLowerCase())
-  //       ) {
-  //         _filteredUser.push(item);
-  //       }
-  //     }
-
-  //     setFilteredUser(_filteredUser);
-  //   };
-  console.log();
   const [selecteduser, setSelecteduser] = useState(defaultValue[0]);
   const selectedUserTemplate = (option, props) => {
     if (option) {

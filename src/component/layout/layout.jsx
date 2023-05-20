@@ -152,7 +152,13 @@ const Layout = (props) => {
           position="fixed"
           open={open}
         >
-          <Toolbar>
+          <Toolbar
+            sx={{
+              display: "flex",
+              ...(!open && { justifyContent: "space-between" }),
+              ...(open && { justifyContent: "end" }),
+            }}
+          >
             <IconButton
               color="inherit"
               aria-label="open drawer"
@@ -163,66 +169,81 @@ const Layout = (props) => {
                 ...(open && { display: "none" }),
               }}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
               WorkSpace
+            </IconButton>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{
+                marginRight: 5,
+                ...(open && { flex: "end" }),
+              }}
+            >
+              <Box>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt="Remy Sharp" src={currentUser.profile} />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  <MenuItem
+                    key={settings[0]}
+                    onClick={() => {
+                      setAnchorElNav(null);
+                    }}
+                  >
+                    <Typography textAlign="center">{settings[0]}</Typography>
+                  </MenuItem>
+                  <MenuItem
+                    key={settings[1]}
+                    onClick={() => {
+                      setAnchorElNav(null);
+                      navigate("/");
+                    }}
+                  >
+                    <Typography textAlign="center">{settings[1]}</Typography>
+                  </MenuItem>
+                  <MenuItem
+                    key={settings[2]}
+                    onClick={() => {
+                      setAnchorElNav(null);
+                      dispatch(logout());
+                      navigate("/login", { replace: true });
+                    }}
+                  >
+                    <Typography textAlign="center">{settings[2]}</Typography>
+                  </MenuItem>
+                </Menu>
+              </Box>
             </Typography>
-            <Box sx={{ flexGrow: 0, marginLeft: "80vw" }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src={currentUser.profile} />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                <MenuItem
-                  key={settings[0]}
-                  onClick={() => {
-                    setAnchorElNav(null);
-                  }}
-                >
-                  <Typography textAlign="center">{settings[0]}</Typography>
-                </MenuItem>
-                <MenuItem
-                  key={settings[1]}
-                  onClick={() => {
-                    setAnchorElNav(null);
-                    navigate("/");
-                  }}
-                >
-                  <Typography textAlign="center">{settings[1]}</Typography>
-                </MenuItem>
-                <MenuItem
-                  key={settings[2]}
-                  onClick={() => {
-                    setAnchorElNav(null);
-                    dispatch(logout());
-                    navigate("/login", { replace: true });
-                  }}
-                >
-                  <Typography textAlign="center">{settings[2]}</Typography>
-                </MenuItem>
-              </Menu>
-            </Box>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
-          <DrawerHeader>
+          <DrawerHeader
+            style={{
+              display: "flex",
+              justifyContent: "start",
+              // backgroundColor: "#6366f1",
+              height: "15px",
+              border: "#6366f1",
+            }}
+          >
             <IconButton onClick={handleDrawerClose}>
               {theme.direction === "rtl" ? (
                 <ChevronRightIcon />

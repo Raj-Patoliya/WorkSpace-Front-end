@@ -9,7 +9,9 @@ import * as Yup from "yup";
 import axios from "axios";
 import Layout from "../layout/layout";
 import Header from "../layout/header";
+import { useNavigate } from "react-router-dom";
 const Register = () => {
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       fullName: "",
@@ -47,6 +49,8 @@ const Register = () => {
           },
         }
       );
+
+      navigate("/login");
     },
   });
   const [show, setShow] = useState(false);

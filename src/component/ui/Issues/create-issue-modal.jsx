@@ -13,6 +13,7 @@ import VirtualScrollerDemo from "../components/AutoFill";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getIssueType,
+  getIssuesByProjectKey,
   getPriority,
   getStatus,
   getUsers,
@@ -26,6 +27,7 @@ import { CreateIssueAPI } from "../../../redux/api";
 export default function CreateIssueModal({
   displayCreateIssueModal,
   setDisplayCreateIssueModal,
+  seteditIssueModal,
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ export default function CreateIssueModal({
   const priorityList = useSelector((state) => state.issue.priority);
   const userList = useSelector((state) => state.issue.userList);
   const { access } = useSelector((state) => state.auth.token);
-  const [projects, setprojects] = useState(projectsList);
+  const [projects, setprojects] = useState(projectsList.results);
   const [status, setstatus] = useState(statusList);
   const [priority, setpriority] = useState(priorityList);
   const [type, setType] = useState(typeList);
@@ -58,8 +60,8 @@ export default function CreateIssueModal({
   }, [dispatch, access]);
 
   useEffect(() => {
-    console.log(projectsList);
-    setprojects(projectsList);
+    console.log(projectsList.results);
+    setprojects(projectsList.results);
   }, [projectsList]);
 
   useEffect(() => {
@@ -74,10 +76,6 @@ export default function CreateIssueModal({
     setType(typeList);
     setUser(userList);
   }, [statusList, typeList, priorityList, userList]);
-  // useEffect(() => {
-  //   console.log(initialValues);
-  // }, [initialValues]);
-
   const handlSelect = (name, value) => {
     console.log(name, value);
     setInitialValues((prevState) => {
@@ -149,8 +147,8 @@ export default function CreateIssueModal({
     console.log(formData);
     const { data } = await CreateIssueAPI(access, formData);
     setDisplayCreateIssueModal(false);
-    navigate(`/projects/work/${initialValues.projectValue.value}`);
-    // console.log(access);
+    seteditIssueModal(false);
+    navigate(`/projects/${initialValues.projectValue.value}/work/`);
   };
   const footerContent = (
     <div>

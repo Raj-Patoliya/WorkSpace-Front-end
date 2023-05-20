@@ -39,6 +39,7 @@ import {
   updateIssueAPI,
 } from "../../../redux/api";
 import IssueTeamList from "../components/userTeamList";
+import FileViewerComponent from "../components/FileViewer";
 const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
@@ -73,7 +74,10 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const [editReporter, setEditReporter] = useState(null);
   const [ago, setAgo] = useState("");
   const [updateDate, setUpdateDate] = useState("");
-
+  const [type, settype] = useState("");
+  const [url, seturl] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [fileName, setfileName] = useState("");
   useEffect(() => {
     dispatch(getStatus(access));
     dispatch(getPriority(access));
@@ -91,7 +95,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     setStatus(data.status);
     setpriority(data.priority);
     setissue_type(data.issue_type);
-    console.log(data.issue_type);
     setSummary(data.issue_summary);
     setDescription(data.issue_description);
     setassignee(data.assignee);
@@ -102,7 +105,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   }, [data]);
 
   useEffect(() => {
-    console.log(data.updated_date);
     const dt = new Date(data.updated_date);
     const ago = formatDistanceToNow(dt, {
       addSuffix: true,
@@ -168,11 +170,15 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
           width="80"
           height="60"
           onClick={() => {
-            const newWindow = window.open(url, "_blank", "noopener,noreferrer");
-            if (newWindow) newWindow.opener = null;
+            // const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+            // if (newWindow) newWindow.opener = null;
+            setVisible(true);
+            settype(file.attachment_file.split(".")[1]);
+            seturl(url);
+            setfileName(file.attachment_file.split("/")[3]);
           }}
         />
-        <p>{file.name}</p>
+        <p>{file.attachment_file.split("/")[3]}</p>
       </div>
     );
   };
@@ -203,7 +209,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     setcomments(commentArray);
   };
   const deleteCommentHandler = async (id) => {
-    console.log(id);
     const { data } = await deleteCommentAPI(access, id);
     if (data.success) {
       toast.current.show({
@@ -226,7 +231,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     const formData = new FormData();
     formData.append("field", field);
     formData.append("value", value);
-    console.log(formData);
     const { data } = await updateIssueAPI(access, issue.id, formData);
   };
 
@@ -234,9 +238,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     const formData = new FormData();
     formData.append("field", name);
     formData.append("value", Number(id));
-    console.log(formData);
     // const { data } = await updateIssueAPI(access, issue.id, formData);
-    console.log(data);
   };
   const header = () => {
     return (
@@ -265,6 +267,15 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
         onHide={() => onHide()}
         draggable={false}
       >
+        <Dialog
+          header={fileName}
+          draggable={false}
+          visible={visible}
+          style={{ width: "70vw", maxHeight: "36rem" }}
+          onHide={() => setVisible(false)}
+        >
+          <FileViewerComponent type={type} url={url} />
+        </Dialog>
         <div className="row">
           <div className="col-8">
             <div>

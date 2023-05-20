@@ -57,7 +57,7 @@ const Work = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [activeStates, setActiveStates] = useState(team.map(() => false));
-
+  const [typeSortClear, setTypeSortClear] = useState(false);
   const [isClearVisible, setIsClearVisible] = useState(false);
   const [typeFilterIssues, setTypeFilterIssues] = useState([]);
   const [userFilter, setuserFilter] = useState([]);
@@ -96,7 +96,10 @@ const Work = (props) => {
   useEffect(() => {
     const anyActive = activeStates.some((isActive) => isActive);
     setIsClearVisible(anyActive);
-  }, [activeStates]);
+    if (typeSortClear) {
+      setIsClearVisible(true);
+    }
+  }, [activeStates, typeFilterIssues, typeSortClear]);
 
   const profileFilter = (index, id) => {
     if (userFilter.includes(id)) {
@@ -110,7 +113,6 @@ const Work = (props) => {
     setActiveStates(newActiveStates);
   };
   const handleClear = () => {
-    console.log(activeStates);
     setActiveStates(teams.map(() => false));
     setFilterIssues([]);
     setuserFilter([]);
@@ -126,8 +128,7 @@ const Work = (props) => {
       const filterIssues = userFilterIssues.filter((data) =>
         indexArray.includes(data.issue_type.id)
       );
-      console.log(filterIssues);
-      console.log(userFilterIssues);
+
       setFilterIssues(filterIssues);
     }
   };
@@ -164,6 +165,7 @@ const Work = (props) => {
   // Drag n Drop Handler
   const onDragEnd = async (result) => {
     const { source, destination } = result;
+    console.log(result);
     if (!destination) return;
 
     if (
@@ -269,6 +271,7 @@ const Work = (props) => {
       )}
       <CreateIssueModal
         displayCreateIssueModal={displayCreateIssueModal}
+        seteditIssueModal={seteditIssueModal}
         setDisplayCreateIssueModal={setDisplayCreateIssueModal}
       />
       <Card title={cardHeader}>
@@ -309,6 +312,7 @@ const Work = (props) => {
               <MultiSelectDropdown
                 data={issue_type}
                 typeSortHandler={typeSortHandler}
+                setTypeSortClear={setTypeSortClear}
               />
               {isClearVisible && (
                 <Button

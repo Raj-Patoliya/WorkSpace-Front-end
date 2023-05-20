@@ -9,6 +9,7 @@ import { CreateProjectAPI } from "../../../redux/api";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../../../redux/slice/projectSlice";
 import { useNavigate } from "react-router-dom";
+import Chatbox from "../components/FileViewer";
 export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
   const navigate = useNavigate();
   const access = useSelector((state) => state.auth.token.access);
@@ -24,6 +25,7 @@ export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
       description: false,
     },
   ]);
+
   const onHide = () => {
     setDisplayBasic((prevState) => !prevState);
   };
