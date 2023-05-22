@@ -26,7 +26,6 @@ export default function ProjectCard() {
     setprojects(projectsList);
     setisLoading(false);
   }, [projectsList]);
-  console.log(projectsList);
   return (
     <Box>
       <Grid container spacing={1} sx={{ margin: "0 auto" }}>

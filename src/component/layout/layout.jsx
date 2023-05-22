@@ -29,6 +29,7 @@ import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { DialogDemo } from "../ui/Project/create-project-modal";
 import CreateIssueModal from "../ui/Issues/create-issue-modal";
+import BasicBreadcrumbs from "../ui/components/BreadCrumb";
 
 const drawerWidth = 240;
 const settings = ["Profile", "Dashboard", "Logout"];
@@ -134,17 +135,6 @@ const Layout = (props) => {
   };
   return (
     <React.Fragment>
-      {/* <Header />
-      <main sx={{ overflow: "hidden" }}>
-        <div
-          style={{
-            marginTop: "4.0rem",
-            // backgroundColor: "#eee5fd",
-          }}
-        >
-          {props.children}
-        </div>
-      </main> */}
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar
@@ -206,6 +196,7 @@ const Layout = (props) => {
                     key={settings[0]}
                     onClick={() => {
                       setAnchorElNav(null);
+                      navigate("/profile");
                     }}
                   >
                     <Typography textAlign="center">{settings[0]}</Typography>
@@ -442,6 +433,8 @@ const Layout = (props) => {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
+          {/* <BasicBreadcrumbs /> */}
+
           {props.children}
         </Box>
       </Box>

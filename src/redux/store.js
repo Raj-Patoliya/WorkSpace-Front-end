@@ -6,6 +6,7 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import projectSlice from "./slice/projectSlice";
 import issueSlice from "./slice/issueSlice";
+import uiSlice from "./slice/uiSlice";
 
 const persistConfig = {
   key: "root",
@@ -15,6 +16,7 @@ const persistConfig = {
 };
 const appReducer = combineReducers({
   state: (state = {}) => state,
+  ui: uiSlice,
   auth: authSlice,
   project: projectSlice,
   issue: issueSlice,

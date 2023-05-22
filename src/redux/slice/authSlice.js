@@ -25,7 +25,6 @@ export const login = createAsyncThunk(
 export const getCurrentUser = createAsyncThunk(
   "getCurrentUser",
   async ({ access }) => {
-    console.log(access);
     try {
       const { data } = await api.getCurrentUserAPI(access);
       return data;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import "./DialogDemo.css";
+import "./createProject.css";
 
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";

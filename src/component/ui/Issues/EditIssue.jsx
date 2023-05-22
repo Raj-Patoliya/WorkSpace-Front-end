@@ -33,6 +33,7 @@ import { Menu, MenuItem } from "@mui/material";
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import {
+  API,
   createCommentAPI,
   deleteCommentAPI,
   updateCommentAPI,
@@ -40,6 +41,8 @@ import {
 } from "../../../redux/api";
 import IssueTeamList from "../components/userTeamList";
 import FileViewerComponent from "../components/FileViewer";
+import { FilePresent } from "@mui/icons-material";
+import axios from "axios";
 const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
@@ -66,6 +69,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const [reporter, setreporter] = useState([]);
   const [attachments, setattachments] = useState([]);
   const [comments, setcomments] = useState([]);
+  const [addAttachemnt, setaddAttachemnt] = useState([]);
   const [tempDescription, setTempDescription] = useState("");
   const [newComment, setnewComment] = useState("");
   const [editComment, setEditComment] = useState(null);
@@ -233,6 +237,19 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     formData.append("value", value);
     const { data } = await updateIssueAPI(access, issue.id, formData);
   };
+  const handleAddAttachments = () => {
+    document.getElementById("fileInput").click();
+  };
+  const handleFileInputChange = async (event) => {
+    // let objectUrl = URL.createObjectURL(event.target.files[0]);
+
+    // setattachments((prevState) => [...prevState, event.target.files[0]]);
+    const formData = new FormData();
+    formData.append("attachment_file", event.target.files[0]);
+    formData.append("issue_id", issue.id);
+    const { data } = await API.post("issues/issue-attachment", formData);
+    setattachments(data.success);
+  };
 
   const updateDropDownHandler = async (name, id) => {
     const formData = new FormData();
@@ -379,6 +396,16 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
                         "aria-labelledby": "basic-button",
                       }}
                     >
+                      <input
+                        type="file"
+                        value={addAttachemnt}
+                        id="fileInput"
+                        onChange={handleFileInputChange}
+                        style={{ display: "none" }}
+                      />
+                      <MenuItem onClick={handleAddAttachments}>
+                        Add Attachments
+                      </MenuItem>
                       <MenuItem onClick={downloadAllFiles}>
                         Download All
                       </MenuItem>

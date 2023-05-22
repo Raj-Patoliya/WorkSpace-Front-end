@@ -10,7 +10,9 @@ import axios from "axios";
 import Layout from "../layout/layout";
 import Header from "../layout/header";
 import { useNavigate } from "react-router-dom";
+import { Toast } from "primereact/toast";
 const Register = () => {
+  const toast = useRef(null);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -49,8 +51,19 @@ const Register = () => {
           },
         }
       );
-
-      navigate("/login");
+      console.log(data);
+      try {
+        if (data.success) {
+          navigate("/login");
+        } else {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "E-mail address is already in use..",
+            life: 3000,
+          });
+        }
+      } catch (error) {}
     },
   });
   const [show, setShow] = useState(false);
@@ -77,6 +90,7 @@ const Register = () => {
   return (
     <>
       <Header />
+      <Toast ref={toast} />
       <div className="container" id="registration-form">
         <div
           className="image"

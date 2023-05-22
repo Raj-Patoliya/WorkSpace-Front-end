@@ -8,6 +8,7 @@ import {
 
 const initialState = {
   allProjectList: [],
+  currentProject: {},
   team: [],
   loading: false,
 };
@@ -19,7 +20,17 @@ export const getProjects = createAsyncThunk("project-list", async (access) => {
     return null;
   }
 });
-
+export const getProjectByKey = createAsyncThunk(
+  "projectby-key",
+  async ({ access, keys }) => {
+    try {
+      const { data } = await getProjectByKeyAPI(access, keys);
+      return data;
+    } catch (e) {
+      return e;
+    }
+  }
+);
 export const getProjectTeam = createAsyncThunk(
   "project-team-key",
   async ({ access, keys }) => {
@@ -60,10 +71,10 @@ const projectSlice = createSlice({
     },
     [getProjects.rejected]: (state, action) => {
       state.loading = false;
-      //   for (var i in action.payload) {
-      //      toast.error(action.payload[i]);
-      //   }
       state.error = "Login Failed Invalid id Password";
+    },
+    [getProjectByKey.fulfilled]: (state, action) => {
+      state.currentProject = action.payload;
     },
 
     [getProjectTeam.fulfilled]: (state, action) => {

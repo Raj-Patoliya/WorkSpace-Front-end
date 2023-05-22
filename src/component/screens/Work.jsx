@@ -32,6 +32,7 @@ import CreateIssueModal from "../ui/Issues/create-issue-modal";
 import EditIssue from "../ui/Issues/EditIssue";
 import DragableComponent from "../ui/Issues/DropableComponent";
 import TeamMemberList from "../ui/Issues/TeamMemberList";
+import { clearSelection } from "../../redux/slice/uiSlice";
 const Work = (props) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
@@ -83,9 +84,8 @@ const Work = (props) => {
   useEffect(() => {
     dispatch(getIssuesByProjectKey({ access, keys }));
   }, [dispatch, editIssueModal, access, keys]);
-  // setting up fetched issues form Redux
+
   useEffect(() => {
-    console.log(issue);
     setUserFilterIssues(issue);
     setTypeFilterIssues(issue);
     setFilterIssues(issue);
@@ -114,11 +114,12 @@ const Work = (props) => {
   };
   const handleClear = () => {
     setActiveStates(teams.map(() => false));
-    setFilterIssues([]);
+    setFilterIssues(issue);
     setuserFilter([]);
+    dispatch(clearSelection(false));
+    setTypeSortClear(false);
   };
 
-  //
   const typeSortHandler = (value) => {
     if (value.length === 0) {
       setTypeFilterIssues([...userFilterIssues]);
@@ -134,9 +135,9 @@ const Work = (props) => {
   };
 
   // User Profile Handler
-  useEffect(() => {
-    console.log(userFilter);
-  }, [userFilter]);
+  // useEffect(() => {
+  //   console.log(userFilter);
+  // }, [userFilter]);
 
   useEffect(() => {
     if (userFilter.length === 0) {

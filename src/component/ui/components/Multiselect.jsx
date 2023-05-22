@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { MultiSelect } from "primereact/multiselect";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { clearSelection } from "../../../redux/slice/uiSlice";
 
 export default function MultiSelectDropdown({
   data,
@@ -7,6 +10,13 @@ export default function MultiSelectDropdown({
   setTypeSortClear,
 }) {
   const [selectedItems, setSelectedItems] = useState([]);
+  const dispatch = useDispatch();
+  const ClearTypeSelection = useSelector((state) => state.ui.typeSelection);
+  useEffect(() => {
+    if (!ClearTypeSelection) {
+      setSelectedItems([]);
+    }
+  }, [ClearTypeSelection]);
   useEffect(() => {
     if (selectedItems.length > 0) {
       console.log(selectedItems.length);
@@ -36,8 +46,10 @@ export default function MultiSelectDropdown({
           typeSortHandler(e.value);
           if (e.value.length > 0) {
             setTypeSortClear(true);
+            dispatch(clearSelection(true));
           } else {
             setTypeSortClear(false);
+            dispatch(clearSelection(false));
           }
         }}
         optionLabel="name"

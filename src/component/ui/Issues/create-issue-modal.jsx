@@ -60,7 +60,6 @@ export default function CreateIssueModal({
   }, [dispatch, access]);
 
   useEffect(() => {
-    console.log(projectsList.results);
     setprojects(projectsList.results);
   }, [projectsList]);
 

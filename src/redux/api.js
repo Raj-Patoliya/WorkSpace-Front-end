@@ -2,7 +2,7 @@ import axios from "axios";
 
 const localhost = "http://127.0.0.1:8000";
 
-const API = axios.create({
+export const API = axios.create({
   baseURL: localhost,
   headers: {
     "Content-Type": `multipart/form-data`,
