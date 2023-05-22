@@ -23,6 +23,7 @@ import UserList from "../components/User-list-dropdown";
 import { getProjects } from "../../../redux/slice/projectSlice";
 import { Navigate, useNavigate } from "react-router-dom";
 import { CreateIssueAPI } from "../../../redux/api";
+import FileViewerComponent from "../components/FileViewer";
 
 export default function CreateIssueModal({
   displayCreateIssueModal,
@@ -43,6 +44,10 @@ export default function CreateIssueModal({
   const [type, setType] = useState(typeList);
   const [users, setUser] = useState(userList);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [filetype, setfiletype] = useState("");
+  const [url, seturl] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [fileName, setfileName] = useState("");
   const [initialValues, setInitialValues] = useState({
     projectValue: "",
     issueTypeValue: "",
@@ -115,12 +120,11 @@ export default function CreateIssueModal({
           width="80"
           height="60"
           onClick={() => {
-            var win = window.open();
-            win.document.write(
-              '<iframe src="' +
-                objectUrl +
-                '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
-            );
+            console.log(objectUrl);
+            setVisible(true);
+            setfiletype(file.type.split("/")[1]);
+            seturl(objectUrl);
+            setfileName(file.name);
           }}
         />
         <p>{file.name}</p>
@@ -168,6 +172,15 @@ export default function CreateIssueModal({
   // const toast = useRef(null);
   return (
     <form>
+      <Dialog
+        header={fileName}
+        draggable={false}
+        visible={visible}
+        style={{ width: "70vw", maxHeight: "36rem" }}
+        onHide={() => setVisible(false)}
+      >
+        <FileViewerComponent type={filetype} url={url} />
+      </Dialog>
       <div className="card flex justify-content-center mx-10">
         {/* <Toast ref={toast}></Toast> */}
         <Dialog

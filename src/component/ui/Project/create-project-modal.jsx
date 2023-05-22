@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import "./createProject.css";
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../../../redux/slice/projectSlice";
 import { useNavigate } from "react-router-dom";
 import Chatbox from "../components/FileViewer";
+import { Toast } from "primereact/toast";
 export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
   const navigate = useNavigate();
   const access = useSelector((state) => state.auth.token.access);
@@ -18,6 +19,7 @@ export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
   const [key, setKey] = useState("");
   const dispatch = useDispatch();
   const [error, setError] = useState();
+  const toast = useRef(null);
   const [invalidFields, setInvalidFields] = useState([
     {
       title: false,
@@ -44,8 +46,16 @@ export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
       formData.append("key", key);
       const { data } = await CreateProjectAPI(access, formData);
       if (data.success) {
+        console.log(data);
         onHide();
         navigate(`/projects/work/${key}`);
+      } else {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: data.errors[0],
+          life: 3000,
+        });
       }
     }
   };
@@ -75,6 +85,7 @@ export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
       footer={renderFooter("displayBasic")}
       onHide={() => onHide("displayBasic")}
     >
+      <Toast ref={toast} />
       <br />
       <div>
         <div className="p-fluid grid">

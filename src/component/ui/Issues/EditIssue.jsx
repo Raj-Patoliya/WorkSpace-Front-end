@@ -275,6 +275,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   };
   return (
     <div>
+      {/* <FileViewerComponent type={type} url={url} /> */}
       <Toast ref={toast} />
       <Dialog
         header={header}
