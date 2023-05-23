@@ -55,7 +55,7 @@ export default function MultiSelectDropdown({
         optionLabel="name"
         placeholder="Type"
         itemTemplate={itemTemplate}
-        showHeader={false}
+        // showheader={false}
         className="h-2.1rem text-xs m-1"
         size={"small"}
         display="chip"

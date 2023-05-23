@@ -15,7 +15,7 @@ const TeamMemberList = ({
   return (
     <AvatarGroup max={10} spacing="medium">
       {teams.map((data, index) => (
-        <div>
+        <div key={data.user.id}>
           <ContextMenu model={items} ref={cm} breakpoint="767px" />
           <Tooltip key={data.user.id} title={data.user.fullName}>
             <img

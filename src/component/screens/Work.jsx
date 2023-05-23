@@ -37,6 +37,7 @@ const Work = (props) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
   const { access } = useSelector((state) => state.auth.token);
+  const issueState = useSelector((state) => state.issue);
   const issue = useSelector((state) => state.issue.issues);
   const loading = useSelector((state) => state.issue.loading);
   const team = useSelector((state) => state.project.team);
@@ -64,7 +65,7 @@ const Work = (props) => {
   const [userFilter, setuserFilter] = useState([]);
   const [filterIssues, setFilterIssues] = useState([]);
   const [issueId, setissueId] = useState(null);
-
+  const [defaultIssues, setdefaultIssues] = useState([]);
   // Fetching issues from Dispatcher
   useEffect(() => {
     dispatch(getCurrentProjects({ access, keys }));
@@ -74,7 +75,7 @@ const Work = (props) => {
     dispatch(getUsers(access));
     dispatch(getProjectTeam({ access, keys }));
   }, [dispatch, access, keys]);
-
+  useEffect(() => {}, [issueState]);
   useEffect(() => {
     if (teamCreated) {
       dispatch(getProjectTeam({ access, keys }));
@@ -102,6 +103,7 @@ const Work = (props) => {
   }, [activeStates, typeFilterIssues, typeSortClear]);
 
   const profileFilter = (index, id) => {
+    console.log(id);
     if (userFilter.includes(id)) {
       const result = userFilter.filter((value) => value !== id);
       setuserFilter([...result]);
@@ -141,7 +143,7 @@ const Work = (props) => {
 
   useEffect(() => {
     if (userFilter.length === 0) {
-      setUserFilterIssues([...issue]);
+      setUserFilterIssues(issue);
     } else {
       const filterIssues = issue.filter((data) =>
         userFilter.includes(data.assignee.id)
@@ -341,7 +343,7 @@ const Work = (props) => {
                   ref={provided.innerRef}
                   className="col-3 bg-light m-1 p-0 text-xs"
                   {...provided.droppableProps}
-                  showHeader={false}
+                  // showheader={false}
                 >
                   {todo.map((data, index) => (
                     <DragableComponent
