@@ -22,7 +22,7 @@ import DropdownTemplate from "../components/Dropdwon";
 import UserList from "../components/User-list-dropdown";
 import { getProjects } from "../../../redux/slice/projectSlice";
 import { Navigate, useNavigate } from "react-router-dom";
-import { CreateIssueAPI } from "../../../redux/api";
+import { CreateIssueAPI, UploadIssueInBulkAPI } from "../../../redux/api";
 import FileViewerComponent from "../components/FileViewer";
 
 export default function CreateIssueModal({
@@ -95,6 +95,22 @@ export default function CreateIssueModal({
   const handleButtonClick = () => {
     document.getElementById("fileInput").click();
   };
+
+  const handleBulkButtonClick = () => {
+    document.getElementById("BulkUpload").click();
+  };
+
+  const handleBulkInputChange = async (e) => {
+    console.log("----event.target.files----", e.target.files[0]);
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    const { data } = await UploadIssueInBulkAPI(access, formData);
+    if (data.success) {
+      setDisplayCreateIssueModal(false);
+      seteditIssueModal(false);
+    }
+  };
+
   const renderPreview = (file) => {
     if (!file) {
       return null;
@@ -153,6 +169,23 @@ export default function CreateIssueModal({
     seteditIssueModal(false);
     navigate(`/projects/${initialValues.projectValue.value}/work/`);
   };
+  const headerContent = (
+    <div className="d-flex justify-content-between">
+      <p>Create Issue</p>
+      <Button
+        label="Upload In Bulk"
+        style={{ height: "1rem", marginRight: "4rem", marginTop: "5px" }}
+        onClick={handleBulkButtonClick}
+      />
+      <input
+        type="file"
+        id="BulkUpload"
+        style={{ display: "none" }}
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        onChange={handleBulkInputChange}
+      />
+    </div>
+  );
   const footerContent = (
     <div>
       <Button
@@ -184,11 +217,12 @@ export default function CreateIssueModal({
       <div className="card flex justify-content-center mx-10">
         {/* <Toast ref={toast}></Toast> */}
         <Dialog
-          header="Create Issue"
+          header={headerContent}
           visible={displayCreateIssueModal}
           style={{ width: "45vw", height: "80vh", top: "2rem" }}
           onHide={() => setDisplayCreateIssueModal(false)}
           footer={footerContent}
+          draggable={false}
         >
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">

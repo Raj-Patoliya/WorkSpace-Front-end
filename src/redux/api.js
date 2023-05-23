@@ -87,3 +87,6 @@ export const updateCommentAPI = (token, id, formData) =>
 
 export const UserIssueBasicDetailsAPI = (token) =>
   AuthAxios(token).get("/user/user-issue");
+
+export const UploadIssueInBulkAPI = (token, formData) =>
+  AuthAxios(token).post("/issues/issue-bulk-upload", formData);

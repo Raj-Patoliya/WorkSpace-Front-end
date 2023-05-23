@@ -83,7 +83,7 @@ const Work = (props) => {
   }, [dispatch, project, access, keys, teamCreated]);
   useEffect(() => {
     dispatch(getIssuesByProjectKey({ access, keys }));
-  }, [dispatch, editIssueModal, access, keys]);
+  }, [dispatch, editIssueModal, access, keys, displayCreateIssueModal]);
 
   useEffect(() => {
     setUserFilterIssues(issue);
@@ -141,7 +141,7 @@ const Work = (props) => {
 
   useEffect(() => {
     if (userFilter.length === 0) {
-      setUserFilterIssues(issue);
+      setUserFilterIssues([...issue]);
     } else {
       const filterIssues = issue.filter((data) =>
         userFilter.includes(data.assignee.id)
