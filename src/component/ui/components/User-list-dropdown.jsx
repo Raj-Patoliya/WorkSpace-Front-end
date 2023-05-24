@@ -15,11 +15,11 @@ export default function UserList({
   const [filteredUser, setFilteredUser] = useState(null);
   useEffect(() => {
     const item = userList.map((userList) => ({
-      label: `${userList.fullName}`,
-      email: `${userList.email}`,
-      value: userList.id,
-      profile: userList.profile,
-      id: userList.id,
+      label: `${userList.user.fullName}`,
+      // email: `${userList.user.email}`,
+      value: userList.user.id,
+      profile: userList.user.profile,
+      id: userList.user.id,
     }));
     console.log({ item: item });
     setuser(item);
@@ -32,8 +32,8 @@ export default function UserList({
     for (let i = 0; i < user.length; i++) {
       let item = user[i];
       if (
-        item.label.toLowerCase().includes(query.toLowerCase()) ||
-        item.email.toLowerCase().includes(query.toLowerCase())
+        item.label.toLowerCase().includes(query.toLowerCase())
+        // || item.email.toLowerCase().includes(query.toLowerCase())
       ) {
         _filteredUser.push(item);
       }

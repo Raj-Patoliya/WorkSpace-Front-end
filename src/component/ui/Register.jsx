@@ -172,7 +172,7 @@ const Register = () => {
               </div>
               <div className="col-6">
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Label>Confirm Password:</Form.Label>
                   <Form.Control
                     type="password"
                     name="cpassword"

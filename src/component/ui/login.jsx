@@ -91,7 +91,7 @@ const Login = () => {
                   <Form.Control
                     type="password"
                     name="password"
-                    placeholder="Create password"
+                    placeholder="Enter password"
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}

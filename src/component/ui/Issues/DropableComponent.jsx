@@ -17,25 +17,66 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import "../../screens/Work.css";
 const DragableComponent = ({
   data,
-  open,
-  editMenu,
   seteditIssueModal,
+  deleteIssue,
   provided,
+  setdeleted,
   setissueId,
   issueKey,
   index,
 }) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const editMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const { access } = useSelector((state) => state.auth.token);
   const editIssueHandler = useCallback(
     async (id) => {
       const { data } = await getIssueByIdAPI(access, id);
       seteditIssueModal(data);
+      setAnchorEl(null);
     },
     [seteditIssueModal, access]
   );
-
   return (
     <>
+      <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            editIssueHandler(data.id);
+            setAnchorEl(null);
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            deleteIssue(data.id);
+            setAnchorEl(null);
+            setdeleted(true);
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
       <Draggable
         draggableId={String(data.id)}
         index={index}
@@ -48,9 +89,6 @@ const DragableComponent = ({
             ref={provided.innerRef}
             {...provided.dragHandleProps}
             {...provided.draggableProps}
-            onClick={() => {
-              editIssueHandler(data.id);
-            }}
           >
             <div
               className="d-flex"
@@ -61,8 +99,15 @@ const DragableComponent = ({
                 justifyContent: "space-between",
               }}
             >
-              <p className="text-xs">{data.issue_summary}</p>
-              <div className="">
+              <p
+                className="text-xs"
+                onClick={() => {
+                  editIssueHandler(data.id);
+                }}
+              >
+                {data.issue_summary}
+              </p>
+              <div className="" onClick={editMenu}>
                 <MoreHorizIcon
                   aria-controls={open ? "demo-positioned-menu" : undefined}
                   aria-haspopup="true"
@@ -71,7 +116,12 @@ const DragableComponent = ({
                 />
               </div>
             </div>
-            <div className="row h-1rem">
+            <div
+              className="row h-1rem"
+              onClick={() => {
+                editIssueHandler(data.id);
+              }}
+            >
               <div
                 className="col"
                 style={{

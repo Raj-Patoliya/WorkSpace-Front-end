@@ -14,6 +14,7 @@ const persistConfig = {
   storage,
   whitelist: ["auth"],
 };
+
 const appReducer = combineReducers({
   state: (state = {}) => state,
   ui: uiSlice,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -9,6 +9,7 @@ import text from "../../assets/images/icons/text.png";
 import json from "../../assets/images/icons/json.png";
 import csv from "../../assets/images/icons/csv.png";
 import { Image } from "primereact/image";
+import { OverlayPanel } from "primereact/overlaypanel";
 import VirtualScrollerDemo from "../components/AutoFill";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,7 +21,7 @@ import {
 } from "../../../redux/slice/issueSlice";
 import DropdownTemplate from "../components/Dropdwon";
 import UserList from "../components/User-list-dropdown";
-import { getProjects } from "../../../redux/slice/projectSlice";
+import { getProjectTeam, getProjects } from "../../../redux/slice/projectSlice";
 import { Navigate, useNavigate } from "react-router-dom";
 import { CreateIssueAPI, UploadIssueInBulkAPI } from "../../../redux/api";
 import FileViewerComponent from "../components/FileViewer";
@@ -32,17 +33,18 @@ export default function CreateIssueModal({
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const overlay = useRef(null);
   const projectsList = useSelector((state) => state.project.allProjectList);
   const typeList = useSelector((state) => state.issue.type);
   const statusList = useSelector((state) => state.issue.status);
   const priorityList = useSelector((state) => state.issue.priority);
-  const userList = useSelector((state) => state.issue.userList);
+  const userList = useSelector((state) => state.project.team);
   const { access } = useSelector((state) => state.auth.token);
   const [projects, setprojects] = useState(projectsList.results);
   const [status, setstatus] = useState(statusList);
   const [priority, setpriority] = useState(priorityList);
   const [type, setType] = useState(typeList);
-  const [users, setUser] = useState(userList);
+  const [users, setUser] = useState({ team: [] });
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [filetype, setfiletype] = useState("");
   const [url, seturl] = useState("");
@@ -80,8 +82,17 @@ export default function CreateIssueModal({
     setType(typeList);
     setUser(userList);
   }, [statusList, typeList, priorityList, userList]);
+
+  useEffect(() => {
+    if (initialValues.projectValue) {
+      const keys = initialValues.projectValue.value;
+      dispatch(getProjectTeam({ access, keys }));
+    }
+  }, [initialValues.projectValue, dispatch, access]);
+  useEffect(() => {
+    console.log(userList);
+  }, [userList]);
   const handlSelect = (name, value) => {
-    console.log(name, value);
     setInitialValues((prevState) => {
       return { ...prevState, [name]: value };
     });
@@ -159,11 +170,10 @@ export default function CreateIssueModal({
     formData.append("summary", initialValues.summaryValue);
     formData.append("assignee", initialValues.assigneeValue);
     formData.append("reporter", initialValues.reporterValue);
-    selectedFiles.map((file, index) => {
-      formData.append(`attachments_${index}`, file);
-    });
+    selectedFiles.map((file, index) =>
+      formData.append(`attachments_${index}`, file)
+    );
     formData.append("attachments", selectedFiles);
-    console.log(formData);
     const { data } = await CreateIssueAPI(access, formData);
     setDisplayCreateIssueModal(false);
     seteditIssueModal(false);
@@ -171,12 +181,68 @@ export default function CreateIssueModal({
   };
   const headerContent = (
     <div className="d-flex justify-content-between">
+      <OverlayPanel ref={overlay} className="text-xs">
+        <h6>File Upload Instruction: Issue Tracking System</h6>
+        <p>
+          Please follow these instructions to upload a file containing issue
+          data to the system:
+        </p>
+        <ol>
+          <li>File Format: Ensure the file is in CSV format.</li>
+          <li>Column Order: Arrange the columns in the following order:</li>
+        </ol>
+        <p>
+          <code>
+            issue_summary, issue_description, project, assignee, issue_type,
+            priority, reporter, status
+          </code>
+        </p>
+        <p>Column Definitions:</p>
+        <ul>
+          <li>
+            <strong>Issue Summary:</strong> Brief issue summary or title.
+          </li>
+          <li>
+            <strong>Issue description:</strong> Detailed issue information.
+          </li>
+          <li>
+            <strong>Project:</strong> Identifier of the project.
+          </li>
+          <li>
+            <strong>Assignee:</strong> Identifier of Person responsible for the
+            issue.
+          </li>
+          <li>
+            <strong>Issue type:</strong> Type of the issue.
+          </li>
+          <li>
+            <strong>Priority:</strong> Priority level assigned to the issue.
+          </li>
+          <li>
+            <strong>Reporter:</strong> Person who reported the issue.
+          </li>
+          <li>
+            <strong>Status:</strong> Current status of the issue.
+          </li>
+        </ul>
+      </OverlayPanel>
       <p>Create Issue</p>
-      <Button
-        label="Upload In Bulk"
-        style={{ height: "1rem", marginRight: "4rem", marginTop: "5px" }}
-        onClick={handleBulkButtonClick}
-      />
+      <span>
+        <Button
+          label="Upload CSV"
+          style={{ height: "2rem", marginRight: "1rem", marginTop: "5px" }}
+          onClick={handleBulkButtonClick}
+        />
+        <i
+          onClick={(e) => overlay.current.toggle(e)}
+          className="pi pi-info-circle"
+          style={{
+            fontSize: "25px",
+            marginRight: "1rem",
+            marginTop: "5px",
+          }}
+        />
+      </span>
       <input
         type="file"
         id="BulkUpload"
@@ -334,7 +400,6 @@ export default function CreateIssueModal({
               <label htmlFor="integer" className="font-bold block mb-2">
                 Assignee <span className="text-red-700">*</span>
               </label>
-              {/* <InputText id="integer" keyfilter="int" className="w-7" /> */}
               <UserList
                 className="w-7"
                 width={"w-7"}
@@ -365,36 +430,6 @@ export default function CreateIssueModal({
               <label htmlFor="integer" className="font-bold block mb-2">
                 Attachments <span className="text-red-700">*</span>
               </label>
-              {/* <FileUpload
-              name="demo[]"
-              multiple
-              accept="image/*"
-              maxFileSize={1000000}
-              uploadHandler={(e) => {
-                setInitialValues((prevState) => {
-                  return { ...prevState, attachmentsValue: e.files };
-                });
-              }}
-              customUpload
-              emptyTemplate={
-                <p className="m-0">Drag and drop files to here to upload.</p>
-              }
-            /> */}
-              {/* <FileUpload
-              mode="basic"
-              name="demo[]"
-              accept="image/*"
-              customUpload
-              emptyTemplate={
-                <p className="m-0">Drag and drop files to here to upload.</p>
-              }
-              multiple
-              uploadHandler={(e) => {
-                setInitialValues((prevState) => {
-                  return { ...prevState, attachmentsValue: e.files };
-                });
-              }}
-            /> */}
               <div
                 onClick={handleButtonClick}
                 class="w-full h-6rem border-dotted border-blue-200 m-2 surface-overlay font-bold flex align-items-center justify-content-center"

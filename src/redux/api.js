@@ -90,3 +90,9 @@ export const UserIssueBasicDetailsAPI = (token) =>
 
 export const UploadIssueInBulkAPI = (token, formData) =>
   AuthAxios(token).post("/issues/issue-bulk-upload", formData);
+
+export const IssueFilterAPI = (token, formData) =>
+  AuthAxios(token).post("/issues/issue-filter", formData);
+
+export const deleteIssueAPI = (token, id) =>
+  AuthAxios(token).delete(`issues/issue-delete/${id}`);

@@ -21,7 +21,11 @@ import {
   updateIssue,
 } from "../../redux/slice/issueSlice";
 import { Tooltip } from "@mui/material";
-import { updateIssueAPI } from "../../redux/api";
+import {
+  IssueFilterAPI,
+  deleteIssueAPI,
+  updateIssueAPI,
+} from "../../redux/api";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "./Work.css";
@@ -33,6 +37,7 @@ import EditIssue from "../ui/Issues/EditIssue";
 import DragableComponent from "../ui/Issues/DropableComponent";
 import TeamMemberList from "../ui/Issues/TeamMemberList";
 import { clearSelection } from "../../redux/slice/uiSlice";
+import axios from "axios";
 const Work = (props) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
@@ -47,26 +52,22 @@ const Work = (props) => {
   const userList = useSelector((state) => state.issue.userList);
   const [editIssueModal, seteditIssueModal] = useState(null);
   const [teamCreated, setteamCreated] = useState(false);
-  const [issueTypeList, setIssueTypeList] = useState([]);
   const [addTeamMember, setAddTeamMember] = useState(false);
   const [displayCreateIssueModal, setDisplayCreateIssueModal] = useState(false);
-  const [userFilterIssues, setUserFilterIssues] = useState([]);
   const [isLoading, setIsloading] = useState(false);
   const [teams, setTeams] = useState([]);
   const [todo, settodo] = useState([]);
   const [inprogress, setinprogress] = useState([]);
   const [done, setdone] = useState([]);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
   const [activeStates, setActiveStates] = useState(team.map(() => false));
   const [typeSortClear, setTypeSortClear] = useState(false);
   const [isClearVisible, setIsClearVisible] = useState(false);
-  const [typeFilterIssues, setTypeFilterIssues] = useState([]);
   const [userFilter, setuserFilter] = useState([]);
   const [filterIssues, setFilterIssues] = useState([]);
   const [issueId, setissueId] = useState(null);
-  const [defaultIssues, setdefaultIssues] = useState([]);
-  // Fetching issues from Dispatcher
+  const [searchText, setsearchText] = useState("");
+  const [typeArray, setTypeArray] = useState([]);
+  const [deleted, setdeleted] = useState(false);
   useEffect(() => {
     dispatch(getCurrentProjects({ access, keys }));
     dispatch(getStatus(access));
@@ -75,7 +76,6 @@ const Work = (props) => {
     dispatch(getUsers(access));
     dispatch(getProjectTeam({ access, keys }));
   }, [dispatch, access, keys]);
-  useEffect(() => {}, [issueState]);
   useEffect(() => {
     if (teamCreated) {
       dispatch(getProjectTeam({ access, keys }));
@@ -83,27 +83,38 @@ const Work = (props) => {
     }
   }, [dispatch, project, access, keys, teamCreated]);
   useEffect(() => {
-    dispatch(getIssuesByProjectKey({ access, keys }));
-  }, [dispatch, editIssueModal, access, keys, displayCreateIssueModal]);
+    (async () => {
+      const formData = new FormData();
+      formData.append("user", []);
+      formData.append("search", "");
+      formData.append("type", []);
+      formData.append("keys", keys);
+      const { data } = await IssueFilterAPI(access, formData);
+      setFilterIssues(data.data);
+      setdeleted(false);
+      dispatch(getProjectTeam({ access, keys }));
+    })();
+  }, [
+    dispatch,
+    editIssueModal,
+    access,
+    keys,
+    displayCreateIssueModal,
+    deleted,
+  ]);
 
   useEffect(() => {
-    setUserFilterIssues(issue);
-    setTypeFilterIssues(issue);
-    setFilterIssues(issue);
-    setTeams(team);
+    setTeams([...team]);
   }, [issue, team]);
-
-  // Profile CSS Handler
   useEffect(() => {
     const anyActive = activeStates.some((isActive) => isActive);
     setIsClearVisible(anyActive);
     if (typeSortClear) {
       setIsClearVisible(true);
     }
-  }, [activeStates, typeFilterIssues, typeSortClear]);
+  }, [activeStates, typeSortClear]);
 
   const profileFilter = (index, id) => {
-    console.log(id);
     if (userFilter.includes(id)) {
       const result = userFilter.filter((value) => value !== id);
       setuserFilter([...result]);
@@ -116,54 +127,62 @@ const Work = (props) => {
   };
   const handleClear = () => {
     setActiveStates(teams.map(() => false));
-    setFilterIssues(issue);
-    setuserFilter([]);
     dispatch(clearSelection(false));
+    setuserFilter([]);
+    setTypeArray([]);
+    setsearchText("");
     setTypeSortClear(false);
   };
 
   const typeSortHandler = (value) => {
     if (value.length === 0) {
-      setTypeFilterIssues([...userFilterIssues]);
-      setFilterIssues(userFilterIssues);
+      setTypeArray([]);
     } else {
       const indexArray = value.map((data) => data.id);
-      const filterIssues = userFilterIssues.filter((data) =>
-        indexArray.includes(data.issue_type.id)
-      );
-
-      setFilterIssues(filterIssues);
+      setTypeArray(indexArray);
     }
   };
 
-  // User Profile Handler
-  // useEffect(() => {
-  //   console.log(userFilter);
-  // }, [userFilter]);
-
   useEffect(() => {
-    if (userFilter.length === 0) {
-      setUserFilterIssues(issue);
-    } else {
-      const filterIssues = issue.filter((data) =>
-        userFilter.includes(data.assignee.id)
-      );
-      console.log(filterIssues);
-      setUserFilterIssues([...filterIssues]);
-    }
-  }, [userFilter, issue]);
-
-  useEffect(() => {
-    setFilterIssues([...userFilterIssues]);
-  }, [userFilterIssues]);
-
+    (async () => {
+      const formData = new FormData();
+      formData.append("user", userFilter);
+      formData.append("search", searchText);
+      formData.append("type", typeArray);
+      formData.append("keys", keys);
+      const { data } = await IssueFilterAPI(access, formData);
+      setFilterIssues(data.data);
+    })();
+    // if (
+    //   userFilter.length !== 0 ||
+    //   searchText.length !== 0 ||
+    //   typeArray.length !== 0
+    // ) {
+    //   console.log(searchText);
+    //   (async () => {
+    //     const formData = new FormData();
+    //     formData.append("user", userFilter);
+    //     formData.append("search", searchText);
+    //     formData.append("type", typeArray);
+    //     formData.append("keys", keys);
+    //     const { data } = await IssueFilterAPI(access, formData);
+    //     console.log(data.data);
+    //     setFilterIssues(data.data);
+    //   })();
+    // } else {
+    //   (async () => {
+    //     const formData = new FormData();
+    //     formData.append("user", userFilter);
+    //     formData.append("search", searchText);
+    //     formData.append("type", typeArray);
+    //     formData.append("keys", keys);
+    //     const { data } = await IssueFilterAPI(access, formData);
+    //     console.log(data.data);
+    //     setFilterIssues(data.data);
+    //   })();
+    // }
+  }, [userFilter, access, searchText, keys, typeArray, dispatch]);
   // Edit Menu Code
-  const editMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   // Drag n Drop Handler
   const onDragEnd = async (result) => {
@@ -217,19 +236,24 @@ const Work = (props) => {
       setIsloading(false);
     }
   }, [loading]);
-  // SearchBox Filter Code
-  const searchFilterHandler = (e) => {
-    if (e.target.value === "") {
-      setFilterIssues(typeFilterIssues);
-    }
-    const searchData = typeFilterIssues.filter((data) =>
-      String(data.issue_summary)
-        .toLowerCase()
-        .includes(String(e.target.value).toLowerCase())
-    );
-    console.log(searchData);
-    setFilterIssues([...searchData]);
+  const deleteIssue = async (id) => {
+    const { data } = await deleteIssueAPI(access, id);
+    console.log(data);
   };
+  // SearchBox Filter Code
+  // const searchFilterHandler = (e) => {
+  //   setsearchText(e.target.value);
+  //   if (e.target.value === "") {
+  //     setFilterIssues(typeFilterIssues);
+  //   }
+  //   const searchData = typeFilterIssues.filter((data) =>
+  //     String(data.issue_summary)
+  //       .toLowerCase()
+  //       .includes(String(e.target.value).toLowerCase())
+  //   );
+  //   console.log(searchData);
+  //   setFilterIssues([...searchData]);
+  // };
 
   // Saprating Isses According Status
   useEffect(() => {
@@ -290,9 +314,10 @@ const Work = (props) => {
             <div className="col-3">
               <InputText
                 type="text"
+                value={searchText}
                 className="p-inputtext-sm text-xs h-2rem"
                 placeholder="Search this board"
-                onChange={searchFilterHandler}
+                onChange={(e) => setsearchText(e.target.value)}
               />
             </div>
             <div className="col d-flex">
@@ -347,6 +372,7 @@ const Work = (props) => {
                 >
                   {todo.map((data, index) => (
                     <DragableComponent
+                      setdeleted={setdeleted}
                       setissueId={setissueId}
                       data={data}
                       provided={provided}
@@ -354,7 +380,8 @@ const Work = (props) => {
                       draggableId={String(data.id)}
                       index={index}
                       issueKey={keys}
-                      key={data.issue_summary}
+                      key={data.id}
+                      deleteIssue={deleteIssue}
                     />
                   ))}
                   {provided.placeholder}
@@ -375,13 +402,16 @@ const Work = (props) => {
                 >
                   {inprogress.map((data, index) => (
                     <DragableComponent
+                      setdeleted={setdeleted}
+                      setissueId={setissueId}
                       data={data}
                       provided={provided}
                       seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
                       issueKey={keys}
-                      key={data.issue_summary}
+                      key={data.id}
+                      deleteIssue={deleteIssue}
                     />
                   ))}
                   {provided.placeholder}
@@ -402,13 +432,16 @@ const Work = (props) => {
                 >
                   {done.map((data, index) => (
                     <DragableComponent
+                      setdeleted={setdeleted}
+                      setissueId={setissueId}
                       data={data}
                       provided={provided}
                       seteditIssueModal={seteditIssueModal}
                       draggableId={String(data.id)}
                       index={index}
                       issueKey={keys}
-                      key={data.issue_summary}
+                      key={data.id}
+                      deleteIssue={deleteIssue}
                     />
                   ))}
                   {provided.placeholder}

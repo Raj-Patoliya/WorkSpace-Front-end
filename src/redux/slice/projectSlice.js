@@ -4,7 +4,7 @@ import {
   ProjectListAPI,
   getProjectByKeyAPI,
   getTeamByProjectKeyAPI,
-} from "../api";
+} from "../api";  
 
 const initialState = {
   allProjectList: [],
@@ -67,7 +67,7 @@ const projectSlice = createSlice({
     [getProjects.fulfilled]: (state, action) => {
       state.loading = false;
       state.allProjectList = action.payload;
-      console.log(action.payload.results);
+      // console.log(action.payload.results);
     },
     [getProjects.rejected]: (state, action) => {
       state.loading = false;

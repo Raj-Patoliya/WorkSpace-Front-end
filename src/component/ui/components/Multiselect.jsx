@@ -17,11 +17,11 @@ export default function MultiSelectDropdown({
       setSelectedItems([]);
     }
   }, [ClearTypeSelection]);
-  useEffect(() => {
-    if (selectedItems.length > 0) {
-      console.log(selectedItems.length);
-    }
-  }, [setTypeSortClear, selectedItems]);
+  // useEffect(() => {
+  //   if (selectedItems.length > 0) {
+  //     console.log(selectedItems.length);
+  //   }
+  // }, [setTypeSortClear, selectedItems]);
   const itemTemplate = (option) => {
     return (
       <div className="flex align-items-center text-xs">

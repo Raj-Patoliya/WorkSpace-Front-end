@@ -19,3 +19,4 @@ const uiSlice = createSlice({
 });
 export const { toggle, clearSelection } = uiSlice.actions;
 export default uiSlice.reducer;
+  
