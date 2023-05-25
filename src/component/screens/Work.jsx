@@ -83,6 +83,10 @@ const Work = (props) => {
     }
   }, [dispatch, project, access, keys, teamCreated]);
   useEffect(() => {
+    console.log(userList);
+  }, [userList]);
+
+  useEffect(() => {
     (async () => {
       const formData = new FormData();
       formData.append("user", []);

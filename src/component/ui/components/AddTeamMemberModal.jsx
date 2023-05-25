@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import UserList from "./User-list-dropdown";
 import { useSelector } from "react-redux";
 import { Toast } from "primereact/toast";
 import { AddTeamMemberAPI } from "../../../redux/api";
@@ -11,6 +10,7 @@ import {
   getProjectTeam,
 } from "../../../redux/slice/projectSlice";
 import { useNavigate } from "react-router-dom";
+import AllUserList from "./AllUserList";
 
 const AddTeamMemberModal = ({
   display,
@@ -61,7 +61,7 @@ const AddTeamMemberModal = ({
       setDisplayPosition(false);
       setAddTeamMember(false);
     }
-    navigate(`/projects/work/${currentProject.key}`);
+    navigate(`/projects/${currentProject.key}/work`);
   };
 
   const renderFooter = (name) => {
@@ -104,7 +104,7 @@ const AddTeamMemberModal = ({
         draggable={false}
         resizable={false}
       >
-        <UserList
+        <AllUserList
           className="w-full text-xs"
           userList={users}
           placeholder={"Search Person"}

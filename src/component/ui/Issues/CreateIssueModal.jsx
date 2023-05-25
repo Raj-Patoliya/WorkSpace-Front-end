@@ -21,7 +21,7 @@ import {
   getUsers,
 } from "../../../redux/slice/issueSlice";
 import DropdownTemplate from "../components/Dropdwon";
-import UserList from "../components/User-list-dropdown";
+import UserList from "../components/UserListDropdown";
 import { getProjectTeam, getProjects } from "../../../redux/slice/projectSlice";
 import { Navigate, useNavigate } from "react-router-dom";
 import {
@@ -66,7 +66,7 @@ export default function CreateIssueModal({
     assigneeError: false,
     reporterError: false,
   };
-  const [initialValues, setInitialValues] = useState({
+  const initialValueState = {
     projectValue: "",
     issueTypeValue: "",
     description: "",
@@ -76,7 +76,8 @@ export default function CreateIssueModal({
     assigneeValue: "",
     reporterValue: "",
     attachmentsValue: [],
-  });
+  };
+  const [initialValues, setInitialValues] = useState(initialValueState);
   const [hasError, sethasError] = useState(false);
   const [error, setError] = useState(initialErrorState);
 
@@ -293,6 +294,8 @@ export default function CreateIssueModal({
           visible={displayCreateIssueModal}
           style={{ width: "45vw", height: "80vh", top: "2rem" }}
           onHide={() => {
+            setSelectedFiles([]);
+            setInitialValues(initialValueState);
             setError(initialErrorState);
             setDisplayCreateIssueModal(false);
           }}
