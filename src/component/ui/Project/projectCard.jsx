@@ -29,7 +29,14 @@ export default function ProjectCard() {
   return (
     <Box>
       <Grid container spacing={1} sx={{ margin: "0 auto" }}>
-        {isLoading && <ProgressSpinner />}
+        {projects.hasOwnProperty("results") &&
+          !isLoading &&
+          projects.results.length === 0 && (
+            <>
+              <h1>No Projects</h1>
+            </>
+          )}
+
         {projects.hasOwnProperty("results") &&
           !isLoading &&
           projects.results.map((data, index) => {

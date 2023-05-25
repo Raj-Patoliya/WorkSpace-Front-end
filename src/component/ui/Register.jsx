@@ -41,7 +41,6 @@ const Register = () => {
       formData.append("email", values.email);
       formData.append("password", values.password);
       formData.append("profile", profile);
-      console.log(formData);
       const { data } = await axios.post(
         "http://127.0.0.1:8000/user/create/",
         formData,
@@ -51,7 +50,6 @@ const Register = () => {
           },
         }
       );
-      console.log(data);
       try {
         if (data.success) {
           navigate("/login");
@@ -81,9 +79,6 @@ const Register = () => {
     };
     getImages();
   }, []);
-  useEffect(() => {
-    console.log(imageArray);
-  }, [imageArray]);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -190,9 +185,17 @@ const Register = () => {
                 </Form.Group>
               </div>
             </div>
-            <Button variant="primary" type="submit">
-              Register
-            </Button>
+            <div className="row">
+              <div className="col-12 text-center">
+                <Button
+                  className="w-5"
+                  variant="primary"
+                  type="submit"
+                  label="Register"
+                  icon="pi pi-user-plus"
+                />
+              </div>
+            </div>
           </Form>
         </div>
         <Modal show={show} onHide={handleClose}>
@@ -203,9 +206,9 @@ const Register = () => {
             <div class="container">
               <div class="row">
                 {imageArray.map((data) => (
-                  <div key={data.id} class="col" onClick={() => {}}>
+                  <div key={data} class="col" onClick={() => {}}>
                     <img
-                      key={data.id}
+                      key={data}
                       src={data}
                       title="Tap to select"
                       style={{ width: "100px" }}

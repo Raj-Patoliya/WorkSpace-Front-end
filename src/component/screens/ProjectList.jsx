@@ -55,9 +55,9 @@ const ProjectList = () => {
     setprojectList(projects);
     setfilterProject(project);
   }, [projects]);
-  const onRowClick = (data) => {
-    navigate(`/projects/${data.data.key}/work`);
-  };
+  // const onRowClick = (data) => {
+
+  // };
   const tableHeader = () => {
     return (
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -122,12 +122,6 @@ const ProjectList = () => {
           });
       setfilterProject(project);
       setprojectList(data);
-      // const project = !projectList.hasOwnProperty("results")
-      //   ? null
-      //   : projectList.results.filter((data) =>
-      //       data.title.toLowerCase().includes(e.target.value.toLowerCase())
-      //     );
-      // setfilterProject(project);
     } else {
       setprojectList(defaultProject);
     }
@@ -224,8 +218,6 @@ const ProjectList = () => {
               }}
             />
           }
-          // rowsPerPageOptions={[5, 10, 25, 50]}
-          onRowClick={onRowClick}
           tableStyle={{ minWidth: "50rem" }}
         >
           <Column field="title" header="Title"></Column>
@@ -237,9 +229,9 @@ const ProjectList = () => {
             body={(rowData) => (
               <Button
                 className="btn btn-secondary"
-                label="view project"
+                label="View Project Board"
                 onClick={() => {
-                  navigate(`/projects/${rowData.key}`);
+                  navigate(`/projects/${rowData.key}/work`);
                 }}
               />
             )}

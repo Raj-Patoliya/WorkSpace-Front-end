@@ -27,8 +27,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser, logout } from "../../redux/slice/authSlice";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
-import { DialogDemo } from "../ui/Project/create-project-modal";
-import CreateIssueModal from "../ui/Issues/create-issue-modal";
+import { DialogDemo } from "../ui/Project/CreateProjectModal";
+import CreateIssueModal from "../ui/Issues/CreateIssueModal";
 import BasicBreadcrumbs from "../ui/components/BreadCrumb";
 
 const drawerWidth = 240;
@@ -159,7 +159,8 @@ const Layout = (props) => {
                 ...(open && { display: "none" }),
               }}
             >
-              WorkSpace
+              <MenuIcon />
+              <div className="mx-4">WorkSpace</div>
             </IconButton>
             <Typography
               variant="h6"
@@ -239,18 +240,19 @@ const Layout = (props) => {
               {theme.direction === "rtl" ? (
                 <ChevronRightIcon />
               ) : (
-                <img
+                <h2>WorkSpace</h2>
+              )}
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          {/* <img
                   src={
                     "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Workspace_Group_logo.svg/1200px-Workspace_Group_logo.svg.png"
                   }
                   alt="Berry"
                   width={100}
                   sx={{ marginRight: "100px" }}
-                />
-              )}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
+                /> */}
           <List>
             <ListItem disablePadding sx={{ display: "block" }}>
               <Tooltip title="dashboard">

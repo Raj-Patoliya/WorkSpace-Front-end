@@ -1,13 +1,18 @@
 import "bootstrap/dist/css/bootstrap.css";
-
 import Register from "./component/ui/Register";
 import Login from "./component/ui/login";
-import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  redirect,
+} from "react-router-dom";
 import { useSelector } from "react-redux";
-import { DialogDemo } from "./component/ui/Project/create-project-modal";
+import { DialogDemo } from "./component/ui/Project/CreateProjectModal";
 import Home from "./component/screens/Home";
 import Work from "./component/screens/Work";
-import ProjectList from "./component/screens/project-list";
+import ProjectList from "./component/screens/ProjectList";
 import Profile from "./component/screens/Profile";
 import ProjectDetails from "./component/screens/ProjectDetails";
 function App() {
@@ -32,7 +37,7 @@ function App() {
             </Route>
           </>
         )}
-        <Route path="*" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

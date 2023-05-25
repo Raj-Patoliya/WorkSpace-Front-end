@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { combineReducers } from "@reduxjs/toolkit";
 // import { getDefaultMiddleware } from "@reduxjs/toolkit";
 import authSlice from "./slice/authSlice";
@@ -22,12 +22,11 @@ const appReducer = combineReducers({
   project: projectSlice,
   issue: issueSlice,
 });
-// const customizedMiddleware = getDefaultMiddleware({
-//   serializableCheck: false,
-// });
 const persistReducers = persistReducer(persistConfig, appReducer);
-
 export const store = configureStore({
   reducer: persistReducers,
-  // middleware: customizedMiddleware,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });

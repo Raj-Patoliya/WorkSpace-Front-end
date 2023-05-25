@@ -32,7 +32,7 @@ import "./Work.css";
 import LoadingIssues from "../ui/components/LoadingIssues";
 import AddTeamMemberModal from "../ui/components/AddTeamMemberModal";
 import { getProjectTeam } from "../../redux/slice/projectSlice";
-import CreateIssueModal from "../ui/Issues/create-issue-modal";
+import CreateIssueModal from "../ui/Issues/CreateIssueModal";
 import EditIssue from "../ui/Issues/EditIssue";
 import DragableComponent from "../ui/Issues/DropableComponent";
 import TeamMemberList from "../ui/Issues/TeamMemberList";
@@ -92,8 +92,8 @@ const Work = (props) => {
       const { data } = await IssueFilterAPI(access, formData);
       setFilterIssues(data.data);
       setdeleted(false);
-      dispatch(getProjectTeam({ access, keys }));
     })();
+    dispatch(getProjectTeam({ access, keys }));
   }, [
     dispatch,
     editIssueModal,

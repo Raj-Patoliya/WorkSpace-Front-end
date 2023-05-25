@@ -9,20 +9,23 @@ export default function UserList({
   onSelected,
   name,
   width,
+  haserror,
 }) {
   const [user, setuser] = useState([]);
   const [selecteduser, setselecteduser] = useState(null);
   const [filteredUser, setFilteredUser] = useState(null);
   useEffect(() => {
-    const item = userList.map((userList) => ({
-      label: `${userList.user.fullName}`,
-      // email: `${userList.user.email}`,
-      value: userList.user.id,
-      profile: userList.user.profile,
-      id: userList.user.id,
-    }));
-    console.log({ item: item });
-    setuser(item);
+    if (userList.length > 0) {
+      const item = userList.map((userList) => ({
+        label: `${userList.user.fullName}`,
+        // email: `${userList.user.email}`,
+        value: userList.user.id,
+        profile: userList.user.profile,
+        id: userList.user.id,
+      }));
+      console.log({ item: item });
+      setuser(item);
+    }
   }, [userList]);
   const searchItems = (event) => {
     let query = event.query;
@@ -91,6 +94,7 @@ export default function UserList({
         className={width}
       /> */}
       <AutoComplete
+        className={haserror}
         placeholder={placeholder}
         value={selecteduser}
         suggestions={filteredUser}

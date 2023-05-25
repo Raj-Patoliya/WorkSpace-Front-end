@@ -12,6 +12,7 @@ import { Image } from "primereact/image";
 import { OverlayPanel } from "primereact/overlaypanel";
 import VirtualScrollerDemo from "../components/AutoFill";
 import { useDispatch, useSelector } from "react-redux";
+import "primeicons/primeicons.css";
 import {
   getIssueType,
   getIssuesByProjectKey,
@@ -23,8 +24,13 @@ import DropdownTemplate from "../components/Dropdwon";
 import UserList from "../components/User-list-dropdown";
 import { getProjectTeam, getProjects } from "../../../redux/slice/projectSlice";
 import { Navigate, useNavigate } from "react-router-dom";
-import { CreateIssueAPI, UploadIssueInBulkAPI } from "../../../redux/api";
+import {
+  CreateIssueAPI,
+  UploadIssueInBulkAPI,
+  getTeamByProjectKeyAPI,
+} from "../../../redux/api";
 import FileViewerComponent from "../components/FileViewer";
+import CSVUploadInstructions from "./CSVUploadInstructions";
 
 export default function CreateIssueModal({
   displayCreateIssueModal,
@@ -50,6 +56,16 @@ export default function CreateIssueModal({
   const [url, seturl] = useState("");
   const [visible, setVisible] = useState(false);
   const [fileName, setfileName] = useState("");
+  const initialErrorState = {
+    projectError: false,
+    issueTypeError: false,
+    descriptionError: false,
+    statusError: false,
+    priorityError: false,
+    summaryError: false,
+    assigneeError: false,
+    reporterError: false,
+  };
   const [initialValues, setInitialValues] = useState({
     projectValue: "",
     issueTypeValue: "",
@@ -61,6 +77,8 @@ export default function CreateIssueModal({
     reporterValue: "",
     attachmentsValue: [],
   });
+  const [hasError, sethasError] = useState(false);
+  const [error, setError] = useState(initialErrorState);
 
   useEffect(() => {
     dispatch(getProjects(access));
@@ -80,13 +98,16 @@ export default function CreateIssueModal({
     setstatus(statusList);
     setpriority(priorityList);
     setType(typeList);
-    setUser(userList);
   }, [statusList, typeList, priorityList, userList]);
 
   useEffect(() => {
     if (initialValues.projectValue) {
       const keys = initialValues.projectValue.value;
-      dispatch(getProjectTeam({ access, keys }));
+      // dispatch(getProjectTeam({ access, keys }));
+      (async () => {
+        const { data } = await getTeamByProjectKeyAPI(access, keys);
+        setUser(data.data);
+      })();
     }
   }, [initialValues.projectValue, dispatch, access]);
   useEffect(() => {
@@ -161,74 +182,58 @@ export default function CreateIssueModal({
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("project", initialValues.projectValue.value);
-    formData.append("issueType", initialValues.issueTypeValue);
-    formData.append("description", initialValues.description);
-    formData.append("status", initialValues.statusValue);
-    formData.append("priority", initialValues.priorityValue);
-    formData.append("summary", initialValues.summaryValue);
-    formData.append("assignee", initialValues.assigneeValue);
-    formData.append("reporter", initialValues.reporterValue);
-    selectedFiles.map((file, index) =>
-      formData.append(`attachments_${index}`, file)
-    );
-    formData.append("attachments", selectedFiles);
-    const { data } = await CreateIssueAPI(access, formData);
-    setDisplayCreateIssueModal(false);
-    seteditIssueModal(false);
-    navigate(`/projects/${initialValues.projectValue.value}/work/`);
+    if (
+      initialValues.projectValue !== "" &&
+      initialValues.issueTypeValue !== "" &&
+      initialValues.description !== "" &&
+      initialValues.statusValue !== "" &&
+      initialValues.priorityValue !== "" &&
+      initialValues.summaryValue !== "" &&
+      initialValues.assigneeValue !== "" &&
+      initialValues.reporterValue !== ""
+    ) {
+      const formData = new FormData();
+      formData.append("project", initialValues.projectValue.value);
+      formData.append("issueType", initialValues.issueTypeValue);
+      formData.append("description", initialValues.description);
+      formData.append("status", initialValues.statusValue);
+      formData.append("priority", initialValues.priorityValue);
+      formData.append("summary", initialValues.summaryValue);
+      formData.append("assignee", initialValues.assigneeValue);
+      formData.append("reporter", initialValues.reporterValue);
+      selectedFiles.map((file, index) =>
+        formData.append(`attachments_${index}`, file)
+      );
+      formData.append("attachments", selectedFiles);
+      const { data } = await CreateIssueAPI(access, formData);
+      console.log(data);
+      setDisplayCreateIssueModal(false);
+      seteditIssueModal(false);
+      navigate(`/projects/${initialValues.projectValue.value}/work/`);
+      setError(initialErrorState);
+    } else {
+      sethasError(true);
+      setError({
+        projectError: initialValues.projectValue === "",
+        issueTypeError: initialValues.issueTypeValue === "",
+        descriptionError: initialValues.description === "",
+        statusError: initialValues.statusValue === "",
+        priorityError: initialValues.priorityValue === "",
+        summaryError: initialValues.summaryValue === "",
+        assigneeError: initialValues.assigneeValue === "",
+        reporterError: initialValues.reporterValue === "",
+      });
+    }
   };
   const headerContent = (
     <div className="d-flex justify-content-between">
       <OverlayPanel ref={overlay} className="text-xs">
-        <h6>File Upload Instruction: Issue Tracking System</h6>
-        <p>
-          Please follow these instructions to upload a file containing issue
-          data to the system:
-        </p>
-        <ol>
-          <li>File Format: Ensure the file is in CSV format.</li>
-          <li>Column Order: Arrange the columns in the following order:</li>
-        </ol>
-        <p>
-          <code>
-            issue_summary, issue_description, project, assignee, issue_type,
-            priority, reporter, status
-          </code>
-        </p>
-        <p>Column Definitions:</p>
-        <ul>
-          <li>
-            <strong>Issue Summary:</strong> Brief issue summary or title.
-          </li>
-          <li>
-            <strong>Issue description:</strong> Detailed issue information.
-          </li>
-          <li>
-            <strong>Project:</strong> Identifier of the project.
-          </li>
-          <li>
-            <strong>Assignee:</strong> Identifier of Person responsible for the
-            issue.
-          </li>
-          <li>
-            <strong>Issue type:</strong> Type of the issue.
-          </li>
-          <li>
-            <strong>Priority:</strong> Priority level assigned to the issue.
-          </li>
-          <li>
-            <strong>Reporter:</strong> Person who reported the issue.
-          </li>
-          <li>
-            <strong>Status:</strong> Current status of the issue.
-          </li>
-        </ul>
+        <CSVUploadInstructions />
       </OverlayPanel>
       <p>Create Issue</p>
       <span>
         <Button
+          icon="pi pi-upload"
           label="Upload CSV"
           style={{ height: "2rem", marginRight: "1rem", marginTop: "5px" }}
           onClick={handleBulkButtonClick}
@@ -283,28 +288,47 @@ export default function CreateIssueModal({
       <div className="card flex justify-content-center mx-10">
         {/* <Toast ref={toast}></Toast> */}
         <Dialog
+          draggable={false}
           header={headerContent}
           visible={displayCreateIssueModal}
           style={{ width: "45vw", height: "80vh", top: "2rem" }}
-          onHide={() => setDisplayCreateIssueModal(false)}
+          onHide={() => {
+            setError(initialErrorState);
+            setDisplayCreateIssueModal(false);
+          }}
           footer={footerContent}
-          draggable={false}
+          // draggable={false}
         >
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.projectError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Project <span className="text-red-700">*</span>
               </label>
               <VirtualScrollerDemo
                 data={projects}
                 onSelected={handlSelect}
                 name="projectValue"
+                haserror={error.projectError ? "p-invalid" : ""}
               />
             </div>
           </div>
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.issueTypeError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Issue Type <span className="text-red-700">*</span>
               </label>
 
@@ -313,6 +337,7 @@ export default function CreateIssueModal({
                 optionLabel="Type"
                 placeholder="Issue Type"
                 onSelected={handlSelect}
+                haserror={error.issueTypeError ? "p-invalid" : ""}
                 name="issueTypeValue"
               />
             </div>
@@ -320,7 +345,14 @@ export default function CreateIssueModal({
           <Divider />
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.statusError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Status <span className="text-red-700">*</span>
               </label>
               <DropdownTemplate
@@ -329,6 +361,7 @@ export default function CreateIssueModal({
                 placeholder="Issue Status"
                 onSelected={handlSelect}
                 name="statusValue"
+                haserror={error.statusError ? "p-invalid" : ""}
               />
               <p className="mt-2 text-xs">
                 This is the issue's initial status upon creation
@@ -337,7 +370,14 @@ export default function CreateIssueModal({
           </div>
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.priorityError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Priority <span className="text-red-700">*</span>
               </label>
               <DropdownTemplate
@@ -346,6 +386,7 @@ export default function CreateIssueModal({
                 placeholder="Issue Priority"
                 onSelected={handlSelect}
                 name="priorityValue"
+                haserror={error.priorityError ? "p-invalid" : ""}
               />
               <p className="mt-2 text-xs">
                 This is the issue's initial status upon creation
@@ -355,12 +396,19 @@ export default function CreateIssueModal({
 
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.summaryError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Summary <span className="text-red-700">*</span>
               </label>
               <InputText
                 id="integer"
-                className="w-full"
+                className={error.summaryError ? "p-invalid w-full" : "w-full"}
                 value={initialValues.summaryValue}
                 onChange={(e) => {
                   console.log(e.target.value);
@@ -376,7 +424,14 @@ export default function CreateIssueModal({
           </div>
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.descriptionError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Descriptions
               </label>
               <div className="card">
@@ -390,6 +445,7 @@ export default function CreateIssueModal({
                       };
                     })
                   }
+                  className=""
                   style={{ height: "320px" }}
                 />
               </div>
@@ -397,7 +453,14 @@ export default function CreateIssueModal({
           </div>
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.assigneeError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Assignee <span className="text-red-700">*</span>
               </label>
               <UserList
@@ -407,12 +470,20 @@ export default function CreateIssueModal({
                 placeholder={"Select Assignee"}
                 onSelected={handlSelect}
                 name="assigneeValue"
+                haserror={error.assigneeError ? "p-invalid" : ""}
               />
             </div>
           </div>
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label
+                htmlFor="integer"
+                className={
+                  !error.reporterError
+                    ? "font-bold block mb-2 "
+                    : "font-bold block mb-2 text-red-700"
+                }
+              >
                 Reporter <span className="text-red-700">*</span>
               </label>
               <UserList
@@ -422,12 +493,13 @@ export default function CreateIssueModal({
                 placeholder={"Select Reporter"}
                 onSelected={handlSelect}
                 name="reporterValue"
+                haserror={error.reporterError ? "p-invalid" : ""}
               />
             </div>
           </div>
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
-              <label htmlFor="integer" className="font-bold block mb-2">
+              <label htmlFor="integer">
                 Attachments <span className="text-red-700">*</span>
               </label>
               <div

@@ -8,6 +8,7 @@ export default function DropdownTemplate({
   onSelected,
   name,
   defaultValue,
+  haserror,
 }) {
   const [selecteduser, setSelecteduser] = useState(defaultValue);
   const selecteduserTemplate = (option, props) => {
@@ -55,7 +56,7 @@ export default function DropdownTemplate({
       valueTemplate={selecteduserTemplate}
       itemTemplate={userOptionTemplate}
       placeholder={placeholder}
-      className="text-xs"
+      className={`${haserror} text-xs`}
     />
   );
 }

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 
-export default function VirtualScrollerDemo({ data, onSelected, name }) {
+export default function VirtualScrollerDemo({
+  data,
+  onSelected,
+  name,
+  haserror,
+}) {
   const [items, setitems] = useState([]);
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -36,7 +41,7 @@ export default function VirtualScrollerDemo({ data, onSelected, name }) {
       suggestions={filteredItems}
       completeMethod={searchItems}
       virtualScrollerOptions={{ itemSize: 38 }}
-      className="w-7"
+      className={"w-7 " + haserror}
       field="label"
       dropdown
       onChange={(e) => {

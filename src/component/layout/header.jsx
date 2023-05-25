@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const pages = ["Projects", "Create Issues", "Create Projects"];
 const settings = ["Profile", "Dashboard", "Logout"];
@@ -38,77 +38,34 @@ function Header() {
   };
 
   return (
-    <AppBar position="static" sx={{ background: "#6366f1", height: "60px" }}>
+    <AppBar position="sticky" sx={{ background: "#6366f1", height: "60px" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            WorkSpace
-          </Typography>
+          <div sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <span className="text-2xl">WorkSpace</span>
+          </div>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-          </Box>
-          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+          <div
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            onClick={() => {
+              navigate("/login");
             }}
           >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              onClick={() => {
-                navigate("/login");
-              }}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
+            <Link className="text-xl mx-4 text-white text-decoration-none">
               Login
-            </Button>
-            <Button
-              onClick={() => {
-                navigate("/register");
-              }}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
+            </Link>
+          </div>
+
+          <div
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            onClick={() => {
+              navigate("/register");
+            }}
+          >
+            <Link className="text-xl mx-4 text-white text-decoration-none">
               Register
-            </Button>
-          </Box>
+            </Link>
+          </div>
         </Toolbar>
       </Container>
     </AppBar>

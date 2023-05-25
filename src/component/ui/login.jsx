@@ -105,9 +105,17 @@ const Login = () => {
                 </Form.Group>
               </div>
             </div>
-            <Button variant="primary" type="submit">
-              Login
-            </Button>
+            <div className="row">
+              <div className="col-12 text-center">
+                <Button
+                  className="w-5"
+                  variant="primary"
+                  type="submit"
+                  label="Sign In"
+                  icon="pi pi-sign-in"
+                />
+              </div>
+            </div>
           </Form>
         </div>
       </div>
