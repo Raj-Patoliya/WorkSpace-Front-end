@@ -7,14 +7,14 @@ import {
 } from "../api";
 
 const initialState = {
-  allProjectList: [],
+  allProjectList: null,
   currentProject: {},
   team: [],
   loading: false,
 };
-export const getProjects = createAsyncThunk("project-list", async (access) => {
+export const getProjects = createAsyncThunk("project-list", async () => {
   try {
-    const { data } = await ProjectListAPI(access);
+    const { data } = await ProjectListAPI();
     return data;
   } catch (error) {
     return null;
@@ -22,9 +22,9 @@ export const getProjects = createAsyncThunk("project-list", async (access) => {
 });
 export const getProjectByKey = createAsyncThunk(
   "projectby-key",
-  async ({ access, keys }) => {
+  async ({ keys }) => {
     try {
-      const { data } = await getProjectByKeyAPI(access, keys);
+      const { data } = await getProjectByKeyAPI(keys);
       return data;
     } catch (e) {
       return e;
@@ -33,9 +33,9 @@ export const getProjectByKey = createAsyncThunk(
 );
 export const getProjectTeam = createAsyncThunk(
   "project-team-key",
-  async ({ access, keys }) => {
+  async ({ keys }) => {
     try {
-      const { data } = await getTeamByProjectKeyAPI(access, keys);
+      const { data } = await getTeamByProjectKeyAPI(keys);
       return data;
     } catch (error) {
       return null;
@@ -45,10 +45,9 @@ export const getProjectTeam = createAsyncThunk(
 
 export const addProjectTeamMember = createAsyncThunk(
   "project-team-member",
-  async ({ access, formData }) => {
+  async ({ formData }) => {
     try {
-      console.log(access);
-      const { data } = await AddTeamMemberAPI(access, formData);
+      const { data } = await AddTeamMemberAPI(formData);
       console.log(data);
       return data;
     } catch (error) {

@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import React, { useCallback, useState } from "react";
 import { getIssueByIdAPI } from "../../../redux/api";
 import { Card } from "primereact/card";
@@ -28,14 +27,13 @@ const DragableComponent = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const { access } = useSelector((state) => state.auth.token);
   const editIssueHandler = useCallback(
     async (id) => {
-      const { data } = await getIssueByIdAPI(access, id);
+      const { data } = await getIssueByIdAPI(id);
       seteditIssueModal(data);
       setAnchorEl(null);
     },
-    [seteditIssueModal, access]
+    [seteditIssueModal]
   );
   return (
     <>

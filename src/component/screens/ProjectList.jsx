@@ -16,13 +16,12 @@ const ProjectList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const projects = useSelector((state) => state.project.allProjectList);
-  const { access } = useSelector((state) => state.auth.token);
   const [filterProject, setfilterProject] = useState({});
   const [projectList, setprojectList] = useState({});
   const [defaultProject, setdefaultProject] = useState({});
   useEffect(() => {
-    dispatch(getProjects(access));
-  }, [dispatch, access]);
+    dispatch(getProjects());
+  }, [dispatch]);
   useEffect(() => {
     const project = !projects.hasOwnProperty("results")
       ? null
@@ -89,7 +88,7 @@ const ProjectList = () => {
     if (e.target.value !== "") {
       const formData = new FormData();
       formData.append("searchText", e.target.value);
-      const { data } = await SearchInProjectListAPI(access, formData);
+      const { data } = await SearchInProjectListAPI(formData);
       const project = !data.hasOwnProperty("results")
         ? null
         : data.results.map((element) => {
@@ -185,13 +184,10 @@ const ProjectList = () => {
   const onPageChange = async (event) => {
     setFirst(event.first);
     if (event.first < first) {
-      const { data } = await ProjectListAPIPagination(
-        access,
-        projectList.previous
-      );
+      const { data } = await ProjectListAPIPagination(projectList.previous);
       pageChangeHandler(data);
     } else {
-      const { data } = await ProjectListAPIPagination(access, projectList.next);
+      const { data } = await ProjectListAPIPagination(projectList.next);
       pageChangeHandler(data);
     }
   };

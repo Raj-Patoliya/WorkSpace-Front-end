@@ -6,19 +6,14 @@ import "./createProject.css";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
 import { CreateProjectAPI } from "../../../redux/api";
-import { useDispatch, useSelector } from "react-redux";
-import { getProjects } from "../../../redux/slice/projectSlice";
 import { useNavigate } from "react-router-dom";
-import Chatbox from "../components/FileViewer";
+
 import { Toast } from "primereact/toast";
 export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
   const navigate = useNavigate();
-  const access = useSelector((state) => state.auth.token.access);
   const [title, setTitle] = useState("");
   const [description, setDescriptions] = useState("");
   const [key, setKey] = useState("");
-  const dispatch = useDispatch();
-  const [error, setError] = useState();
   const toast = useRef(null);
   const [invalidFields, setInvalidFields] = useState([
     {
@@ -44,7 +39,7 @@ export const DialogDemo = ({ displayBasic, setDisplayBasic }) => {
       formData.append("title", title);
       formData.append("description", description);
       formData.append("key", key);
-      const { data } = await CreateProjectAPI(access, formData);
+      const { data } = await CreateProjectAPI(formData);
       if (data.success) {
         console.log(data);
         onHide();

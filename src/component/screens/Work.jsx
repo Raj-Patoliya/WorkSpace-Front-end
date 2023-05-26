@@ -33,7 +33,6 @@ import { clearSelection } from "../../redux/slice/uiSlice";
 const Work = (props) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
-  const { access } = useSelector((state) => state.auth.token);
   const issue = useSelector((state) => state.issue.issues);
   const loading = useSelector((state) => state.issue.loading);
   const team = useSelector((state) => state.project.team);
@@ -60,19 +59,19 @@ const Work = (props) => {
   const [typeArray, setTypeArray] = useState([]);
   const [deleted, setdeleted] = useState(false);
   useEffect(() => {
-    dispatch(getCurrentProjects({ access, keys }));
-    dispatch(getStatus(access));
-    dispatch(getIssueType(access));
-    dispatch(getIssuesByProjectKey({ access, keys }));
-    dispatch(getUsers(access));
-    dispatch(getProjectTeam({ access, keys }));
-  }, [dispatch, access, keys]);
+    dispatch(getCurrentProjects({ keys }));
+    dispatch(getStatus());
+    dispatch(getIssueType());
+    dispatch(getIssuesByProjectKey({ keys }));
+    dispatch(getUsers());
+    dispatch(getProjectTeam({ keys }));
+  }, [dispatch, keys]);
   useEffect(() => {
     if (teamCreated) {
-      dispatch(getProjectTeam({ access, keys }));
+      dispatch(getProjectTeam({ keys }));
       setteamCreated(false);
     }
-  }, [dispatch, project, access, keys, teamCreated]);
+  }, [dispatch, project, keys, teamCreated]);
 
   useEffect(() => {
     (async () => {
@@ -81,19 +80,12 @@ const Work = (props) => {
       formData.append("search", "");
       formData.append("type", []);
       formData.append("keys", keys);
-      const { data } = await IssueFilterAPI(access, formData);
+      const { data } = await IssueFilterAPI(formData);
       setFilterIssues(data.data);
       setdeleted(false);
     })();
-    dispatch(getProjectTeam({ access, keys }));
-  }, [
-    dispatch,
-    editIssueModal,
-    access,
-    keys,
-    displayCreateIssueModal,
-    deleted,
-  ]);
+    dispatch(getProjectTeam({ keys }));
+  }, [dispatch, editIssueModal, keys, displayCreateIssueModal, deleted]);
 
   useEffect(() => {
     setTeams([...team]);
@@ -142,11 +134,10 @@ const Work = (props) => {
       formData.append("search", searchText);
       formData.append("type", typeArray);
       formData.append("keys", keys);
-      const { data } = await IssueFilterAPI(access, formData);
+      const { data } = await IssueFilterAPI(formData);
       setFilterIssues(data.data);
     })();
-  }, [userFilter, access, searchText, keys, typeArray, dispatch]);
-
+  }, [userFilter, searchText, keys, typeArray, dispatch]);
   const onDragEnd = async (result) => {
     const { source, destination } = result;
     if (!destination) return;
@@ -185,7 +176,7 @@ const Work = (props) => {
     const formData = new FormData();
     formData.append("field", "status");
     formData.append("value", Number(result.destination.droppableId));
-    const { data } = await updateIssueAPI(access, result.draggableId, formData);
+    const { data } = await updateIssueAPI(result.draggableId, formData);
     if (data.error) {
       alert("Something Went wrong");
     }
@@ -198,7 +189,7 @@ const Work = (props) => {
     }
   }, [loading]);
   const deleteIssue = async (id) => {
-    const { data } = await deleteIssueAPI(access, id);
+    const { data } = await deleteIssueAPI(id);
     if (data.success) {
     }
   };
@@ -276,7 +267,6 @@ const Work = (props) => {
               {addTeamMember && (
                 <AddTeamMemberModal
                   users={userList}
-                  access={access}
                   currentProject={currentProject}
                   display={true}
                   setteamCreated={setteamCreated}

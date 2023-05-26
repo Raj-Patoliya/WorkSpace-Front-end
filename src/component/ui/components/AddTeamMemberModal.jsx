@@ -11,7 +11,6 @@ const AddTeamMemberModal = ({
   display,
   setAddTeamMember,
   users,
-  access,
   setteamCreated,
   currentProject,
 }) => {
@@ -35,7 +34,7 @@ const AddTeamMemberModal = ({
     formData.append("user", selected);
     formData.append("role", "1");
     try {
-      dispatch(addProjectTeamMember({ access, formData }));
+      dispatch(addProjectTeamMember({ formData }));
       toast.current.show({
         severity: "success",
         summary: "Success",

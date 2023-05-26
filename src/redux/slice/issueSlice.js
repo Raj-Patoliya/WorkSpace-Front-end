@@ -23,38 +23,35 @@ const initialState = {
   loading: false,
   singleIssue: {},
 };
-export const getStatus = createAsyncThunk("issue/status", async (access) => {
+export const getStatus = createAsyncThunk("issue/status", async () => {
   try {
-    const { data } = await getStatusList(access);
+    const { data } = await getStatusList();
     return data;
   } catch (error) {
     return error;
   }
 });
 
-export const getPriority = createAsyncThunk(
-  "issue/priority",
-  async (access) => {
-    try {
-      const { data } = await getPriorityList(access);
-      return data;
-    } catch (error) {
-      return error;
-    }
-  }
-);
-
-export const getIssueType = createAsyncThunk("issue/type", async (access) => {
+export const getPriority = createAsyncThunk("issue/priority", async () => {
   try {
-    const { data } = await getTypeList(access);
+    const { data } = await getPriorityList();
     return data;
   } catch (error) {
     return error;
   }
 });
-export const getUsers = createAsyncThunk("issue/userList", async (access) => {
+
+export const getIssueType = createAsyncThunk("issue/type", async () => {
   try {
-    const { data } = await getUserList(access);
+    const { data } = await getTypeList();
+    return data;
+  } catch (error) {
+    return error;
+  }
+});
+export const getUsers = createAsyncThunk("issue/userList", async () => {
+  try {
+    const { data } = await getUserList();
     return data;
   } catch (error) {
     return error;
@@ -63,9 +60,9 @@ export const getUsers = createAsyncThunk("issue/userList", async (access) => {
 
 export const getIssuesByProjectKey = createAsyncThunk(
   "work/getIssuesByProjectKey",
-  async ({ access, keys }) => {
+  async ({ keys }) => {
     try {
-      const { data } = await getIssueByProjectKeyAPI(access, keys);
+      const { data } = await getIssueByProjectKeyAPI(keys);
       return data;
     } catch (error) {
       return error;
@@ -74,9 +71,9 @@ export const getIssuesByProjectKey = createAsyncThunk(
 );
 export const getCurrentProjects = createAsyncThunk(
   "current-project",
-  async ({ access, keys }) => {
+  async ({ keys }) => {
     try {
-      const { data } = await getProjectByKeyAPI(access, keys);
+      const { data } = await getProjectByKeyAPI(keys);
       return data;
     } catch (error) {
       return null;
@@ -85,9 +82,9 @@ export const getCurrentProjects = createAsyncThunk(
 );
 export const updateIssue = createAsyncThunk(
   "update/issues",
-  async ({ token, id, formData }) => {
+  async ({ id, formData }) => {
     try {
-      const { data } = await updateIssueAPI(token, id, formData);
+      const { data } = await updateIssueAPI(id, formData);
       return data;
     } catch (error) {
       return null;
@@ -97,9 +94,8 @@ export const updateIssue = createAsyncThunk(
 
 export const getIssueById = createAsyncThunk(
   "issue-by-id",
-  async ({ access, issueId }) => {
-    console.log(access);
-    const { data } = await getIssueByIdAPI(access, issueId);
+  async ({ issueId }) => {
+    const { data } = await getIssueByIdAPI(issueId);
     return data;
   }
 );

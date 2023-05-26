@@ -1,27 +1,20 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-
 import { Grid } from "@mui/material";
 import Items from "./items";
 import { useEffect } from "react";
-import axios from "axios";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { getProjects } from "../../../redux/slice/projectSlice";
-
-import { ProgressSpinner } from "primereact/progressspinner";
-
 export default function ProjectCard() {
   const projectsList = useSelector((state) => state.project.allProjectList);
   const [isLoading, setisLoading] = useState(true);
   const [projects, setprojects] = useState({ ...projectsList });
   const dispatch = useDispatch();
-  const { access } = useSelector((state) => state.auth.token);
   useEffect(() => {
-    dispatch(getProjects(access));
-  }, [dispatch, access]);
+    dispatch(getProjects());
+  }, [dispatch]);
   useEffect(() => {
     setprojects(projectsList);
     setisLoading(false);
@@ -29,7 +22,8 @@ export default function ProjectCard() {
   return (
     <Box>
       <Grid container spacing={1} sx={{ margin: "0 auto" }}>
-        {projects.hasOwnProperty("results") &&
+        {projects &&
+          projects.hasOwnProperty("results") &&
           !isLoading &&
           projects.results.length === 0 && (
             <>
@@ -37,7 +31,8 @@ export default function ProjectCard() {
             </>
           )}
 
-        {projects.hasOwnProperty("results") &&
+        {projects &&
+          projects.hasOwnProperty("results") &&
           !isLoading &&
           projects.results.map((data, index) => {
             if (index < 5) {
@@ -60,6 +55,8 @@ export default function ProjectCard() {
                   </Card>
                 </Grid>
               );
+            } else {
+              return null;
             }
           })}
       </Grid>

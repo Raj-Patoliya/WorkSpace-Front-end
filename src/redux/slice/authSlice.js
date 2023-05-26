@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as api from "../api";
+import axiosInstance from "../AxoisConfig";
 const initialState = {
-  token: [],
   error: "",
   message: "",
   loading: false,
@@ -12,24 +12,22 @@ const initialState = {
 export const login = createAsyncThunk("user/login", async (data) => {
   try {
     const response = await api.LoginAPI(data);
-
+    axiosInstance.defaults.headers["Authorization"] =
+      "Bearer " + response.data.access;
     return response.data;
   } catch (error) {
     return error.response.data;
   }
 });
 
-export const getCurrentUser = createAsyncThunk(
-  "getCurrentUser",
-  async ({ access }) => {
-    try {
-      const { data } = await api.getCurrentUserAPI(access);
-      return data;
-    } catch (error) {
-      return null;
-    }
+export const getCurrentUser = createAsyncThunk("getCurrentUser", async () => {
+  try {
+    const { data } = await api.getCurrentUserAPI();
+    return data;
+  } catch (error) {
+    return null;
   }
-);
+});
 
 const authSlice = createSlice({
   initialState,
@@ -48,7 +46,8 @@ const authSlice = createSlice({
     },
     [login.fulfilled]: (state, action) => {
       state.loading = false;
-      state.token = action.payload;
+      localStorage.setItem("access_token", action.payload.access);
+      localStorage.setItem("refresh_token", action.payload.refresh);
       state.error = "";
       state.isLoggedIn = true;
     },

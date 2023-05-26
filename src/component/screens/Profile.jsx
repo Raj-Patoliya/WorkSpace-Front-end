@@ -30,17 +30,17 @@ const Profile = () => {
   const toast = useRef(null);
   const [user, setuser] = useState({ allIssue: [] });
   const dispatch = useDispatch();
-  const { access } = useSelector((state) => state.auth.token);
+
   const projects = useSelector((state) => state.project.allProjectList);
   const [projectList, setprojectList] = useState({});
   const [isLoading, setisLoading] = useState(true);
   useEffect(() => {
     (async () => {
-      const { data } = await UserIssueBasicDetailsAPI(access);
-      dispatch(getProjects(access));
+      const { data } = await UserIssueBasicDetailsAPI();
+      dispatch(getProjects());
       setuser(data);
     })();
-  }, [access, dispatch]);
+  }, [dispatch]);
   useEffect(() => {
     setprojectList(projects);
     setisLoading(false);
@@ -56,7 +56,7 @@ const Profile = () => {
       const formData = new FormData();
       formData.append("currentPassword", values.currentPassword);
       formData.append("newPassword", values.newPassword);
-      const { data } = await changePasswordAPI(access, formData);
+      const { data } = await changePasswordAPI(formData);
       if (data.error) {
         toast.current.show({
           severity: "error",

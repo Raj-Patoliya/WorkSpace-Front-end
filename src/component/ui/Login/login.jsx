@@ -32,7 +32,8 @@ const Login = () => {
       const formData = new FormData();
       formData.append("email", values.email);
       formData.append("password", values.password);
-      dispatch(login(formData));
+      const token = await dispatch(login(formData));
+      console.log(token);
       navigate("/");
     },
   });

@@ -44,7 +44,6 @@ export default function CreateIssueModal({
   const statusList = useSelector((state) => state.issue.status);
   const priorityList = useSelector((state) => state.issue.priority);
   const userList = useSelector((state) => state.project.team);
-  const { access } = useSelector((state) => state.auth.token);
   const [projects, setprojects] = useState(projectsList.results);
   const [status, setstatus] = useState(statusList);
   const [priority, setpriority] = useState(priorityList);
@@ -80,19 +79,19 @@ export default function CreateIssueModal({
   const [error, setError] = useState(initialErrorState);
 
   useEffect(() => {
-    dispatch(getProjects(access));
-  }, [dispatch, access]);
+    dispatch(getProjects());
+  }, [dispatch]);
 
   useEffect(() => {
     setprojects(projectsList.results);
   }, [projectsList]);
 
   useEffect(() => {
-    dispatch(getStatus(access));
-    dispatch(getPriority(access));
-    dispatch(getIssueType(access));
-    dispatch(getUsers(access));
-  }, [dispatch, access]);
+    dispatch(getStatus());
+    dispatch(getPriority());
+    dispatch(getIssueType());
+    dispatch(getUsers());
+  }, [dispatch]);
   useEffect(() => {
     setstatus(statusList);
     setpriority(priorityList);
@@ -103,11 +102,11 @@ export default function CreateIssueModal({
     if (initialValues.projectValue) {
       const keys = initialValues.projectValue.value;
       (async () => {
-        const { data } = await getTeamByProjectKeyAPI(access, keys);
+        const { data } = await getTeamByProjectKeyAPI(keys);
         setUser(data.data);
       })();
     }
-  }, [initialValues.projectValue, dispatch, access]);
+  }, [initialValues.projectValue, dispatch]);
   const handlSelect = (name, value) => {
     setInitialValues((prevState) => {
       return { ...prevState, [name]: value };
@@ -129,7 +128,7 @@ export default function CreateIssueModal({
   const handleBulkInputChange = async (e) => {
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
-    const { data } = await UploadIssueInBulkAPI(access, formData);
+    const { data } = await UploadIssueInBulkAPI(formData);
     if (data.success) {
       setDisplayCreateIssueModal(false);
       seteditIssueModal(false);
@@ -197,7 +196,7 @@ export default function CreateIssueModal({
         formData.append(`attachments_${index}`, file)
       );
       formData.append("attachments", selectedFiles);
-      const { data } = await CreateIssueAPI(access, formData);
+      const { data } = await CreateIssueAPI(formData);
       if (data.created) {
         setDisplayCreateIssueModal(false);
         seteditIssueModal(false);

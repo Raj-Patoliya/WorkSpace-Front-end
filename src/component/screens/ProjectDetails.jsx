@@ -12,15 +12,14 @@ import { Avatar } from "primereact/avatar";
 const ProjectDetails = () => {
   const dispatch = useDispatch();
   const { keys } = useParams();
-  const { access } = useSelector((state) => state.auth.token);
   const project = useSelector((state) => state.project.currentProject);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [key, setkey] = useState("");
   const [team, setteam] = useState([]);
   useEffect(() => {
-    dispatch(getProjectByKey({ access, keys }));
-  }, [dispatch, access, keys]);
+    dispatch(getProjectByKey({ keys }));
+  }, [dispatch, keys]);
   useEffect(() => {
     setTitle(project.title);
     setDescription(project.description);

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Box, Container, CssBaseline, Typography } from "@mui/material";
 import { TabView, TabPanel } from "primereact/tabview";
 import { UserIssueBasicDetailsAPI } from "../../redux/api";
@@ -9,16 +8,16 @@ import AssignedToYou from "../ui/Issues/AssignedIssues";
 import Layout from "../layout/layout";
 
 const Home = () => {
-  const { access } = useSelector((state) => state.auth.token);
   const [assined, setAssined] = useState([]);
   const [reported, setReported] = useState([]);
+
   useEffect(() => {
     (async () => {
-      const { data } = await UserIssueBasicDetailsAPI(access);
+      const { data } = await UserIssueBasicDetailsAPI();
       setAssined(data.assignedIssue);
       setReported(data.reportedIssue);
     })();
-  }, [access]);
+  }, []);
 
   return (
     <Layout>

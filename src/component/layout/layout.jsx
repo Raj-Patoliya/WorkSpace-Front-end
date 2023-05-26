@@ -101,10 +101,9 @@ const Layout = (props) => {
   const [displayCreateIssueModal, setDisplayCreateIssueModal] = useState(false);
   const [open, setOpen] = useState(false);
   const currentUser = useSelector((state) => state.auth.currentUser);
-  const { access } = useSelector((state) => state.auth.token);
   useEffect(() => {
-    dispatch(getCurrentUser({ access }));
-  }, [dispatch, access]);
+    dispatch(getCurrentUser());
+  }, [dispatch]);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
