@@ -1,10 +1,8 @@
 import axios from "axios";
 import axiosInstance from "./AxoisConfig";
 
-const localhost = "http://127.0.0.1:8000";
-
 export const API = axios.create({
-  baseURL: localhost,
+  baseURL: process.env.REACT_APP_LOCAL_HOST_URL,
   headers: {
     "Content-Type": `multipart/form-data`,
   },
@@ -13,10 +11,15 @@ export const API = axios.create({
 export const LoginAPI = (formData) =>
   axiosInstance.post("/user/login/token/", formData);
 
-export const getCurrentUserAPI = () => axiosInstance.get("user/current-user");
+export const ProfileAvatars = () => axiosInstance.get("/user/avtar/");
+
+export const getCurrentUserAPI = () => axiosInstance.get("/user/current-user");
+
+export const updateProfileAPI = (formData) =>
+  axiosInstance.patch("/user/change-profile", formData);
 
 export const changePasswordAPI = (formData) =>
-  axiosInstance.post("user/change-password", formData);
+  axiosInstance.post("/user/change-password", formData);
 
 // Project APIs
 export const ProjectListAPI = () => axiosInstance.get("/project/all-list/");
@@ -55,17 +58,17 @@ export const CreateIssueAPI = (formData) =>
   axiosInstance.post("/issues/issues", formData);
 
 export const updateIssueAPI = (id, formData) =>
-  axiosInstance.patch(`issues/issue-update/${id}`, formData);
+  axiosInstance.patch(`/issues/issue-update/${id}`, formData);
 
 export const getIssueByIdAPI = (id) =>
-  axiosInstance.get(`issues/issue-update/${id}`);
+  axiosInstance.get(`/issues/issue-update/${id}`);
 
 export const createCommentAPI = (formData) =>
-  axiosInstance.post("issues/issue-comment-create", formData);
+  axiosInstance.post("/issues/issue-comment-create", formData);
 export const deleteCommentAPI = (id) =>
-  axiosInstance.delete(`issues/issue-comment-delete/${id}`);
+  axiosInstance.delete(`/issues/issue-comment-delete/${id}`);
 export const updateCommentAPI = (id, formData) =>
-  axiosInstance.patch(`issues/issue-comment-update/${id}`, formData);
+  axiosInstance.patch(`/issues/issue-comment-update/${id}`, formData);
 
 export const UserIssueBasicDetailsAPI = () =>
   axiosInstance.get("/user/user-issue");
@@ -77,4 +80,4 @@ export const IssueFilterAPI = (formData) =>
   axiosInstance.post("/issues/issue-filter", formData);
 
 export const deleteIssueAPI = (id) =>
-  axiosInstance.delete(`issues/issue-delete/${id}`);
+  axiosInstance.delete(`/issues/issue-delete/${id}`);

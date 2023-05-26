@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:8000";
+const baseURL = process.env.REACT_APP_LOCAL_HOST_URL;
 
 const clearStorage = () => {
   localStorage.removeItem("access_token");
@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
     Authorization: localStorage.getItem("access_token")
       ? "Bearer " + localStorage.getItem("access_token")
       : null,
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     accept: "application/json",
   },
 });

@@ -37,7 +37,7 @@ export default function ProjectCard() {
           projects.results.map((data, index) => {
             if (index < 5) {
               return (
-                <Grid item xs={2} md={2}>
+                <Grid item xs={2} md={2} key={data.id}>
                   <Card variant="outlined" sx={{ minHeight: "13rem" }}>
                     {
                       <Items

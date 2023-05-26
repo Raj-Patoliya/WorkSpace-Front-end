@@ -10,6 +10,7 @@ import axios from "axios";
 import Header from "../../layout/header";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
+import { ProfileAvatars } from "../../../redux/api";
 const Register = () => {
   const toast = useRef(null);
   const navigate = useNavigate();
@@ -24,6 +25,9 @@ const Register = () => {
       fullName: Yup.string()
         .min(2, "Must be at least 2 characters")
         .max(50, "Must be 50 characters or less")
+        .matches(/^[a-zA-Z\s]+$/, "Name must not contain numbers")
+        .trim()
+        .transform((value, originalValue) => originalValue.trim())
         .required("Required"),
       email: Yup.string().email("Invalid email address").required("Required"),
       password: Yup.string()
@@ -41,7 +45,7 @@ const Register = () => {
       formData.append("password", values.password);
       formData.append("profile", profile);
       const { data } = await axios.post(
-        "http://127.0.0.1:8000/user/create/",
+        process.env.REACT_APP_LOCAL_HOST_URL + "/user/create/",
         formData,
         {
           headers: {
@@ -70,7 +74,7 @@ const Register = () => {
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
     const getImages = async () => {
-      const { data } = await axios.get("http://127.0.0.1:8000/user/avtar/");
+      const { data } = await ProfileAvatars();
       const images = data.map((data) => {
         return data.image;
       });
@@ -80,7 +84,6 @@ const Register = () => {
   }, []);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
   return (
     <>
       <Header />

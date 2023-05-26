@@ -9,7 +9,7 @@ export default function VirtualScrollerDemo({
 }) {
   const [items, setitems] = useState([]);
 
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState();
   const [filteredItems, setFilteredItems] = useState(null);
   useEffect(() => {
     const item = data.map((data) => ({
@@ -17,8 +17,8 @@ export default function VirtualScrollerDemo({
       value: data.key,
       id: data.id,
     }));
-    console.log({ item: item });
     setitems(item);
+    setSelectedItem(item[0]);
   }, [data]);
   const searchItems = (event) => {
     let query = event.query;

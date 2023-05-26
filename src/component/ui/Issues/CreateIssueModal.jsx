@@ -198,6 +198,9 @@ export default function CreateIssueModal({
       formData.append("attachments", selectedFiles);
       const { data } = await CreateIssueAPI(formData);
       if (data.created) {
+        setSelectedFiles([]);
+        setInitialValues(initialValueState);
+        setError(initialErrorState);
         setDisplayCreateIssueModal(false);
         seteditIssueModal(false);
         navigate(`/projects/${initialValues.projectValue.value}/work/`);

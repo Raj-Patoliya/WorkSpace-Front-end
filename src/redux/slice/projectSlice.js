@@ -7,7 +7,7 @@ import {
 } from "../api";
 
 const initialState = {
-  allProjectList: null,
+  allProjectList: [],
   currentProject: {},
   team: [],
   loading: false,

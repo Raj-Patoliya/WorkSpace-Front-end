@@ -18,8 +18,6 @@ import DropdownTemplate from "../components/Dropdwon";
 import { useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { Divider } from "primereact/divider";
-import "./editIssue.css";
-
 import {
   getIssueType,
   getPriority,
@@ -40,7 +38,6 @@ import FileViewerComponent from "../components/FileViewer";
 const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const dispatch = useDispatch();
   const toast = useRef(null);
-  const { access } = useSelector((state) => state.auth.token);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const statusList = useSelector((state) => state.issue.status);
   const priorityList = useSelector((state) => state.issue.priority);
@@ -63,10 +60,10 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const [visible, setVisible] = useState(false);
   const [fileName, setfileName] = useState("");
   useEffect(() => {
-    dispatch(getStatus(access));
-    dispatch(getPriority(access));
-    dispatch(getIssueType(access));
-  }, [dispatch, access]);
+    dispatch(getStatus());
+    dispatch(getPriority());
+    dispatch(getIssueType());
+  }, [dispatch]);
 
   useEffect(() => {
     setIssue(data);
@@ -86,7 +83,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   }, [data]);
   useEffect(() => {
     const url = attachments.map(
-      (data) => "http://127.0.0.1:8000" + data.attachment_file
+      (data) => process.env.REACT_APP_LOCAL_HOST_URL + data.attachment_file
     );
     setUrls(url);
   }, [attachments]);
@@ -119,7 +116,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     if (!file) {
       return null;
     }
-    const url = "http://127.0.0.1:8000" + file.attachment_file;
+    const url = process.env.REACT_APP_LOCAL_HOST_URL + file.attachment_file;
     let imageIcons = null;
     if (file.attachment_file.includes(".pdf")) {
       imageIcons = pdf;
@@ -159,7 +156,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     formData.append("comment_text", commentMessage);
     formData.append("user_id", currentUser.id);
     formData.append("issue_id", issue.id);
-    const { data } = await createCommentAPI(access, formData);
+    const { data } = await createCommentAPI(formData);
     setcomments((prevState) => [data.lastcomment, ...prevState]);
     setnewComment(null);
   };
@@ -168,7 +165,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     setEditComment(null);
     const formData = new FormData();
     formData.append("comment_text", comment);
-    const { data } = await updateCommentAPI(access, id, formData);
+    const { data } = await updateCommentAPI(id, formData);
     if (data.success) {
       const commentArray = comments.map((data) => {
         if (data.id === id) {
@@ -182,7 +179,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     }
   };
   const deleteCommentHandler = async (id) => {
-    const { data } = await deleteCommentAPI(access, id);
+    const { data } = await deleteCommentAPI(id);
     if (data.success) {
       toast.current.show({
         severity: "info",
@@ -204,7 +201,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     const formData = new FormData();
     formData.append("field", field);
     formData.append("value", value);
-    const { data } = await updateIssueAPI(access, issue.id, formData);
+    const { data } = await updateIssueAPI(issue.id, formData);
     if (data.error) {
     }
   };

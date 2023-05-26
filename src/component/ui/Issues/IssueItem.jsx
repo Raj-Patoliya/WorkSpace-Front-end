@@ -1,10 +1,16 @@
-import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const IssueItem = ({ data }) => {
+  const navigate = useNavigate();
   return (
     <>
-      <div className="w-full mb-3 d-flex p-1 border-round transition-colors transition-duration-500 bg-white-300 hover:bg-gray-100 text-white hover:text-gray-900">
+      <div
+        onClick={() => {
+          navigate(`/projects/${data.project.key}/work`);
+        }}
+        className="w-full mb-3 d-flex p-1 border-round transition-colors transition-duration-500 bg-white-300 hover:bg-gray-100 text-white hover:text-gray-900"
+      >
         <div className="w-fit">
           <img
             src={data.issue_type.icon}

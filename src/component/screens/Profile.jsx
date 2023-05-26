@@ -6,15 +6,22 @@ import { Divider } from "primereact/divider";
 import { Button } from "primereact/button";
 import { Password } from "primereact/password";
 import "./profile.css";
+import { Tooltip } from "primereact/tooltip";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
-import { UserIssueBasicDetailsAPI, changePasswordAPI } from "../../redux/api";
+import {
+  ProfileAvatars,
+  UserIssueBasicDetailsAPI,
+  changePasswordAPI,
+  updateProfileAPI,
+} from "../../redux/api";
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
 import { useDispatch } from "react-redux";
 import { getProjects } from "../../redux/slice/projectSlice";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Modal } from "react-bootstrap";
 
 const validationSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Current password is required."),
@@ -34,6 +41,23 @@ const Profile = () => {
   const projects = useSelector((state) => state.project.allProjectList);
   const [projectList, setprojectList] = useState({});
   const [isLoading, setisLoading] = useState(true);
+  const [imageArray, setImageArray] = useState([]);
+  const [show, setShow] = useState(false);
+  const [profile, setProfile] = useState();
+  useEffect(() => {
+    setProfile(user.profile);
+  }, [user]);
+  useEffect(() => {
+    const getImages = async () => {
+      const { data } = await ProfileAvatars();
+      const images = data.map((data) => {
+        return data.image;
+      });
+      setImageArray(images);
+    };
+    getImages();
+  }, []);
+
   useEffect(() => {
     (async () => {
       const { data } = await UserIssueBasicDetailsAPI();
@@ -75,6 +99,16 @@ const Profile = () => {
     },
   });
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const updateProfile = (image) => {
+    const formData = new FormData();
+    formData.append("profile", image);
+    const { data } = updateProfileAPI(formData);
+    console.log(data);
+    setProfile(image);
+    handleClose();
+  };
   return (
     <Layout>
       {isLoading && <ProgressSpinner />}
@@ -82,10 +116,16 @@ const Profile = () => {
         <>
           <Toast ref={toast} />
           <div className="h-10rem -ml-4 -mt-4 bg-blue-200 pt-3">
+            <Tooltip target=".profile-avatar" mouseTrack mouseTrackLeft={10} />
             <Avatar
-              image={user.profile}
+              className="profile-avatar"
+              data-pr-tooltip="Double Click To change Profile"
+              image={profile}
               shape="circle"
               style={{ width: "250px", height: "250px", marginLeft: "2rem " }}
+              onDoubleClick={() => {
+                handleShow();
+              }}
             />
           </div>
           <div style={{ marginTop: "7rem", marginLeft: "2rem" }}>
@@ -235,9 +275,39 @@ const Profile = () => {
                   ))}
               </Card>
             </Card>
-          </div>{" "}
+          </div>
         </>
       )}
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Avtar</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div class="container">
+            <div class="row">
+              {imageArray.map((data) => (
+                <div key={data} class="col" onClick={() => {}}>
+                  <img
+                    key={data}
+                    src={data}
+                    title="Tap to select"
+                    style={{ width: "100px" }}
+                    alt="Cardcap"
+                    onClick={() => {
+                      updateProfile(data);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Layout>
   );
 };
