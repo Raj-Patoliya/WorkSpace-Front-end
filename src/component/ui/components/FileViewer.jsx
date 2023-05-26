@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-constructor */
-import React, { Component } from "react";
+import React from "react";
 import FileViewer from "react-file-viewer";
-
 
 class FileViewerComponent extends React.Component {
   constructor(props) {
@@ -12,15 +11,12 @@ class FileViewerComponent extends React.Component {
       <FileViewer
         fileType={this.props.type}
         filePath={this.props.url}
-        // errorComponent={CustomErrorComponent}
         onError={this.onError}
       />
     );
   }
 
-  onError(e) {
-    // logger.logError(e, "error in file-viewer");
-  }
+  onError(e) {}
 }
 
 export default FileViewerComponent;

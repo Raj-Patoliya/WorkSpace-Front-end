@@ -1,19 +1,14 @@
-import { useSelector, useDispatch } from "react-redux";
-import React, { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import React, { useCallback, useState } from "react";
 import { getIssueByIdAPI } from "../../../redux/api";
-import { getIssueById } from "../../../redux/slice/issueSlice";
 import { Card } from "primereact/card";
-import { Divider } from "primereact/divider";
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
 import Avatar from "@mui/material/Avatar";
-import AvatarGroup from "@mui/material/AvatarGroup";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Tooltip } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Draggable } from "react-beautiful-dnd";
 import "../../screens/Work.css";
 const DragableComponent = ({
   data,
@@ -25,7 +20,7 @@ const DragableComponent = ({
   issueKey,
   index,
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const editMenu = (event) => {
     setAnchorEl(event.currentTarget);

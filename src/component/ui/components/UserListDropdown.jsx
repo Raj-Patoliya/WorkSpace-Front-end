@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown } from "primereact/dropdown";
-import { Avatar } from "primereact/avatar";
 import { AutoComplete } from "primereact/autocomplete";
 
 export default function UserList({
@@ -18,7 +16,6 @@ export default function UserList({
     if (userList.length > 0) {
       const item = userList.map((userList) => ({
         label: `${userList.user.fullName}`,
-        // email: `${userList.user.email}`,
         value: userList.user.id,
         profile: userList.user.profile,
         id: userList.user.id,
@@ -34,10 +31,7 @@ export default function UserList({
     console.log(query);
     for (let i = 0; i < user.length; i++) {
       let item = user[i];
-      if (
-        item.label.toLowerCase().includes(query.toLowerCase())
-        // || item.email.toLowerCase().includes(query.toLowerCase())
-      ) {
+      if (item.label.toLowerCase().includes(query.toLowerCase())) {
         _filteredUser.push(item);
       }
     }

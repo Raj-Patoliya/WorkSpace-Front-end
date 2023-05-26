@@ -13,7 +13,6 @@ import { UserIssueBasicDetailsAPI, changePasswordAPI } from "../../redux/api";
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
 import { useDispatch } from "react-redux";
-import IssueItem from "../ui/Issues/IssueItem";
 import { getProjects } from "../../redux/slice/projectSlice";
 import { ProgressSpinner } from "primereact/progressspinner";
 
@@ -40,7 +39,6 @@ const Profile = () => {
       const { data } = await UserIssueBasicDetailsAPI(access);
       dispatch(getProjects(access));
       setuser(data);
-      console.log(data);
     })();
   }, [access, dispatch]);
   useEffect(() => {
@@ -205,13 +203,6 @@ const Profile = () => {
                 {projectList.hasOwnProperty("results") &&
                   projectList.results.map((data) => (
                     <div className="w-full mb-3 d-flex p-1 border-round transition-colors transition-duration-500 bg-white-300 hover:bg-gray-100 text-white hover:text-gray-900">
-                      {/* <div className="w-fit">
-                  <img
-                    src={projectList.}
-                    alt={data.issue_type.icon}
-                    width={"25px"}
-                  />
-                </div> */}
                       <div className="ml-2">
                         <p className="text-sm font-bold h-1rem text-700">
                           {data.title}
@@ -227,7 +218,6 @@ const Profile = () => {
                           position: "absolute",
                           marginLeft: "30%",
                           fontSize: "15px",
-                          // marginTop: "5px",
                         }}
                       >
                         <div className="w-fit">

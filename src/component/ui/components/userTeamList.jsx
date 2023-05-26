@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Avatar } from "primereact/avatar";
-import { AutoComplete } from "primereact/autocomplete";
 
 export default function IssueTeamList({
   teams,
@@ -60,21 +59,6 @@ export default function IssueTeamList({
         itemTemplate={UserOptionTemplate}
         className={"w-15rem"}
       />
-      {/* <AutoComplete
-        placeholder={placeholder}
-        value={selecteduser}
-        suggestions={filteredUser}
-        completeMethod={searchItems}
-        virtualScrollerOptions={{ itemSize: 38 }}
-        width={width}
-        field="label"
-        dropdown
-        onChange={(e) => {
-          console.log(e.value);
-          setselecteduser(e.value);
-          onSelected(name, e.value.id);
-        }}
-      /> */}
     </>
   );
 }

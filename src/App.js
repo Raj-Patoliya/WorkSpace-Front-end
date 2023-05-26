@@ -1,15 +1,8 @@
 import "bootstrap/dist/css/bootstrap.css";
-import Register from "./component/ui/Register";
-import Login from "./component/ui/login";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-  redirect,
-} from "react-router-dom";
+import Register from "./component/ui/Register/Register";
+import Login from "./component/ui/Login/login";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { DialogDemo } from "./component/ui/Project/CreateProjectModal";
 import Home from "./component/screens/Home";
 import Work from "./component/screens/Work";
 import ProjectList from "./component/screens/ProjectList";

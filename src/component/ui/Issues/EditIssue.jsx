@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
 import pdf from "../../assets/images/icons/pdf.png";
 import text from "../../assets/images/icons/text.png";
@@ -13,18 +12,15 @@ import { Editor } from "primereact/editor";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Image } from "primereact/image";
 import { Avatar } from "primereact/avatar";
-import "./editIssue.css";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import DropdownTemplate from "../components/Dropdwon";
 import { useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
-
 import { Divider } from "primereact/divider";
+import "./editIssue.css";
 
 import {
-  getIssueById,
   getIssueType,
   getPriority,
   getStatus,
@@ -41,43 +37,27 @@ import {
 } from "../../../redux/api";
 import IssueTeamList from "../components/userTeamList";
 import FileViewerComponent from "../components/FileViewer";
-import { FilePresent } from "@mui/icons-material";
-import axios from "axios";
 const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   const dispatch = useDispatch();
-  const { keys } = useParams();
   const toast = useRef(null);
   const { access } = useSelector((state) => state.auth.token);
   const currentUser = useSelector((state) => state.auth.currentUser);
-  const issueReq = useSelector((state) => state.issue.singleIssue);
-  const typeList = useSelector((state) => state.issue.type);
   const statusList = useSelector((state) => state.issue.status);
   const priorityList = useSelector((state) => state.issue.priority);
-
   const [editSummary, seteditSummary] = useState(false);
   const [editDiscription, seteditDiscription] = useState(false);
-  const [displayBasic2, setDisplayBasic2] = useState(show);
   const [issue, setIssue] = useState({});
   const [urls, setUrls] = useState([]);
   const [summary, setSummary] = useState("");
   const [project, setProject] = useState([]);
-  const [status, setStatus] = useState([]);
-  const [priority, setpriority] = useState([]);
-  const [issue_type, setissue_type] = useState([]);
   const [description, setDescription] = useState("");
-  const [assignee, setassignee] = useState([]);
-  const [reporter, setreporter] = useState([]);
   const [attachments, setattachments] = useState([]);
   const [comments, setcomments] = useState([]);
-  const [addAttachemnt, setaddAttachemnt] = useState([]);
   const [tempDescription, setTempDescription] = useState("");
   const [newComment, setnewComment] = useState("");
   const [editComment, setEditComment] = useState(null);
   const [editedComment, setEditedComment] = useState(null);
-  const [editAssignee, setEditAssignee] = useState(null);
-  const [editReporter, setEditReporter] = useState(null);
   const [ago, setAgo] = useState("");
-  const [updateDate, setUpdateDate] = useState("");
   const [type, settype] = useState("");
   const [url, seturl] = useState("");
   const [visible, setVisible] = useState(false);
@@ -89,23 +69,12 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   }, [dispatch, access]);
 
   useEffect(() => {
-    setStatus(statusList);
-    setpriority(priorityList);
-    setissue_type(typeList);
-  }, [statusList, typeList, priorityList]);
-  useEffect(() => {
     setIssue(data);
     setProject(data.project);
-    setStatus(data.status);
-    setpriority(data.priority);
-    setissue_type(data.issue_type);
     setSummary(data.issue_summary);
     setDescription(data.issue_description);
-    setassignee(data.assignee);
-    setreporter(data.reporter);
     setattachments(data.attachment);
     setcomments(data.comment);
-    setUpdateDate(data.updated_date);
   }, [data]);
 
   useEffect(() => {
@@ -174,8 +143,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
           width="80"
           height="60"
           onClick={() => {
-            // const newWindow = window.open(url, "_blank", "noopener,noreferrer");
-            // if (newWindow) newWindow.opener = null;
             setVisible(true);
             settype(file.attachment_file.split(".")[1]);
             seturl(url);
@@ -202,15 +169,17 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     const formData = new FormData();
     formData.append("comment_text", comment);
     const { data } = await updateCommentAPI(access, id, formData);
-    const commentArray = comments.map((data) => {
-      if (data.id === id) {
-        const updated = { ...data, comment_text: comment };
-        return { ...updated };
-      } else {
-        return data;
-      }
-    });
-    setcomments(commentArray);
+    if (data.success) {
+      const commentArray = comments.map((data) => {
+        if (data.id === id) {
+          const updated = { ...data, comment_text: comment };
+          return { ...updated };
+        } else {
+          return data;
+        }
+      });
+      setcomments(commentArray);
+    }
   };
   const deleteCommentHandler = async (id) => {
     const { data } = await deleteCommentAPI(access, id);
@@ -236,14 +205,13 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     formData.append("field", field);
     formData.append("value", value);
     const { data } = await updateIssueAPI(access, issue.id, formData);
+    if (data.error) {
+    }
   };
   const handleAddAttachments = () => {
     document.getElementById("fileInput").click();
   };
   const handleFileInputChange = async (event) => {
-    // let objectUrl = URL.createObjectURL(event.target.files[0]);
-
-    // setattachments((prevState) => [...prevState, event.target.files[0]]);
     const formData = new FormData();
     formData.append("attachment_file", event.target.files[0]);
     formData.append("issue_id", issue.id);
@@ -251,12 +219,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
     setattachments(data.success);
   };
 
-  const updateDropDownHandler = async (name, id) => {
-    const formData = new FormData();
-    formData.append("field", name);
-    formData.append("value", Number(id));
-    // const { data } = await updateIssueAPI(access, issue.id, formData);
-  };
   const header = () => {
     return (
       <>
@@ -275,11 +237,10 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   };
   return (
     <div>
-      {/* <FileViewerComponent type={type} url={url} /> */}
       <Toast ref={toast} />
       <Dialog
         header={header}
-        visible={displayBasic2}
+        visible={show}
         closeOnEscape={true}
         style={{ width: "80vw", marginTop: "3rem", height: "85vh" }}
         onHide={() => onHide()}
@@ -399,7 +360,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
                     >
                       <input
                         type="file"
-                        value={addAttachemnt}
                         id="fileInput"
                         onChange={handleFileInputChange}
                         style={{ display: "none" }}
@@ -498,9 +458,7 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
                                     text
                                     severity="warning"
                                     className="h-24px w-4rem p-0 ml-2  text-xs"
-                                    // onClick={() => setEditComment(null)}
                                     onClick={() => {
-                                      //
                                       updateCommentHandler(
                                         editedComment,
                                         data.id
@@ -584,12 +542,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
                   <div className="col text-primary">
                     <div className="row align-items-center">
                       <div className="col-md-auto">
-                        {/* <Avatar
-                          image="https://secure.gravatar.com/avatar/a4ed0c44beb6fc40891e61f3394921ba?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRP-4.png"
-                          shape="circle"
-                          size="small"
-                          onClick={() => {}}
-                        /> */}
                         <IssueTeamList
                           teams={teams}
                           issueId={issue.id}
@@ -598,9 +550,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
                           onSelected={updateHandler}
                         />
                       </div>
-                      {/* <div className="col-md-auto">
-                        <span>Raj Patoliya</span>
-                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -609,12 +558,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
                   <div className="col text-primary">
                     <div className="row align-items-center">
                       <div className="col-md-auto">
-                        {/* <Avatar
-                          image="https://secure.gravatar.com/avatar/a4ed0c44beb6fc40891e61f3394921ba?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRP-4.png"
-                          shape="circle"
-                          size="small"
-                          onClick={() => {}}
-                        /> */}
                         <IssueTeamList
                           teams={teams}
                           issueId={issue.id}
@@ -623,9 +566,6 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
                           defaultValue={data.reporter}
                         />
                       </div>
-                      {/* <div className="col-md-auto">
-                        <span>Raj Patoliya</span>
-                      </div> */}
                     </div>
                   </div>
                 </div>

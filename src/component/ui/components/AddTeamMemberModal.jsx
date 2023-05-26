@@ -1,14 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import { useSelector } from "react-redux";
 import { Toast } from "primereact/toast";
-import { AddTeamMemberAPI } from "../../../redux/api";
 import { useDispatch } from "react-redux";
-import {
-  addProjectTeamMember,
-  getProjectTeam,
-} from "../../../redux/slice/projectSlice";
+import { addProjectTeamMember } from "../../../redux/slice/projectSlice";
 import { useNavigate } from "react-router-dom";
 import AllUserList from "./AllUserList";
 
@@ -29,7 +24,6 @@ const AddTeamMemberModal = ({
 
   const handlSelect = (name, value) => {
     setSelected(value);
-    console.log(value);
   };
   const onHide = () => {
     setDisplayPosition(false);

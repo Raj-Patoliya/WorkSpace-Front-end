@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./register.css";
-import LoginBackground from "../assets/images/backgrounds/Wavy_Tech-11_Single-10.jpg";
+import LoginBackground from "../../assets/images/backgrounds/Wavy_Tech-11_Single-10.jpg";
 import { Form, Modal } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import axios from "axios";
-import Layout from "../layout/layout";
-import Header from "../layout/header";
+import Header from "../../layout/header";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 const Register = () => {

@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -26,10 +25,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser, logout } from "../../redux/slice/authSlice";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
-import { useState } from "react";
 import { DialogDemo } from "../ui/Project/CreateProjectModal";
 import CreateIssueModal from "../ui/Issues/CreateIssueModal";
-import BasicBreadcrumbs from "../ui/components/BreadCrumb";
 
 const drawerWidth = 240;
 const settings = ["Profile", "Dashboard", "Logout"];
@@ -59,7 +56,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -98,12 +94,12 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 const Layout = (props) => {
-  const [displayBasic, setDisplayBasic] = useState(false);
-  const [displayCreateIssueModal, setDisplayCreateIssueModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [displayBasic, setDisplayBasic] = useState(false);
+  const [displayCreateIssueModal, setDisplayCreateIssueModal] = useState(false);
+  const [open, setOpen] = useState(false);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const { access } = useSelector((state) => state.auth.token);
   useEffect(() => {
@@ -116,18 +112,10 @@ const Layout = (props) => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -196,7 +184,6 @@ const Layout = (props) => {
                   <MenuItem
                     key={settings[0]}
                     onClick={() => {
-                      setAnchorElNav(null);
                       navigate("/profile");
                     }}
                   >
@@ -205,7 +192,6 @@ const Layout = (props) => {
                   <MenuItem
                     key={settings[1]}
                     onClick={() => {
-                      setAnchorElNav(null);
                       navigate("/");
                     }}
                   >
@@ -214,7 +200,6 @@ const Layout = (props) => {
                   <MenuItem
                     key={settings[2]}
                     onClick={() => {
-                      setAnchorElNav(null);
                       dispatch(logout());
                       navigate("/login", { replace: true });
                     }}
@@ -231,7 +216,6 @@ const Layout = (props) => {
             style={{
               display: "flex",
               justifyContent: "start",
-              // backgroundColor: "#6366f1",
               height: "15px",
               border: "#6366f1",
             }}
@@ -245,14 +229,6 @@ const Layout = (props) => {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          {/* <img
-                  src={
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Workspace_Group_logo.svg/1200px-Workspace_Group_logo.svg.png"
-                  }
-                  alt="Berry"
-                  width={100}
-                  sx={{ marginRight: "100px" }}
-                /> */}
           <List>
             <ListItem disablePadding sx={{ display: "block" }}>
               <Tooltip title="dashboard">
@@ -435,7 +411,6 @@ const Layout = (props) => {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
-          {/* <BasicBreadcrumbs /> */}
 
           {props.children}
         </Box>

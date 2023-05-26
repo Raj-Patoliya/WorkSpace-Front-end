@@ -18,12 +18,6 @@ const AuthAxios = (token) =>
     },
   });
 
-const authHeader = (config) =>
-  axios.create({
-    baseURL: localhost,
-    headers: config.headers,
-  });
-
 export const LoginAPI = (formData) => API.post("/user/login/token/", formData);
 
 export const getCurrentUserAPI = (token) =>

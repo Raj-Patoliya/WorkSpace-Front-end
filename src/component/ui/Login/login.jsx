@@ -1,16 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { Toast } from "primereact/toast";
 import "./login.css";
-import LoginBackground from "../assets/images/backgrounds/Wavy_Tech-28_Single-10.jpg";
+import LoginBackground from "../../assets/images/backgrounds/Wavy_Tech-28_Single-10.jpg";
 import { Form } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Layout from "../layout/layout";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../redux/slice/authSlice";
-import Header from "../layout/header";
+import { login } from "../../../redux/slice/authSlice";
+import Header from "../../layout/header";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

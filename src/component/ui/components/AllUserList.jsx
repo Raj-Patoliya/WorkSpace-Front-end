@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown } from "primereact/dropdown";
-import { Avatar } from "primereact/avatar";
 import { AutoComplete } from "primereact/autocomplete";
 
 export default function AllUserList({
@@ -23,7 +21,6 @@ export default function AllUserList({
         profile: userList.profile,
         id: userList.id,
       }));
-      console.log({ item: item });
       setuser(item);
     }
   }, [userList]);
@@ -31,7 +28,6 @@ export default function AllUserList({
     let query = event.query;
     let _filteredUser = [];
 
-    console.log(query);
     for (let i = 0; i < user.length; i++) {
       let item = user[i];
       if (
@@ -58,7 +54,6 @@ export default function AllUserList({
         field="label"
         dropdown
         onChange={(e) => {
-          console.log(e.value);
           setselecteduser(e.value);
           onSelected(name, e.value.id);
         }}

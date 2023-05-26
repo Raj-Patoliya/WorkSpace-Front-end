@@ -9,18 +9,15 @@ const initialState = {
   currentUser: [],
 };
 
-export const login = createAsyncThunk(
-  "user/login",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await api.LoginAPI(data);
+export const login = createAsyncThunk("user/login", async (data) => {
+  try {
+    const response = await api.LoginAPI(data);
 
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
+    return response.data;
+  } catch (error) {
+    return error.response.data;
   }
-);
+});
 
 export const getCurrentUser = createAsyncThunk(
   "getCurrentUser",
@@ -38,15 +35,15 @@ const authSlice = createSlice({
   initialState,
   name: "authSlice",
   reducers: {
-    logout: (state, action) => {
+    logout: (state) => {
       localStorage.clear();
       state = initialState;
       return initialState;
     },
   },
   extraReducers: {
-    [login.pending]: (state, action) => {
-        state.error = "";
+    [login.pending]: (state) => {
+      state.error = "";
       state.loading = true;
     },
     [login.fulfilled]: (state, action) => {

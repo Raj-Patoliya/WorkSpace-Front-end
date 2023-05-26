@@ -7,18 +7,13 @@ import { useDispatch } from "react-redux";
 import { getProjectByKey } from "../../redux/slice/projectSlice";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
-import "./projectDetails.css";
 import { InputTextarea } from "primereact/inputtextarea";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { Avatar } from "primereact/avatar";
-import { Button } from "primereact/button";
 const ProjectDetails = () => {
-  const { keys } = useParams();
   const dispatch = useDispatch();
+  const { keys } = useParams();
   const { access } = useSelector((state) => state.auth.token);
   const project = useSelector((state) => state.project.currentProject);
-  const [projectData, setprojectData] = useState({});
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [key, setkey] = useState("");
@@ -27,9 +22,7 @@ const ProjectDetails = () => {
     dispatch(getProjectByKey({ access, keys }));
   }, [dispatch, access, keys]);
   useEffect(() => {
-    setprojectData({ ...project });
     setTitle(project.title);
-    console.log(project);
     setDescription(project.description);
     setkey(project.key);
     setteam(project.team);
@@ -93,9 +86,6 @@ const ProjectDetails = () => {
                 <div class="col">
                   <div class="col">{data.user[0].email}</div>
                 </div>
-                {/* <div class="col">
-                  <Button label="button" />
-                </div> */}
               </div>
             );
           })}

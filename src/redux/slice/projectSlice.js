@@ -4,7 +4,7 @@ import {
   ProjectListAPI,
   getProjectByKeyAPI,
   getTeamByProjectKeyAPI,
-} from "../api";  
+} from "../api";
 
 const initialState = {
   allProjectList: [],

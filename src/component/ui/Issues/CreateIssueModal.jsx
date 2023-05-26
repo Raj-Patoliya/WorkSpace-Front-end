@@ -15,15 +15,14 @@ import { useDispatch, useSelector } from "react-redux";
 import "primeicons/primeicons.css";
 import {
   getIssueType,
-  getIssuesByProjectKey,
   getPriority,
   getStatus,
   getUsers,
 } from "../../../redux/slice/issueSlice";
 import DropdownTemplate from "../components/Dropdwon";
 import UserList from "../components/UserListDropdown";
-import { getProjectTeam, getProjects } from "../../../redux/slice/projectSlice";
-import { Navigate, useNavigate } from "react-router-dom";
+import { getProjects } from "../../../redux/slice/projectSlice";
+import { useNavigate } from "react-router-dom";
 import {
   CreateIssueAPI,
   UploadIssueInBulkAPI,
@@ -78,7 +77,6 @@ export default function CreateIssueModal({
     attachmentsValue: [],
   };
   const [initialValues, setInitialValues] = useState(initialValueState);
-  const [hasError, sethasError] = useState(false);
   const [error, setError] = useState(initialErrorState);
 
   useEffect(() => {
@@ -104,16 +102,12 @@ export default function CreateIssueModal({
   useEffect(() => {
     if (initialValues.projectValue) {
       const keys = initialValues.projectValue.value;
-      // dispatch(getProjectTeam({ access, keys }));
       (async () => {
         const { data } = await getTeamByProjectKeyAPI(access, keys);
         setUser(data.data);
       })();
     }
   }, [initialValues.projectValue, dispatch, access]);
-  useEffect(() => {
-    console.log(userList);
-  }, [userList]);
   const handlSelect = (name, value) => {
     setInitialValues((prevState) => {
       return { ...prevState, [name]: value };
@@ -121,7 +115,6 @@ export default function CreateIssueModal({
   };
 
   const handleFileInputChange = (event) => {
-    console.log("----event.target.files----", event.target.files);
     setSelectedFiles([...selectedFiles, ...event.target.files]);
   };
 
@@ -134,7 +127,6 @@ export default function CreateIssueModal({
   };
 
   const handleBulkInputChange = async (e) => {
-    console.log("----event.target.files----", e.target.files[0]);
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
     const { data } = await UploadIssueInBulkAPI(access, formData);
@@ -169,7 +161,6 @@ export default function CreateIssueModal({
           width="80"
           height="60"
           onClick={() => {
-            console.log(objectUrl);
             setVisible(true);
             setfiletype(file.type.split("/")[1]);
             seturl(objectUrl);
@@ -207,13 +198,13 @@ export default function CreateIssueModal({
       );
       formData.append("attachments", selectedFiles);
       const { data } = await CreateIssueAPI(access, formData);
-      console.log(data);
-      setDisplayCreateIssueModal(false);
-      seteditIssueModal(false);
-      navigate(`/projects/${initialValues.projectValue.value}/work/`);
-      setError(initialErrorState);
+      if (data.created) {
+        setDisplayCreateIssueModal(false);
+        seteditIssueModal(false);
+        navigate(`/projects/${initialValues.projectValue.value}/work/`);
+        setError(initialErrorState);
+      }
     } else {
-      sethasError(true);
       setError({
         projectError: initialValues.projectValue === "",
         issueTypeError: initialValues.issueTypeValue === "",
@@ -274,7 +265,6 @@ export default function CreateIssueModal({
       />
     </div>
   );
-  // const toast = useRef(null);
   return (
     <form>
       <Dialog
@@ -287,7 +277,6 @@ export default function CreateIssueModal({
         <FileViewerComponent type={filetype} url={url} />
       </Dialog>
       <div className="card flex justify-content-center mx-10">
-        {/* <Toast ref={toast}></Toast> */}
         <Dialog
           draggable={false}
           header={headerContent}
@@ -300,7 +289,6 @@ export default function CreateIssueModal({
             setDisplayCreateIssueModal(false);
           }}
           footer={footerContent}
-          // draggable={false}
         >
           <div className="flex flex-wrap gap-3 mb-4">
             <div className="flex-auto">
@@ -414,7 +402,6 @@ export default function CreateIssueModal({
                 className={error.summaryError ? "p-invalid w-full" : "w-full"}
                 value={initialValues.summaryValue}
                 onChange={(e) => {
-                  console.log(e.target.value);
                   setInitialValues((prevState) => {
                     return {
                       ...prevState,

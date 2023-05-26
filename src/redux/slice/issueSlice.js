@@ -9,7 +9,6 @@ import {
   getUserList,
   updateIssueAPI,
 } from "../api";
-import { act } from "react-dom/test-utils";
 
 const initialState = {
   status: [],

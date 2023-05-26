@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { getProjects } from "../../redux/slice/projectSlice";
 import { Button } from "primereact/button";
 import { Paginator } from "primereact/paginator";
-import axios from "axios";
 import {
   ProjectListAPIPagination,
   SearchInProjectListAPI,
@@ -55,9 +54,6 @@ const ProjectList = () => {
     setprojectList(projects);
     setfilterProject(project);
   }, [projects]);
-  // const onRowClick = (data) => {
-
-  // };
   const tableHeader = () => {
     return (
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -189,7 +185,6 @@ const ProjectList = () => {
   const onPageChange = async (event) => {
     setFirst(event.first);
     if (event.first < first) {
-      console.log(projectList.previous);
       const { data } = await ProjectListAPIPagination(
         access,
         projectList.previous

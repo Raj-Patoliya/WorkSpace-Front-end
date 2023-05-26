@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../layout/layout";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Card } from "primereact/card";
-import Avatar from "@mui/material/Avatar";
-import AvatarGroup from "@mui/material/AvatarGroup";
-import { Divider } from "primereact/divider";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import MultiSelectDropdown from "../ui/components/Multiselect";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -18,16 +14,12 @@ import {
   getIssuesByProjectKey,
   getStatus,
   getUsers,
-  updateIssue,
 } from "../../redux/slice/issueSlice";
-import { Tooltip } from "@mui/material";
 import {
   IssueFilterAPI,
   deleteIssueAPI,
   updateIssueAPI,
 } from "../../redux/api";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import "./Work.css";
 import LoadingIssues from "../ui/components/LoadingIssues";
 import AddTeamMemberModal from "../ui/components/AddTeamMemberModal";
@@ -37,12 +29,11 @@ import EditIssue from "../ui/Issues/EditIssue";
 import DragableComponent from "../ui/Issues/DropableComponent";
 import TeamMemberList from "../ui/Issues/TeamMemberList";
 import { clearSelection } from "../../redux/slice/uiSlice";
-import axios from "axios";
+
 const Work = (props) => {
   const dispatch = useDispatch();
   const { keys } = useParams();
   const { access } = useSelector((state) => state.auth.token);
-  const issueState = useSelector((state) => state.issue);
   const issue = useSelector((state) => state.issue.issues);
   const loading = useSelector((state) => state.issue.loading);
   const team = useSelector((state) => state.project.team);
@@ -82,9 +73,6 @@ const Work = (props) => {
       setteamCreated(false);
     }
   }, [dispatch, project, access, keys, teamCreated]);
-  useEffect(() => {
-    console.log(userList);
-  }, [userList]);
 
   useEffect(() => {
     (async () => {
@@ -157,41 +145,10 @@ const Work = (props) => {
       const { data } = await IssueFilterAPI(access, formData);
       setFilterIssues(data.data);
     })();
-    // if (
-    //   userFilter.length !== 0 ||
-    //   searchText.length !== 0 ||
-    //   typeArray.length !== 0
-    // ) {
-    //   console.log(searchText);
-    //   (async () => {
-    //     const formData = new FormData();
-    //     formData.append("user", userFilter);
-    //     formData.append("search", searchText);
-    //     formData.append("type", typeArray);
-    //     formData.append("keys", keys);
-    //     const { data } = await IssueFilterAPI(access, formData);
-    //     console.log(data.data);
-    //     setFilterIssues(data.data);
-    //   })();
-    // } else {
-    //   (async () => {
-    //     const formData = new FormData();
-    //     formData.append("user", userFilter);
-    //     formData.append("search", searchText);
-    //     formData.append("type", typeArray);
-    //     formData.append("keys", keys);
-    //     const { data } = await IssueFilterAPI(access, formData);
-    //     console.log(data.data);
-    //     setFilterIssues(data.data);
-    //   })();
-    // }
   }, [userFilter, access, searchText, keys, typeArray, dispatch]);
-  // Edit Menu Code
 
-  // Drag n Drop Handler
   const onDragEnd = async (result) => {
     const { source, destination } = result;
-    console.log(result);
     if (!destination) return;
 
     if (
@@ -204,15 +161,12 @@ const Work = (props) => {
       inprogresslist = inprogress,
       donelist = done;
 
-    // 1.todo 2.inprogress 3. done
-
     if (source.droppableId === "4") {
       add = todolist[source.index];
       todolist.splice(source.index, 1);
     } else if (source.droppableId === "2") {
       add = inprogresslist[source.index];
       inprogresslist.splice(source.index, 1);
-      console.log(inprogresslist);
     } else {
       add = donelist[source.index];
       donelist.splice(source.index, 1);
@@ -232,6 +186,9 @@ const Work = (props) => {
     formData.append("field", "status");
     formData.append("value", Number(result.destination.droppableId));
     const { data } = await updateIssueAPI(access, result.draggableId, formData);
+    if (data.error) {
+      alert("Something Went wrong");
+    }
   };
   useEffect(() => {
     if (loading) {
@@ -242,24 +199,9 @@ const Work = (props) => {
   }, [loading]);
   const deleteIssue = async (id) => {
     const { data } = await deleteIssueAPI(access, id);
-    console.log(data);
+    if (data.success) {
+    }
   };
-  // SearchBox Filter Code
-  // const searchFilterHandler = (e) => {
-  //   setsearchText(e.target.value);
-  //   if (e.target.value === "") {
-  //     setFilterIssues(typeFilterIssues);
-  //   }
-  //   const searchData = typeFilterIssues.filter((data) =>
-  //     String(data.issue_summary)
-  //       .toLowerCase()
-  //       .includes(String(e.target.value).toLowerCase())
-  //   );
-  //   console.log(searchData);
-  //   setFilterIssues([...searchData]);
-  // };
-
-  // Saprating Isses According Status
   useEffect(() => {
     setdone(filterIssues.filter((data) => data.status.id === 1));
     setinprogress(filterIssues.filter((data) => data.status.id === 2));
@@ -372,7 +314,6 @@ const Work = (props) => {
                   ref={provided.innerRef}
                   className="col-3 bg-light m-1 p-0 text-xs"
                   {...provided.droppableProps}
-                  // showheader={false}
                 >
                   {todo.map((data, index) => (
                     <DragableComponent

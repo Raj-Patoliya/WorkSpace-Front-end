@@ -1,29 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../layout/layout";
-import ProjectCard from "../ui/Project/projectCard";
-// import ImageIcon from "@mui/icons-material/Image";
-// import WorkIcon from "@mui/icons-material/Work";
-// import BeachAccessIcon from "@mui/icons-material/BeachAccess";
-
-import { TabView, TabPanel } from "primereact/tabview";
-
-import {
-  Box,
-  Container,
-  CssBaseline,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
-import AssignedToYou from "../ui/Issues/Assigned";
-import CreatedByYou from "../ui/Issues/Created";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { getCurrentUser } from "../../redux/slice/authSlice";
+import { Box, Container, CssBaseline, Typography } from "@mui/material";
+import { TabView, TabPanel } from "primereact/tabview";
 import { UserIssueBasicDetailsAPI } from "../../redux/api";
+import ProjectCard from "../ui/Project/projectCard";
+import CreatedByYou from "../ui/Issues/CreatedIssues";
+import AssignedToYou from "../ui/Issues/AssignedIssues";
+import Layout from "../layout/layout";
 
 const Home = () => {
-  const [value, setValue] = React.useState("one");
   const { access } = useSelector((state) => state.auth.token);
   const [assined, setAssined] = useState([]);
   const [reported, setReported] = useState([]);
