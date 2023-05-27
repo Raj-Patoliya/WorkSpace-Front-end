@@ -75,8 +75,9 @@ const Profile = () => {
       newPassword: "",
       confirmPassword: "",
     },
+    onReset: () => {},
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
       formData.append("currentPassword", values.currentPassword);
       formData.append("newPassword", values.newPassword);
@@ -95,6 +96,7 @@ const Profile = () => {
           detail: data.success,
           life: 3000,
         });
+        resetForm();
       }
     },
   });
@@ -206,7 +208,10 @@ const Profile = () => {
             <Card title="Worked on" className="w-50 mr-3 bg-light">
               <Card>
                 {user.allIssue.map((data) => (
-                  <div className="w-full mb-3 d-flex p-1 border-round transition-colors transition-duration-500 bg-white-300 hover:bg-gray-100 text-white hover:text-gray-900">
+                  <div
+                    key={data.id}
+                    className="w-full mb-3 d-flex p-1 border-round transition-colors transition-duration-500 bg-white-300 hover:bg-gray-100 text-white hover:text-gray-900"
+                  >
                     <div className="w-fit">
                       <img
                         src={data.issue_type.icon}
@@ -242,7 +247,10 @@ const Profile = () => {
               <Card>
                 {projectList.hasOwnProperty("results") &&
                   projectList.results.map((data) => (
-                    <div className="w-full mb-3 d-flex p-1 border-round transition-colors transition-duration-500 bg-white-300 hover:bg-gray-100 text-white hover:text-gray-900">
+                    <div
+                      key={data.id}
+                      className="w-full mb-3 d-flex p-1 border-round transition-colors transition-duration-500 bg-white-300 hover:bg-gray-100 text-white hover:text-gray-900"
+                    >
                       <div className="ml-2">
                         <p className="text-sm font-bold h-1rem text-700">
                           {data.title}

@@ -100,11 +100,12 @@ const EditIssue = ({ show, seteditIssueModal, issueId, data, teams }) => {
   };
   function downloadAllFiles() {
     const zip = new JSZip();
-    let fileIndex = 1;
+
     Promise.all(urls.map((url) => fetch(url))).then((responses) => {
       responses.forEach((response) => {
-        zip.file(`file${fileIndex}`, response.blob());
-        fileIndex++;
+        const filename =
+          response.url.split("/")[response.url.split("/").length - 1];
+        zip.file(filename, response.blob());
       });
       zip.generateAsync({ type: "blob" }).then(function (blob) {
         FileSaver.saveAs(blob, `${project[0].key} -${issue.id}.zip`);

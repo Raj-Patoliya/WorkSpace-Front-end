@@ -33,8 +33,9 @@ const Login = () => {
       formData.append("email", values.email);
       formData.append("password", values.password);
       const token = await dispatch(login(formData));
-      console.log(token);
-      navigate("/");
+      if (token) {
+        navigate("/");
+      }
     },
   });
   useEffect(() => {

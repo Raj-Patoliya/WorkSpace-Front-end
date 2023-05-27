@@ -6,6 +6,7 @@ const IssueItem = ({ data }) => {
   return (
     <>
       <div
+        key={data.id}
         onClick={() => {
           navigate(`/projects/${data.project.key}/work`);
         }}

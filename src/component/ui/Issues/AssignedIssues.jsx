@@ -6,7 +6,7 @@ const AssignedToYou = ({ data }) => {
     <>
       {data.length === 0 && <h1>No Issue Assigned To you</h1>}
       {data.map((data) => (
-        <IssueItem data={data} />
+        <IssueItem key={data.id} data={data} />
       ))}
     </>
   );

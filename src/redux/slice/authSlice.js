@@ -9,23 +9,26 @@ const initialState = {
   currentUser: [],
 };
 
-export const login = createAsyncThunk("user/login", async (data) => {
-  try {
-    const response = await api.LoginAPI(data);
-    axiosInstance.defaults.headers["Authorization"] =
-      "Bearer " + response.data.access;
-    return response.data;
-  } catch (error) {
-    return error.response.data;
+export const login = createAsyncThunk(
+  "user/login",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.LoginAPI(data);
+      axiosInstance.defaults.headers["Authorization"] =
+        "Bearer " + response.data.access;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-});
+);
 
 export const getCurrentUser = createAsyncThunk("getCurrentUser", async () => {
   try {
     const { data } = await api.getCurrentUserAPI();
     return data;
   } catch (error) {
-    return null;
+    return error.response.data;
   }
 });
 

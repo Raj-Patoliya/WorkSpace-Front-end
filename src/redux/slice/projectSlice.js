@@ -48,7 +48,6 @@ export const addProjectTeamMember = createAsyncThunk(
   async ({ formData }) => {
     try {
       const { data } = await AddTeamMemberAPI(formData);
-      console.log(data);
       return data;
     } catch (error) {
       return null;
@@ -66,7 +65,6 @@ const projectSlice = createSlice({
     [getProjects.fulfilled]: (state, action) => {
       state.loading = false;
       state.allProjectList = action.payload;
-      // console.log(action.payload.results);
     },
     [getProjects.rejected]: (state, action) => {
       state.loading = false;
